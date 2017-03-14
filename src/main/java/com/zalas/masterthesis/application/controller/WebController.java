@@ -2,6 +2,7 @@ package com.zalas.masterthesis.application.controller;
 
 import com.google.common.collect.Lists;
 import com.zalas.masterthesis.application.model.Customer;
+import com.zalas.masterthesis.application.redundantcomponents.FindOneRedundantComponent;
 import com.zalas.masterthesis.application.repo.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -32,7 +33,8 @@ public class WebController {
 
 	@RequestMapping("/findById")
 	public ResponseEntity<Customer> findById(@RequestParam("id") long id){
-		return new ResponseEntity<>(repository.findOne(id), HttpStatus.OK);
+		FindOneRedundantComponentResolver resolver = new FindOneRedundantComponentResolver(repository);
+        return new ResponseEntity<>(resolver.resolve().findOne(id), HttpStatus.OK);
 	}
 
 	private void createDummyData() {

@@ -1,7 +1,14 @@
 package com.zalas.masterthesis.application.model;
 
+import com.google.common.base.Charsets;
+import com.google.common.io.Resources;
+
 import javax.persistence.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
+import java.nio.file.Files;
 
 @Entity
 @Table(name = "customer")
@@ -16,6 +23,9 @@ public class Customer implements Serializable {
 
     @Column(name = "lastname")
     private String lastName;
+
+    @Transient
+    private String dummyBigContentField;
 
     protected Customer() {
     }
@@ -40,5 +50,13 @@ public class Customer implements Serializable {
     @Override
     public String toString() {
         return String.format("Customer[id=%d, firstName='%s', lastName='%s']", id, firstName, lastName);
+    }
+
+    public String getDummyBigContentField() {
+        try {
+            return Resources.toString(Resources.getResource("/dummyText.txt"), Charsets.UTF_8);
+        } catch (IOException e) {
+            return "ERROR";
+        }
     }
 }
