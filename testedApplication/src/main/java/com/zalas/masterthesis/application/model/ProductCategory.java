@@ -4,7 +4,7 @@ import javax.persistence.*;
 import java.util.Set;
 
 @Entity
-@Table(name = "book_category")
+@Table(name = "product_category")
 public class ProductCategory {
 
     private int id;
