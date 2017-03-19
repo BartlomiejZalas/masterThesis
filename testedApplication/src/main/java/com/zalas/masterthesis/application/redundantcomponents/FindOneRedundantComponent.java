@@ -1,7 +1,7 @@
 package com.zalas.masterthesis.application.redundantcomponents;
 
-import com.zalas.masterthesis.application.model.Customer;
+import com.zalas.masterthesis.application.model.ProductCategory;
 
 public interface FindOneRedundantComponent {
-    Customer findOne(long id);
+    ProductCategory findOne(long id);
 }

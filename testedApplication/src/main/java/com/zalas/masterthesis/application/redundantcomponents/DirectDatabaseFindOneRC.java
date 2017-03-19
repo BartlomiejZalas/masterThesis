@@ -1,18 +1,18 @@
 package com.zalas.masterthesis.application.redundantcomponents;
 
-import com.zalas.masterthesis.application.model.Customer;
-import com.zalas.masterthesis.application.repo.CustomerRepository;
+import com.zalas.masterthesis.application.model.ProductCategory;
+import com.zalas.masterthesis.application.repo.ProductCategoryRepository;
 
-public class DirectDatabaseFindOneRC  implements FindOneRedundantComponent{
+public class DirectDatabaseFindOneRC implements FindOneRedundantComponent {
 
-    private CustomerRepository customerRepository;
+    private ProductCategoryRepository productCategoryRepository;
 
-    public DirectDatabaseFindOneRC(CustomerRepository customerRepository) {
-        this.customerRepository = customerRepository;
+    public DirectDatabaseFindOneRC(ProductCategoryRepository productCategoryRepository) {
+        this.productCategoryRepository = productCategoryRepository;
     }
 
     @Override
-    public Customer findOne(long id) {
-        return customerRepository.findOne(id);
+    public ProductCategory findOne(long id) {
+        return productCategoryRepository.findOne(id);
     }
 }

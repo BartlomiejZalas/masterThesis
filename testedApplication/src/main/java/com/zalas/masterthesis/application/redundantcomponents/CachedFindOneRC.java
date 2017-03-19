@@ -1,28 +1,28 @@
 package com.zalas.masterthesis.application.redundantcomponents;
 
-import com.zalas.masterthesis.application.model.Customer;
-import com.zalas.masterthesis.application.repo.CustomerRepository;
+import com.zalas.masterthesis.application.model.ProductCategory;
+import com.zalas.masterthesis.application.repo.ProductCategoryRepository;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class CachedFindOneRC implements FindOneRedundantComponent {
 
-    private CustomerRepository customerRepository;
-    private Map<Long, Customer> cache = new HashMap<>();
+    private ProductCategoryRepository productCategoryRepository;
+    private Map<Long, ProductCategory> cache = new HashMap<>();
 
-    public CachedFindOneRC(CustomerRepository customerRepository) {
-        this.customerRepository = customerRepository;
+    public CachedFindOneRC(ProductCategoryRepository productCategoryRepository) {
+        this.productCategoryRepository = productCategoryRepository;
     }
 
     @Override
-    public Customer findOne(long id) {
+    public ProductCategory findOne(long id) {
         if (cache.containsKey(id)) {
             return cache.get(id);
         } else {
-            Customer customer = customerRepository.findOne(id);
-            cache.put(id, customer);
-            return customer;
+            ProductCategory productCategory = productCategoryRepository.findOne(id);
+            cache.put(id, productCategory);
+            return productCategory;
         }
     }
 }

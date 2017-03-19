@@ -4,15 +4,15 @@ package com.zalas.masterthesis.application.controller;
 import com.zalas.masterthesis.application.redundantcomponents.CachedFindOneRC;
 import com.zalas.masterthesis.application.redundantcomponents.DirectDatabaseFindOneRC;
 import com.zalas.masterthesis.application.redundantcomponents.FindOneRedundantComponent;
-import com.zalas.masterthesis.application.repo.CustomerRepository;
+import com.zalas.masterthesis.application.repo.ProductCategoryRepository;
 
 public class FindOneRedundantComponentResolver {
 
     public final static int COMPONENT_CHOICE = 0;
 
-    private CustomerRepository repository;
+    private ProductCategoryRepository repository;
 
-    public FindOneRedundantComponentResolver(CustomerRepository repository) {
+    public FindOneRedundantComponentResolver(ProductCategoryRepository repository) {
         this.repository = repository;
     }
 
