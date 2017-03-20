@@ -5,6 +5,8 @@ import com.zalas.masterthesis.application.model.Product;
 import com.zalas.masterthesis.application.model.ProductCategory;
 import com.zalas.masterthesis.application.model.ProductOpinion;
 import com.zalas.masterthesis.application.repo.ProductCategoryRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +22,8 @@ import static com.google.common.collect.Sets.newHashSet;
 @RestController
 public class WebController {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(WebController.class);
+
     @Autowired
     private ProductCategoryRepository productCategoryRepository;
 
@@ -31,6 +35,7 @@ public class WebController {
 
     @RequestMapping("/findAll")
     public ResponseEntity<List<ProductCategory>> findAllProductCategories() {
+        LOGGER.info("Bean hash code:"+getClass().hashCode());
         return new ResponseEntity<>(Lists.newArrayList(productCategoryRepository.findAll()), HttpStatus.OK);
     }
 
