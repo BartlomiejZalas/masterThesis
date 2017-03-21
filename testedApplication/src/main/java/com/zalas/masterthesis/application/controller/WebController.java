@@ -4,11 +4,11 @@ import com.google.common.collect.Lists;
 import com.zalas.masterthesis.application.model.Product;
 import com.zalas.masterthesis.application.model.ProductCategory;
 import com.zalas.masterthesis.application.model.ProductOpinion;
-import com.zalas.masterthesis.application.redundantcomponents.repository.RepositoryRcDispatcher;
 import com.zalas.masterthesis.application.repo.ProductCategoryRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,8 +27,6 @@ public class WebController {
 
     @Autowired
     private ProductCategoryRepository productCategoryRepository;
-    @Autowired
-    private RepositoryRcDispatcher repositoryRcDispatcher;
 
     @RequestMapping("/save")
     public ResponseEntity<String> saveProductCategories() {
@@ -38,19 +36,23 @@ public class WebController {
 
     @RequestMapping("/findAll")
     public ResponseEntity<List<ProductCategory>> findAllProductCategories() {
-//        LOGGER.info("MESAGE: : " + repositoryRcDispatcher.findAll());
-        return new ResponseEntity<>(Lists.newArrayList(repositoryRcDispatcher.findAll()), HttpStatus.OK);
+        return new ResponseEntity<>(Lists.newArrayList(productCategoryRepository.findAll()), HttpStatus.OK);
+    }
+
+    @RequestMapping("/findPart")
+    public ResponseEntity<List<ProductCategory>> findPartProductCategories(@RequestParam int page, @RequestParam int size) {
+        return new ResponseEntity<>(Lists.newArrayList(productCategoryRepository.findAll(new PageRequest(page, size)).getContent()), HttpStatus.OK);
     }
 
     @RequestMapping("/findById")
-    public ResponseEntity<ProductCategory> findById(@RequestParam("id") long id) {
+    public ResponseEntity<ProductCategory> findById(@RequestParam("id") int id) {
         FindOneRedundantComponentResolver resolver = new FindOneRedundantComponentResolver(productCategoryRepository);
         return new ResponseEntity<>(resolver.resolve().findOne(id), HttpStatus.OK);
     }
 
 
     private void saveDummyCategories() {
-        for (int i = 0; i < 500; i++) {
+        for (int i = 0; i < 5000; i++) {
             ProductCategory categoryA = new ProductCategory();
             categoryA.setName("Category A");
             Product p1 = new Product();

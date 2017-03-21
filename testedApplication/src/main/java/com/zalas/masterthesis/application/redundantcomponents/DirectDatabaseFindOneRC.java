@@ -12,7 +12,7 @@ public class DirectDatabaseFindOneRC implements FindOneRedundantComponent {
     }
 
     @Override
-    public ProductCategory findOne(long id) {
+    public ProductCategory findOne(int id) {
         return productCategoryRepository.findOne(id);
     }
 }

@@ -9,14 +9,14 @@ import java.util.Map;
 public class CachedFindOneRC implements FindOneRedundantComponent {
 
     private ProductCategoryRepository productCategoryRepository;
-    private Map<Long, ProductCategory> cache = new HashMap<>();
+    private Map<Integer, ProductCategory> cache = new HashMap<>();
 
     public CachedFindOneRC(ProductCategoryRepository productCategoryRepository) {
         this.productCategoryRepository = productCategoryRepository;
     }
 
     @Override
-    public ProductCategory findOne(long id) {
+    public ProductCategory findOne(int id) {
         if (cache.containsKey(id)) {
             return cache.get(id);
         } else {
