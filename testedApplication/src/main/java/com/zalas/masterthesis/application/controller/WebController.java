@@ -5,6 +5,7 @@ import com.zalas.masterthesis.application.model.Product;
 import com.zalas.masterthesis.application.model.ProductCategory;
 import com.zalas.masterthesis.application.model.ProductOpinion;
 import com.zalas.masterthesis.application.repo.ProductCategoryRepository;
+import com.zalas.masterthesis.application.service.productcategory.ProductCategoryServiceCached;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,8 @@ public class WebController {
 
     @Autowired
     private ProductCategoryRepository productCategoryRepository;
+    @Autowired
+    private ProductCategoryServiceController productCategoryServiceController;
 
     @RequestMapping("/save")
     public ResponseEntity<String> saveProductCategories() {
@@ -46,8 +49,10 @@ public class WebController {
 
     @RequestMapping("/findById")
     public ResponseEntity<ProductCategory> findById(@RequestParam("id") int id) {
-        FindOneRedundantComponentResolver resolver = new FindOneRedundantComponentResolver(productCategoryRepository);
-        return new ResponseEntity<>(resolver.resolve().findOne(id), HttpStatus.OK);
+        LOGGER.info("START");
+        ResponseEntity<ProductCategory> responseEntity = new ResponseEntity<>(productCategoryServiceController.getService().findOne(id), HttpStatus.OK);
+        LOGGER.info("STOP");
+        return responseEntity;
     }
 
 
