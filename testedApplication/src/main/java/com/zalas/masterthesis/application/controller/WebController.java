@@ -12,9 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 import java.util.List;
@@ -31,28 +29,33 @@ public class WebController {
     @Autowired
     private ProductCategoryServiceController productCategoryServiceController;
 
-    @RequestMapping("/save")
+    @PutMapping("/save")
     public ResponseEntity<String> saveProductCategories() {
         saveDummyCategories();
         return new ResponseEntity<>("Product Categoreis saved", HttpStatus.CREATED);
     }
 
-    @RequestMapping("/findAll")
+    @GetMapping("/findAll")
     public ResponseEntity<List<ProductCategory>> findAllProductCategories() {
         return new ResponseEntity<>(Lists.newArrayList(productCategoryRepository.findAll()), HttpStatus.OK);
     }
 
-    @RequestMapping("/findPart")
+    @GetMapping("/findPart")
     public ResponseEntity<List<ProductCategory>> findPartProductCategories(@RequestParam int page, @RequestParam int size) {
         return new ResponseEntity<>(Lists.newArrayList(productCategoryRepository.findAll(new PageRequest(page, size)).getContent()), HttpStatus.OK);
     }
 
-    @RequestMapping("/findById")
+    @GetMapping("/findById")
     public ResponseEntity<ProductCategory> findById(@RequestParam("id") int id) {
         LOGGER.info("START");
         ResponseEntity<ProductCategory> responseEntity = new ResponseEntity<>(productCategoryServiceController.getService().findOne(id), HttpStatus.OK);
         LOGGER.info("STOP");
         return responseEntity;
+    }
+
+    @PostMapping("/updateById")
+    public ResponseEntity<ProductCategory> updateById(@RequestParam("id") int id, @RequestParam("newName") String newName) {
+        return new ResponseEntity<>(productCategoryServiceController.getService().update(id, newName), HttpStatus.OK);
     }
 
 

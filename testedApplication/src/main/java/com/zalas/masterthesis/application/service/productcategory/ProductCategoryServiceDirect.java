@@ -21,6 +21,16 @@ public class ProductCategoryServiceDirect implements ProductCategoryService {
         return productCategoryRepository.findOne(id);
     }
 
+    @Override
+    public ProductCategory update(int id, String newName) {
+        ProductCategory productCategory = productCategoryRepository.findOne(id);
+        productCategory.setName(newName);
+        ProductCategory savedCategory = productCategoryRepository.save(productCategory);
+
+        LOGGER.info("productCategory updated");
+        return savedCategory;
+    }
+
     private void simulateSlowService() {
         try {
             long time = 3000L;
