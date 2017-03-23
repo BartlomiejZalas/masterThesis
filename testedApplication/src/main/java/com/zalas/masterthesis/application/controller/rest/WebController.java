@@ -1,6 +1,8 @@
-package com.zalas.masterthesis.application.controller;
+package com.zalas.masterthesis.application.controller.rest;
 
 import com.google.common.collect.Lists;
+import com.zalas.masterthesis.application.controller.ProductCategoryCacheController;
+import com.zalas.masterthesis.application.controller.ProductCategoryCreatorController;
 import com.zalas.masterthesis.application.model.Product;
 import com.zalas.masterthesis.application.model.ProductCategory;
 import com.zalas.masterthesis.application.model.ProductOpinion;
@@ -30,8 +32,8 @@ public class WebController {
     @Autowired
     private ProductCategoryCreatorController productCategoryCreatorController;
 
-    @PutMapping("/save")
-    public ResponseEntity<String> saveProductCategories() {
+    @PutMapping("/fillDatabase")
+    public ResponseEntity<String> fillDatabase() {
         saveDummyCategories();
         return new ResponseEntity<>("Product Categoreis saved", HttpStatus.CREATED);
     }
@@ -48,9 +50,7 @@ public class WebController {
 
     @GetMapping("/findById")
     public ResponseEntity<ProductCategory> findById(@RequestParam("id") int id) {
-        LOGGER.info("START");
         ResponseEntity<ProductCategory> responseEntity = new ResponseEntity<>(productCategoryCacheController.getService().findOne(id), HttpStatus.OK);
-        LOGGER.info("STOP");
         return responseEntity;
     }
 
