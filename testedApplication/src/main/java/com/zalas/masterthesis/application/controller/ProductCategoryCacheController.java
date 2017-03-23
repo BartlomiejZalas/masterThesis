@@ -1,13 +1,13 @@
 package com.zalas.masterthesis.application.controller;
 
-import com.zalas.masterthesis.application.service.productcategory.ProductCategoryService;
-import com.zalas.masterthesis.application.service.productcategory.ProductCategoryServiceCached;
-import com.zalas.masterthesis.application.service.productcategory.ProductCategoryServiceDirect;
+import com.zalas.masterthesis.application.service.cache.ProductCategoryService;
+import com.zalas.masterthesis.application.service.cache.ProductCategoryServiceCached;
+import com.zalas.masterthesis.application.service.cache.ProductCategoryServiceDirect;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 @Controller
-public class ProductCategoryServiceController {
+public class ProductCategoryCacheController {
 
     @Autowired
     private ProductCategoryServiceCached cachedService;

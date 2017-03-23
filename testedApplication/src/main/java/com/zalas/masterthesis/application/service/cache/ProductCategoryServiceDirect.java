@@ -1,4 +1,4 @@
-package com.zalas.masterthesis.application.service.productcategory;
+package com.zalas.masterthesis.application.service.cache;
 
 import com.zalas.masterthesis.application.model.ProductCategory;
 import com.zalas.masterthesis.application.repo.ProductCategoryRepository;

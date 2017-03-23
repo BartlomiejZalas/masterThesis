@@ -5,7 +5,6 @@ import com.zalas.masterthesis.application.model.Product;
 import com.zalas.masterthesis.application.model.ProductCategory;
 import com.zalas.masterthesis.application.model.ProductOpinion;
 import com.zalas.masterthesis.application.repo.ProductCategoryRepository;
-import com.zalas.masterthesis.application.service.productcategory.ProductCategoryServiceCached;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +26,9 @@ public class WebController {
     @Autowired
     private ProductCategoryRepository productCategoryRepository;
     @Autowired
-    private ProductCategoryServiceController productCategoryServiceController;
+    private ProductCategoryCacheController productCategoryCacheController;
+    @Autowired
+    private ProductCategoryCreatorController productCategoryCreatorController;
 
     @PutMapping("/save")
     public ResponseEntity<String> saveProductCategories() {
@@ -48,14 +49,20 @@ public class WebController {
     @GetMapping("/findById")
     public ResponseEntity<ProductCategory> findById(@RequestParam("id") int id) {
         LOGGER.info("START");
-        ResponseEntity<ProductCategory> responseEntity = new ResponseEntity<>(productCategoryServiceController.getService().findOne(id), HttpStatus.OK);
+        ResponseEntity<ProductCategory> responseEntity = new ResponseEntity<>(productCategoryCacheController.getService().findOne(id), HttpStatus.OK);
         LOGGER.info("STOP");
         return responseEntity;
     }
 
     @PostMapping("/updateById")
     public ResponseEntity<ProductCategory> updateById(@RequestParam("id") int id, @RequestParam("newName") String newName) {
-        return new ResponseEntity<>(productCategoryServiceController.getService().update(id, newName), HttpStatus.OK);
+        return new ResponseEntity<>(productCategoryCacheController.getService().update(id, newName), HttpStatus.OK);
+    }
+
+    @PutMapping("/add")
+    public ResponseEntity<String> add(@RequestParam("categoryName") String categoryName) {
+        productCategoryCreatorController.getService().add(categoryName);
+        return new ResponseEntity<String>("Product category added!", HttpStatus.OK);
     }
 
 
