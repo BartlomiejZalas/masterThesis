@@ -19,14 +19,14 @@ public class ProductCategoryServiceCached implements ProductCategoryService {
     @Cacheable("productCategory")
     @Override
     public ProductCategory findOne(int id) {
-        LOGGER.info("findOne() cached used");
+        LOGGER.info("findOne() not in cache - direct used");
         return productCategoryServiceDirect.findOne(id);
     }
 
     @CacheEvict(value = "productCategory", allEntries = true)
     @Override
     public ProductCategory update(int id, String newName) {
-        LOGGER.info("update() cached used");
+        LOGGER.info("update() cache cleared");
         return productCategoryServiceDirect.update(id, newName);
     }
 }

@@ -22,7 +22,6 @@
 
     <modules>
         <module>testedApplication</module>
-        <module>datagenerator</module>
     </modules>
 
 </project>
