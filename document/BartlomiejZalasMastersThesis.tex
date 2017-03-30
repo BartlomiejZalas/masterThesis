@@ -84,7 +84,7 @@ A software optimization and a performance evaluation tests are terms related to 
 
 Motivation for this work was fact that performance evaluation tests are able only to monitor performance of application. In case when application has a set of parameters influencing performance, people responsible for application performance must adjust such parameters manually or empirically. Solution able to adjust that parameters to optimize performance would be a great facilitation. 
 
-Main goal of this work is to develop a framework, which will be able to optimize web application by search of most optimal application parameters and adjust them automatically. The first research question that needs to be answered in this work is which and how system parameters influences performance? Next, how to evaluate performance of the system? Another goal is to analyse and provide answers for question: how performance evaluation tests can help in software optimization - in monitoring and application adjustment. Another question which is emerging here is what adjustment method is the best? 
+Main goal of this work is to develop a framework, which will be able to optimize web application by search of most optimal application parameters and adjust them automatically. The first research question that needs to be answered in this work is which and how system parameters influences performance? Next, how to evaluate performance of the system? Another goal is to analyze and provide answers for question: how performance evaluation tests can help in software optimization - in monitoring and application adjustment. Another question which is emerging here is what adjustment method is the best? 
 
 In this work author will try to consider listed problems in domain of web application optimization on runtime level using performance evaluation tests. A software under optimization and performance evaluation will be a web application simulating file storage (developed as web service) implemented in Java 1.8 Enterprise Edition and Spring Framework 1.3 deployed on Glassfish 4 server. 
 
@@ -96,7 +96,7 @@ In this work author will try to consider listed problems in domain of web applic
 \section{Theoretical background}
 Before further considerations fundamental term for this work should be defined  - a performance. 
 
-In H. Sarojadevi's definition, performance relates to time and throughput used by application under certain workload and configuration \cite{petmethodsandtools}. In that definition workload and configuration play a role of input variables to a system/application, when time and throughput are measurable outputs from a system/application. This definition gives information about factors related to performance, but how to recognise good and bad performance?
+In H. Sarojadevi's definition, performance relates to time and throughput used by application under certain workload and configuration \cite{petmethodsandtools}. In that definition workload and configuration play a role of input variables to a system/application, when time and throughput are measurable outputs from a system/application. This definition gives information about factors related to performance, but how to recognize good and bad performance?
 
 Ian Molyneaux explains good performance as ability to use application without perceiving any delay or irritation by the end-user \cite{artperformance}. Can delay perceived by user or irritation be defined? Research \cite{howlong} shows that user expects a response from web application in about 2 seconds. Because of that there exists dependency between performance and popularity (and hence financial result) of website and that is why performance is  considered as critical for web applications from business perspective\cite{architectingperformance}. 
 
@@ -106,7 +106,7 @@ Knowing what is performance and how to distinguish good and bad performance one 
 \item Throughput - The rate of requests to application.
 \item Utilization - The percentage of resource usage.
 \item Maximum users support - The number of concurrent users supported.
-\item Workload profile - The behaviour under various different amount of users.
+\item Workload profile - The behavior under various different amount of users.
 \item Weak points - The places in which application crashes under stress conditions.
 \item Scalability - The capability of a system to be enlarged to handle more amount of work.
 \end{itemize}
@@ -116,7 +116,7 @@ Above indicators are used to evaluate performance of application. Process of sof
 \item Executing a program to find failures
 \item Executing a program to measure quality
 \item Executing a program to provide confidence 
-\item Analysing a program or its documentation to prevent failures
+\item Analyzing a program or its documentation to prevent failures
 \end{itemize}
 
 All four purposes are applicable in performance evaluation tests - failures are found when application does not behave as it is designed under given workload, application quality and performance capabilities are measured, confidence that application will serve desired amount of requests is provided, analysis of bottlenecks helps to improve system. 
@@ -132,13 +132,13 @@ In order to process performance evaluation tests set of activities must be perfo
 \item Use-Case Scripting - input data requirements, selection of areas to monitor for response time, ensure of correctness or use case replays.
 \item Performance Test Scenario Build - creation of test scenarios, and realistic throughput model
 \item Performance Test Execution and Analysis - execution of tests and results analysis.
-\item Post-Test Analysis and Reporting - collection and analyse of  data from all test runs, reports creation.
+\item Post-Test Analysis and Reporting - collection and analyze of  data from all test runs, reports creation.
 \end{itemize}
 
 Accordingly to our objectives different kinds of performance tests may be carry out. In the literature \cite{artperformance},\cite{architectingperformance} and \cite{analysisofpet} three main types of performance testing can be found:
 \begin{itemize}
- \item Load testing - To validate application behaviour under normal and peak conditions.
- \item Stress testing - To validate application behaviour beyond normal load conditions.
+ \item Load testing - To validate application behavior under normal and peak conditions.
+ \item Stress testing - To validate application behavior beyond normal load conditions.
  \item Capacity testing - To find limits of application.
 \end{itemize}
 
@@ -227,11 +227,53 @@ General idea of self-optimization systems was proposed in article "The Vision of
 
 A framework for automatic performance tuning is presented in article "Automatic Performance Management in Component Based 
 Software Systems" \cite{autoframework}. The framework is consisted of two main modules: monitoring and diagnostic module and application adaptation. The monitoring and diagnostic part gathers data about performance of application and environment with minimal overhead. Informations about probes (performance data related to method execution and lifecycle
-events of EJB) are analysed and in case of performance problems alert is raised. When it happens, application module should overcome performance problems by selecting software component which will provide the best possible performance at given run-time context. 
+events of EJB) are analyzed and in case of performance problems alert is raised. When it happens, application module should overcome performance problems by selecting software component which will provide the best possible performance at given run-time context. 
 
-Such concept is called component redundancy and is described deeper in the article "A framework for using component redundancy for self-adapting and self-optimising component-based enterprise systems" \cite{redundancycomponent}. In the article author describes Component Redundancy as presence, at runtime, of multiple  component  variants  providing  identical or equivalent services but with different implementation strategies. Only one of the redundant components providing a service is assigned, at any moment in time, for handling a certain client request for that  service.  Implementation strategies can be added or deleted during runtime. Depending from context (workload, available resources) suitable component is selected. Selection is based on component description - set of attributes which defines in what conditions component usage is the most optimal. These descriptions are then updated at runtime with accurate monitoring 
-information for the actual execution contexts. 
+Such concept is called component redundancy and is described deeper in the article "A framework for using component redundancy for self-adapting and self-optimising component-based enterprise systems" \cite{redundancycomponent}. In the article author describes Component Redundancy as presence, at runtime, of multiple  component  variants  providing  identical or equivalent services but with different implementation strategies. Only one of the redundant components providing a service is assigned, at any moment in time, for handling a certain client request for that  service.  Implementation strategies can be added or deleted during runtime. Depending from context (workload, available resources) suitable component is selected. Selection is based on component description - set of attributes which defines in what conditions component usage is the most optimal. These descriptions are then updated at runtime with accurate monitoring information for the actual execution contexts. 
 
+The practical approach of software performance optimization from implementation level is described in book "Pro Spring 2.5" in chapter "Spring Performance Tuning" \cite{springperformance}. In this chapter authors present most typical performance related problems and explain how to analyze performance and how to find bottlenecks of application written in Spring Framework. Key indicator in presented process is execution time of method. Major part of text is focused on improving the data access tier by following improvements:  
+\begin{itemize}
+\item paged data - records from database are queried in chunks, 
+\item lazy loading - only records requested by user are returned from query (without related tables), 
+\item indexing - database index are created in order to improve search, 
+\item batched inserts - records are inserted/updated into database in chucks
+\end{itemize}
+The other presented performance techniques are:
+\begin{itemize}
+\item view performance - fast rendering of web page
+\item cache - method result is cached for given set of parameters
+\end{itemize}
+The text provides examples with source code. Authors of the book emphasize that each performance improvement should be based on understanding bottle neck and be adapted to application and users profile.  
+
+\section{Addressing the Performance Related Problems}
+
+In previous chapter problems related to software optimization and performance evaluation tests was presented. Below conclusion in form of list presents main raised problems:
+\begin{itemize} 
+\item Downplaying of performance evaluation tests
+\item Complexity of performance tuning
+\item Process of performance tuning is time consuming and manual
+\item Workload is various
+\end{itemize}
+
+Analysis of existing problems from previous chapter provides also solution, ideas and hints addressing above problems:
+automatic performance tuning \cite{autotuning}\cite{autoarch}\cite{autoframework}, redundant components\cite{redundancycomponent} and suitable implementation decisions \cite{springperformance}. 
+
+Automatic performance tuning is solution for problem with time consuming and complex configuration. Due to fact that application performance is monitored continuously such tuning is performed instantly when needed. Next advantage of such system is that it knows how to achieve the best performance in given circumstances. 
+
+The idea of redundant component gives possibility to develop solution which will fit well to changeable environment. Managed by automatic performance tuning system may be switched during runtime when system usage characteristic change. 
+
+Suitable performance related decisions impose on developers duty to awareness of performance influence of taken implementation decisions. Developers should be aware of system workload characteristic in production environment and perform performance optimization where possible. 
+ 
+\section{Addressing the Problems in This Work}
+Redundant Components - paging, batched, cache,
+threads 
+
+\section{Proposed solution principals}
+Runtime adjustment
+Autonomus
+Web based
+
+\section{Automated Performance Tuner}
 
 
 \pagebreak
@@ -346,6 +388,9 @@ Diaconescu A., Mos A., Murphy J., \textit{Automatic performance management in co
 
 \bibitem{redundancycomponent}
 Diaconescu A., \textit{A framework for using component redundancy for self-adapting and self-optimising component-based enterprise systems}, 2003, In Companion of the 18th annual ACM SIGPLAN conference on Object-oriented programming, systems, languages, and applications (OOPSLA '03). ACM, New York, NY, USA, 390-391. 
+
+\bibitem{springperformance}
+Chakraborty, A., Ditt, J., Vukotic, A., Machacek, J., \textit{Pro Spring 2.5}, Berkeley, CA, Apress, 2008, 829-855,  
 
 
 \end{thebibliography}
