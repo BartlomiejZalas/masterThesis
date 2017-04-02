@@ -20,14 +20,24 @@
 \usepackage{array}
 \usepackage{makecell}
 \usepackage{tabularx}
+\usepackage{pbox}
+\usepackage{pgfplots}
 
 \renewcommand\theadalign{cb}
 \renewcommand\theadfont{\bfseries}
 \renewcommand\theadgape{\Gape[4pt]}
 \renewcommand\cellgape{\Gape[4pt]}
 
+\let\tempone\itemize
+\let\temptwo\enditemize
+\renewenvironment{itemize}{\tempone\addtolength{\itemsep}{-0.4\baselineskip}}{\temptwo}
+
+\let\tempone\enumerate
+\let\temptwo\endenumerate
+\renewenvironment{enumerate}{\tempone\addtolength{\itemsep}{-0.4\baselineskip}}{\temptwo}
+
 \author{Bartłomiej Zalas}
-\title{Test}
+\title{System Optimization Based on Performance Evaluation Tests}
 
 \begin{document}
 
@@ -181,8 +191,9 @@ The book "Architecting High Performing, Scalable and Available Enterprise Web Ap
 
 Above elements are related to client side and are responsible for data presentation and user experience. They should be taken into consideration during application development and deployment. Because are not configurable during application runtime and does not influence application core performance, which is responsible for serving data to client side are out of scope of this work. 
 
-\section{Performance Related Problems}
+\section{Existing Topics Related to Software Performance}
 
+\subsection{Performance Related Problems} \label{PerformanceRelatedProblems}
 One of the most fundamental problem about applications performance is a nasty habit of turning up late in the application life cycle \cite{artperformance}. In article "Performance Anti-Patterns" \cite{lssrarticle} Bart Smaalders noticed that development teams overloaded by new features development and bug fixing left performance work as an afterthought. The first report from performance is received from developed software versions during beta testing.
 
 To solve and avoid above problem performance evaluation tests should be repeatable, observable, portable, easily presented, realistic, runnable. Thanks to that tests can be executed as early as possible during software development cycle, and executed continuously during development providing instant performance feedback to the developers. 
@@ -221,12 +232,14 @@ In article "The deployer's problem: configuring application servers for performa
 
 Presented procedure is obviously time consuming - requires manual parameter tuning and application deployment - and deficient because of random parameters value selection. This disadvantages show need of automated tool which will be able to automatically perform above steps and choose the best configuration.
 
-The web applications are characterised by various workload. Such characteristic is dependent from profile and purpose of web application \cite{invariantsworkloads}. This fact should be also taken into consideration during tuning application performance. In article "Automatic Performance Tuning for J2EE Application Server Systems" \cite{autotuning} authors proposed a solution for automatic application optimization based on \textit{MaxPoolSize} parameter of JBoss application server resulting in 37\% improvement. What is also important proposed dynamic configuration  mechanism  was able to improve  performance  and  adapt  to  changes  in  workloads without human intervention. In the article authors also noticed that there is no fully automated framework designed for Java Enterprise application server reconfiguration.
+The web applications are characterised by various workload. Such characteristic is dependent from profile and purpose of web application \cite{invariantsworkloads}. This fact should be also taken into consideration during tuning application performance. 
+
+\subsection{Existing solutions} \label{ExistingSolutions}
+In article "Automatic Performance Tuning for J2EE Application Server Systems" \cite{autotuning} authors proposed a solution for automatic application optimization based on \textit{MaxPoolSize} parameter of JBoss application server resulting in 37\% improvement. What is also important proposed dynamic configuration  mechanism  was able to improve  performance  and  adapt  to  changes  in  workloads without human intervention. In the article authors also noticed that there is no fully automated framework designed for Java Enterprise application server reconfiguration.
 
 General idea of self-optimization systems was proposed in article "The Vision of Autonomic Computing" \cite{autoarch}. Main problem introduced by authors is complexity and great number of tunable parameters influencing performance. Also, tuning of one subsystem can have unanticipated effects on the entire system. Proposed solution is Autonomic system. System which will continually seek ways to improve their operation, identifying and seizing opportunities to make themselves more efficient in performance or cost. 
 
-A framework for automatic performance tuning is presented in article "Automatic Performance Management in Component Based 
-Software Systems" \cite{autoframework}. The framework is consisted of two main modules: monitoring and diagnostic module and application adaptation. The monitoring and diagnostic part gathers data about performance of application and environment with minimal overhead. Informations about probes (performance data related to method execution and lifecycle
+A framework for automatic performance tuning is presented in article "Automatic Performance Management in Component Based Software Systems" \cite{autoframework}. The framework is consisted of two main modules: monitoring and diagnostic module and application adaptation. The monitoring and diagnostic part gathers data about performance of application and environment with minimal overhead. Informations about probes (performance data related to method execution and lifecycle
 events of EJB) are analyzed and in case of performance problems alert is raised. When it happens, application module should overcome performance problems by selecting software component which will provide the best possible performance at given run-time context. 
 
 Such concept is called component redundancy and is described deeper in the article "A framework for using component redundancy for self-adapting and self-optimising component-based enterprise systems" \cite{redundancycomponent}. In the article author describes Component Redundancy as presence, at runtime, of multiple  component  variants  providing  identical or equivalent services but with different implementation strategies. Only one of the redundant components providing a service is assigned, at any moment in time, for handling a certain client request for that  service.  Implementation strategies can be added or deleted during runtime. Depending from context (workload, available resources) suitable component is selected. Selection is based on component description - set of attributes which defines in what conditions component usage is the most optimal. These descriptions are then updated at runtime with accurate monitoring information for the actual execution contexts. 
@@ -243,20 +256,20 @@ The other presented performance techniques are:
 \item view performance - fast rendering of web page
 \item cache - method result is cached for given set of parameters
 \end{itemize}
-The text provides examples with source code. Authors of the book emphasize that each performance improvement should be based on understanding bottle neck and be adapted to application and users profile.  
+The text provides examples with source code. The authors of the book emphasize that each performance improvement should be based on understanding bottle neck and be adapted to application and users profile.  
 
-\section{Addressing the Performance Related Problems}
+\subsection{Summary}
 
-In previous chapter problems related to software optimization and performance evaluation tests was presented. Below conclusion in form of list presents main raised problems:
+In section \ref{PerformanceRelatedProblems} problems related to software optimization and performance evaluation tests was presented. Conclusion in form of list presented below shows main raised problems:
 \begin{itemize} 
-\item Downplaying of performance evaluation tests
-\item Complexity of performance tuning
-\item Process of performance tuning is time consuming and manual
-\item Workload is various
+\item Downplaying of performance evaluation tests \cite{artperformance}\cite{lssrarticle}
+\item Complexity of performance tuning \cite{glassfishdoc}\cite{deployerproblem}
+\item Process of performance tuning is time consuming and manual \cite{deployerproblem}
+\item Workload is various \cite{invariantsworkloads}
 \end{itemize}
 
-Analysis of existing problems from previous chapter provides also solution, ideas and hints addressing above problems:
-automatic performance tuning \cite{autotuning}\cite{autoarch}\cite{autoframework}, redundant components\cite{redundancycomponent} and suitable implementation decisions \cite{springperformance}. 
+Analysis of existing problems from section \ref{ExistingSolutions} provides also solutions, ideas and hints addressing above problems:
+automatic performance tuning \cite{autotuning}\cite{autoarch}\cite{autoframework}, redundant components \cite{redundancycomponent} and suitable implementation decisions \cite{springperformance}. 
 
 Automatic performance tuning is solution for problem with time consuming and complex configuration. Due to fact that application performance is monitored continuously such tuning is performed instantly when needed. Next advantage of such system is that it knows how to achieve the best performance in given circumstances. 
 
@@ -265,15 +278,189 @@ The idea of redundant component gives possibility to develop solution which will
 Suitable performance related decisions impose on developers duty to awareness of performance influence of taken implementation decisions. Developers should be aware of system workload characteristic in production environment and perform performance optimization where possible. 
  
 \section{Addressing the Problems in This Work}
-Redundant Components - paging, batched, cache,
-threads 
 
-\section{Proposed solution principals}
-Runtime adjustment
-Autonomus
-Web based
+\subsection{About This Chapter}
+On the base of previous chapters author of this work will try to provide solution which will be addressing most of listed problems. Next subsections provide considerations about possible ways to obtain the best possible solutions with justification. Final goal is to implement system which will demonstrate and evaluate implemented solutions. 
 
-\section{Automated Performance Tuner}
+\subsection{Tested application}  
+As mentioned in previous chapters performance optimization can be developed in many areas. For this work author will focus on web based application. The application will be service simulating product database - basic CRUD operations on products will be provide. For simplicity and in order to concentrate on the topic of this work graphical user interface will be omitted. Communication with application will be provided in form of REST service.  
+
+The application will be developed in Java language using Spring Framework. The application server for the application will be Apache Tomcat served by Spring Bootstrap 1.5. Data persistence will be realized in PostgreSQL 9.6 DBMS.  
+
+\subsection{System Principals}
+Key in every successful project is to define goals and needs at the beginning.
+In case of this work it will be realized as system principles definition on the base of  performance problems from chapter \ref{PerformanceRelatedProblems}.
+
+Downplaying of performance evaluation tests - decision of when, how often or even if perform performance evaluation tests lays in developers way of working. However, performance evaluation tests performed in easy way with minimal effort could encourage developer teams to perform it. 
+
+Complexity of performance tuning - the system should know which set of configuration parameters values will be the best in given situation.  
+
+Process of performance tuning is time consuming and manual - the system should know how to tune configuration to increase performance of application and do it automatically. 
+
+Workload is various - the system should be able to monitor workload of application in form of incoming requests in order to switch application configuration which will be more suitable in given circumstances. 
+
+On the base of above consideration following set of principles of the system can be formulated:
+
+\begin{itemize}
+\item The system should be easy to integrate with application
+\item The system should perform live monitoring of application
+\item The system should be autonomous
+\item The system should be able to perform configuration change during application runtime
+\item The system should be able to work in production environment
+\item The system should have minimal impact on production environment
+\end{itemize}
+
+On the base of above principles in next chapter proposition of system realization will be introduced.  
+
+\subsection{Performance Improvement Realization}
+
+Before system architecture will be introduced set of elements on which performance tuning will be performed must be introduced.  
+Considering existing solutions presented in chapter \ref{ExistingSolutions} author of this work decided to perform performance tuning on two elements: redundant components and application server configuration parameters. 
+
+\subsubsection{Redundant Components}
+Redundant components, by definition, provides the same services but with different implementation. From the performance perspective that idea can be used to implement component which will provide the same services with different performance characteristic. What is also important, usage of redundant components must be justified - there must exist circumstance where given redundant component will offer better performance form another redundant components. 
+
+Author of this work took into consideration following candidates which could be implemented in the tested application domain: paging, cache, batched inputs. 
+
+Paging is database query realization in which in single select query only part (page) of records is returned instead of querying all records from database. Table \ref{pagingcomponents} shows comparison of two proposed redundant components: Paging and No Paging.  
+\begin{table}[!htb]
+\def\arraystretch{1.5}
+\begin{tabularx}{\textwidth}{p{3cm}|X|X}
+  \textbf{Category} &\textbf{Paging} & \textbf{No Paging} \\
+\hline
+Query all records & Multiple queries (slower) & One query (faster) \\
+User satisfaction & High & Low\\
+Top performance circumstances & When impossible to query all records by No Paging component & When possible to query all records by once\\
+\end{tabularx}
+\caption{\textit{Paging redundant components comparision}}\label{pagingcomponents}
+\end{table}
+
+\begin{figure}[!htb]
+\centering
+\begin{tikzpicture}
+        \begin{axis}[
+            symbolic x coords={{2500}, {1000}, {250}},
+            xtick=data,
+            bar width=1cm,
+            x=2cm,
+            ymin=0,
+            enlarge x limits={abs=1cm},
+            xlabel={Page Size [records]},
+            ylabel={Execution time [ms]}
+          ]
+            \addplot[ybar,fill=gray] coordinates {
+                ({2500},  100)
+                ({1000},  211)
+                ({250},   299)
+            };
+        \end{axis}
+\end{tikzpicture}
+\caption{\textit{Execution time comparision for different page size for 10000 records}} \label{fig:pagesizetime}
+\end{figure}
+
+As shown in Figure \ref{fig:pagesizetime} the bigger page size is, the smaller execution time is. It is related to fact that every query to a database generates additional overhead. 
+In general the No Paging component is faster when it is possible to query all records at once. Possible to query means that query will not need more resources (memory, CPU) than is needed to be performed. 
+The Paging component must perform multiple queries to a database in order to query all existing records. From the practical point of view in presentation layer only first page of records is needed when user entering a web page. Otherwise, long time of No Paging component execution will decrease user satisfaction level.  
+
+The paging idea is more related to data presentation layer and user satisfaction. Moreover when number of records in a database is possible to query at once No Paging component will be always faster to query all records. Because of that author of this work decided to reject paging as redundant component. 
+
+Next redundant component candidate is cache. There exist many types of cache which can be applied to web application. For goals of this work method-level cache was chosen - returned value for method is cached on the base of input parameters. Table \ref{cachecomponents} shows comparison of two proposed redundant components: Cache (methods are cached) and No Cache (cache is disabled).
+\begin{table}[!htb]
+\def\arraystretch{1.5}
+\begin{tabularx}{\textwidth}{p{3cm}|X|X}
+  \textbf{Category} &\textbf{Cache} & \textbf{No Cache} \\
+\hline
+Preferable parameters characteristic & Repeatable & Varied \\
+Preferable resources & Immutable & Mutable\\
+Overhead & Yes & No\\
+\end{tabularx}
+\caption{\textit{Paging redundant components comparision.}}\label{cachecomponents}
+\end{table}
+ 
+Table \ref{cachecomponents} shows that Cache and No Cache redundant components have different characteristic. In workload in which requests are repeatable (given set of parameters is used more than once) and there is no frequent changes in state of requested resources (no updates and inserts into a database) preferred redundant component is Cache. When there is no repeatable requests and requested resources are frequently changed usage of cache generates only additional overhead. In such cache No Cache component should be used. On the base of above considerations Cache/No Cache components could be considered as proper redundant component from performance perspective and will be implemented in the system. 
+
+Last redundant component taken into consideration is batched inserts. The idea is to gather objects which are to be inserted into a database and insert them in one query instead of few separate once. This minimize query overhead. In case of this work inserts batch is realized in form of collection for the objects in which insert query is fired when collection is full.   
+Table \ref{batchedcomponents} shows comparison of two proposed redundant components: Batched (records to insert are batched) and Direct (direct inserts into a database as separate queries).
+
+\begin{table}[!htb]
+\def\arraystretch{1.5}
+\begin{tabularx}{\textwidth}{p{3cm}|X|X}
+  \textbf{Category} &\textbf{Batched} & \textbf{No Batched} \\
+\hline
+Query execution time & Faster & Slower \\
+Query effects & Delayed & Instant\\
+Efficiency & High & Low\\
+\end{tabularx}
+\caption{\textit{Paging redundant components comparision.}}\label{batchedcomponents}
+\end{table}
+
+\begin{figure}[!htb]
+\centering
+\begin{tikzpicture}
+        \begin{axis}[
+            symbolic x coords={Batched, Direct},
+            xtick=data,
+            bar width=1cm,
+            x=2cm,
+            ymin=0,
+            enlarge x limits={abs=1cm},
+            xlabel={Redundant component},
+            ylabel={Execution time [ms]}
+          ]
+            \addplot[ybar,fill=gray] coordinates {
+                (Batched,  386)
+                (Direct,   563)
+            };
+        \end{axis}
+\end{tikzpicture}
+\caption{\textit{Execution time comparision for Batched and Direct redundant components for batch with size = 10 and 20 inserted records}} \label{fig:batchedtime}
+\end{figure}
+
+The components comparison in Table \ref{batchedcomponents} shows different characteristic of both redundant component. Batched one is in general more efficient and faster than No Batched. However, process of batching records introduces delays in real effect of batched statement (equal to time in which given records if "frozen" in batch). In proposed implementation batched statement will be fired when batch is full. Both facts lead to conclusion that Batched component should be used only in circumstances when such delay i acceptable by users or when number of inserts into a database is so high that efficiency improvement is needed. Another thing is the more frequent inserts into a database (faster filling up of batch) the smaller delay. Therefore Batched component should be used only in case when number of inserts into a database very high. Otherwise Direct component should be used. Above considerations justify choice of Batched/Direct redundant components to be used in the system.   
+
+\subsubsection{Application Server Configuration Parameters}
+
+Configuration of application server is crucial in performance of application. Application servers provides wast number of parameters which can be configured. Such parameters may be slightly different depending from vendor but in most cases configuration provide possibility to adjust: thread number, JDBC connection pools, EJB pools, JVM configuration. 
+
+Author of this work decided to take into consideration 2 possible configurations: EJB pool size and thread number of application server. 
+
+EJB pooling mechanism reduces time needed for creating new bean instances (beans are created on start up and kept in pool) and support parallel request handling. In case of this work tested application is developed in Spring framework in which all beans are singletons by default. Therefore EJB pool configuration has no effect on application performance. Influence of EJB pool size on performance of enterprise application was used up in other work \cite{autotuning}. Taking into account this arguments EJB pool will be not implemented in the system. 
+
+Number of threads has key meaning in handling incoming requests into an application server. When number of threads is less than parallel incoming requests not handled part will be waiting in the queue until threads will be free again. Too large number of threads results in increased CPU usage and slower performance. This fact is documented in the Figure \ref{fig:threads}. For 100 incoming parallel requests tested 3 configuration of thread number: 10 threads, 200 threads, 10000 threads. As one can see the worst mean response time was when number of threads was smaller than number of requests. Too high number of threads also negatively influences performance.   
+
+\begin{figure}[!htb]
+\centering
+\begin{tikzpicture}
+        \begin{axis}[
+            symbolic x coords={10, 200, 10000},
+            xtick=data,
+            bar width=1cm,
+            x=2cm,
+            ymin=0,
+            enlarge x limits={abs=1cm},
+            xlabel={Number of threads},
+            ylabel={Execution time [ms]}
+          ]
+            \addplot[ybar,fill=gray] coordinates {
+                (10,  17236)
+                (200,   3296)
+                (10000,   3963)
+            };
+        \end{axis}
+\end{tikzpicture}
+\caption{\textit{Mean response time from 100 incoming paraller requests}} \label{fig:threads}
+\end{figure}
+
+Number of threads has large impact on application performance and it configuration will be implemented in the system. 
+
+\subsubsection{Performance Improvement Realization Summary}
+
+Above considerations contains justification about accepted or declined candidates for performance tuning in the system. Finally, two redundant components (batched imports, cached methods) and one application server configuration parameter (threads number) was chosen.
+
+
+\subsection{The System Architecture}
+...
+
 
 
 \pagebreak
