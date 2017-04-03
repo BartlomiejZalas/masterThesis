@@ -7,7 +7,6 @@ import com.zalas.masterthesis.application.model.Product;
 import com.zalas.masterthesis.application.model.ProductCategory;
 import com.zalas.masterthesis.application.model.ProductOpinion;
 import com.zalas.masterthesis.application.repo.ProductCategoryRepository;
-import com.zalas.masterthesis.application.service.pooled.ImportantPooledService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,8 +31,6 @@ public class WebController {
     private ProductCategoryCacheController productCategoryCacheController;
     @Autowired
     private ProductCategoryCreatorController productCategoryCreatorController;
-    @Autowired
-    private ImportantPooledService importantPooledService;
 
     @PutMapping("/fillDatabase")
     public ResponseEntity<String> fillDatabase() {
@@ -67,13 +64,6 @@ public class WebController {
         productCategoryCreatorController.getService().add(categoryName);
         return new ResponseEntity<String>("Product category added!", HttpStatus.OK);
     }
-
-    @GetMapping("/callPolledBean")
-    public ResponseEntity<String> call() {
-        importantPooledService.doImportantThing();
-        return new ResponseEntity<String>("Bean called", HttpStatus.OK);
-    }
-
 
     private void saveDummyCategories() {
         for (int i = 0; i < 5000; i++) {
