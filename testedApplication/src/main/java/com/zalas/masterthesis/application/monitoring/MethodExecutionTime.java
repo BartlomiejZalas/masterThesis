@@ -7,11 +7,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
+
 @Aspect
 @Component
 public class MethodExecutionTime {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodExecutionTime.class);
+    private InfluxClient influxClient = new InfluxClient();
+
 
     @Around("execution(* com.zalas.masterthesis.application.controller.rest.WebController.*(..))")
     public Object measureExecutionTime(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
@@ -19,14 +23,20 @@ public class MethodExecutionTime {
 
         Object retVal = proceedingJoinPoint.proceed();
 
-        long endTime = System.nanoTime();
-        logExecutionTime(proceedingJoinPoint, startTime, endTime);
+        long duration = System.nanoTime() - startTime;
+        String methodName = proceedingJoinPoint.getSignature().getName();
+
+        logExecutionTime(methodName, duration);
+        saveExecutionTime(methodName, duration);
+
         return retVal;
     }
 
-    private void logExecutionTime(ProceedingJoinPoint proceedingJoinPoint, long startTime, long endTime) {
-        long duration = endTime - startTime;
-        String methodName = proceedingJoinPoint.getSignature().getName();
+    private void saveExecutionTime(String methodName, long duration) {
+        influxClient.saveExecutionTime(duration, methodName, "?");
+    }
+
+    private void logExecutionTime(String methodName, long duration) {
         LOGGER.info("Execution time of " + methodName + "(...): [ns] " + duration);
     }
 
