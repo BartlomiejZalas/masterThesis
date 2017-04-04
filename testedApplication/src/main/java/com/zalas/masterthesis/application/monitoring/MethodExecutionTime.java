@@ -7,8 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
-
 @Aspect
 @Component
 public class MethodExecutionTime {
@@ -33,7 +31,11 @@ public class MethodExecutionTime {
     }
 
     private void saveExecutionTime(String methodName, long duration) {
-        influxClient.saveExecutionTime(duration, methodName, "?");
+        try {
+            influxClient.saveExecutionTime(duration, methodName, "?");
+        } catch (Exception e) {
+            LOGGER.error("Cannot save execution time in influx: "+ e.getMessage(), e);
+        }
     }
 
     private void logExecutionTime(String methodName, long duration) {
