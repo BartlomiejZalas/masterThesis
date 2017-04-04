@@ -1,12 +1,12 @@
-package com.zalas.masterthesis.configurationserver.api;
+package com.zalas.masterthesis.configurationserver.api.constants;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import static com.zalas.masterthesis.configurationserver.api.Configuration.Value.*;
+import static com.zalas.masterthesis.configurationserver.api.constants.ConfigurationConstants.Value.*;
 import static java.util.Arrays.asList;
 
-public enum Configuration {
+public enum ConfigurationConstants {
 
     BATCH(BATCHED, DIRECT),
     CACHE(CACHED, NO_CACHE),
@@ -14,7 +14,7 @@ public enum Configuration {
 
     private final Set<Value> possibleValues;
 
-    Configuration(Value... possibleValues) {
+    ConfigurationConstants(Value... possibleValues) {
         this.possibleValues = new HashSet(asList(possibleValues));
     }
 
@@ -36,7 +36,7 @@ public enum Configuration {
     }
 
     public static boolean contains(String test) {
-        for (Configuration c : Configuration.values()) {
+        for (ConfigurationConstants c : ConfigurationConstants.values()) {
             if (c.name().equals(test)) {
                 return true;
             }

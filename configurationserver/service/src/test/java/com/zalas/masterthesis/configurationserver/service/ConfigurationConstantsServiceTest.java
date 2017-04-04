@@ -1,12 +1,12 @@
 package com.zalas.masterthesis.configurationserver.service;
 
-import com.zalas.masterthesis.configurationserver.api.Configuration;
+import com.zalas.masterthesis.configurationserver.api.constants.ConfigurationConstants;
 import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-public class ConfigurationServiceTest {
+public class ConfigurationConstantsServiceTest {
 
     private ConfigurationService configurationService;
 
@@ -19,9 +19,9 @@ public class ConfigurationServiceTest {
     public void afterPropertiesSet_shouldCreateDefaultConfiguration() throws Exception {
         configurationService.afterPropertiesSet();
 
-        assertEquals(Configuration.Value.DIRECT.toString(), configurationService.get(Configuration.BATCH.toString()));
-        assertEquals(Configuration.Value.NO_CACHE.toString(), configurationService.get(Configuration.CACHE.toString()));
-        assertEquals(Configuration.Value.T100.toString(), configurationService.get(Configuration.THREADS.toString()));
+        assertEquals(ConfigurationConstants.Value.DIRECT.toString(), configurationService.get(ConfigurationConstants.BATCH.toString()));
+        assertEquals(ConfigurationConstants.Value.NO_CACHE.toString(), configurationService.get(ConfigurationConstants.CACHE.toString()));
+        assertEquals(ConfigurationConstants.Value.T100.toString(), configurationService.get(ConfigurationConstants.THREADS.toString()));
     }
 
     @Test(expected = ConfigurationException.class)
