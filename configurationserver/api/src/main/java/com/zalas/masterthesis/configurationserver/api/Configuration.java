@@ -1,9 +1,9 @@
-package configurationserver.api;
+package com.zalas.masterthesis.configurationserver.api;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import static configurationserver.api.Configuration.Value.*;
+import static com.zalas.masterthesis.configurationserver.api.Configuration.Value.*;
 import static java.util.Arrays.asList;
 
 public enum Configuration {

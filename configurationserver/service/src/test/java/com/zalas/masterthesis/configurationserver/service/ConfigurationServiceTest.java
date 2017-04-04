@@ -1,6 +1,6 @@
 package com.zalas.masterthesis.configurationserver.service;
 
-import configurationserver.api.Configuration;
+import com.zalas.masterthesis.configurationserver.api.Configuration;
 import org.junit.Before;
 import org.junit.Test;
 

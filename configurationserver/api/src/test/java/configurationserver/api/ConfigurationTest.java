@@ -1,14 +1,13 @@
 package configurationserver.api;
 
+import com.zalas.masterthesis.configurationserver.api.Configuration;
 import org.junit.Test;
 
 import static com.google.common.collect.Sets.newHashSet;
-import static configurationserver.api.Configuration.BATCH;
-import static configurationserver.api.Configuration.Value.BATCHED;
-import static configurationserver.api.Configuration.Value.DIRECT;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static com.zalas.masterthesis.configurationserver.api.Configuration.BATCH;
+import static com.zalas.masterthesis.configurationserver.api.Configuration.Value.BATCHED;
+import static com.zalas.masterthesis.configurationserver.api.Configuration.Value.DIRECT;
+import static org.junit.Assert.*;
 
 public class ConfigurationTest {
 
