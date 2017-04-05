@@ -3,8 +3,13 @@ package com.zalas.masterthesis.application.controller;
 import com.zalas.masterthesis.application.service.creator.ProductCategoryCreatorServiceBatched;
 import com.zalas.masterthesis.application.service.creator.ProductCategoryCreatorServiceDirect;
 import com.zalas.masterthesis.application.service.creator.ProductCreatorService;
+import com.zalas.masterthesis.configurationserver.api.client.ConfigurationClient;
+import com.zalas.masterthesis.configurationserver.api.client.ConfigurationClientException;
+import com.zalas.masterthesis.configurationserver.api.constants.ConfigurationConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+
+import static com.zalas.masterthesis.configurationserver.api.constants.ConfigurationConstants.*;
 
 @Controller
 public class ProductCategoryCreatorController {
@@ -14,9 +19,9 @@ public class ProductCategoryCreatorController {
     @Autowired
     private ProductCategoryCreatorServiceDirect productCategoryCreatorServiceDirect;
 
-    public static final boolean BATCHED_INSERT_ENABLED = false;
-
-    public ProductCreatorService getService() {
-        return BATCHED_INSERT_ENABLED ? productCategoryCreatorServiceBatched : productCategoryCreatorServiceDirect;
+    public ProductCreatorService getService() throws ConfigurationClientException {
+            ConfigurationClient configurationClient = new ConfigurationClient();
+            Value batchComponentType = configurationClient.getConfiguration(BATCH);
+            return (batchComponentType == Value.BATCHED) ? productCategoryCreatorServiceBatched : productCategoryCreatorServiceDirect;
     }
 }

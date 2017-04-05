@@ -7,6 +7,7 @@ import com.zalas.masterthesis.application.model.Product;
 import com.zalas.masterthesis.application.model.ProductCategory;
 import com.zalas.masterthesis.application.model.ProductOpinion;
 import com.zalas.masterthesis.application.repo.ProductCategoryRepository;
+import com.zalas.masterthesis.configurationserver.api.client.ConfigurationClientException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,8 +62,12 @@ public class WebController {
 
     @PutMapping("/add")
     public ResponseEntity<String> add(@RequestParam("categoryName") String categoryName) {
-        productCategoryCreatorController.getService().add(categoryName);
-        return new ResponseEntity<String>("Product category added!", HttpStatus.OK);
+        try {
+            productCategoryCreatorController.getService().add(categoryName);
+            return new ResponseEntity<>("Product category added!", HttpStatus.OK);
+        } catch (ConfigurationClientException e) {
+            return new ResponseEntity<>("Cannot get configuration information about product category service! " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     private void saveDummyCategories() {

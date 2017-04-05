@@ -15,21 +15,28 @@ public class ConfigurationClient {
 
     public static final String CONFIGURATION_ENDPOINT_URL = "http://localhost:8888/configuration";
 
-
     public Value getConfiguration(ConfigurationConstants key) throws ConfigurationClientException {
-        WebTarget target = ClientBuilder.newClient().target(CONFIGURATION_ENDPOINT_URL).path("/get").queryParam("key", key);
-        Invocation.Builder invocationBuilder = target.request();
-        Response response = invocationBuilder.get();
+        try {
+            WebTarget target = ClientBuilder.newClient().target(CONFIGURATION_ENDPOINT_URL).path("/get").queryParam("key", key);
+            Invocation.Builder invocationBuilder = target.request();
+            Response response = invocationBuilder.get();
 
-        return Value.valueOf(handleResponse(response));
+            return Value.valueOf(handleResponse(response));
+        } catch (Exception e) {
+            throw new ConfigurationClientException(e.getMessage());
+        }
     }
 
     public void setConfiguration(ConfigurationConstants key, Value value) throws ConfigurationClientException {
-        WebTarget target = ClientBuilder.newClient().target(CONFIGURATION_ENDPOINT_URL).path("/change").queryParam("key", key).queryParam("value", value);
-        Invocation.Builder invocationBuilder = target.request();
-        Response response = invocationBuilder.post(Entity.entity("", MediaType.TEXT_PLAIN));
+        try {
+            WebTarget target = ClientBuilder.newClient().target(CONFIGURATION_ENDPOINT_URL).path("/change").queryParam("key", key).queryParam("value", value);
+            Invocation.Builder invocationBuilder = target.request();
+            Response response = invocationBuilder.post(Entity.entity("", MediaType.TEXT_PLAIN));
 
-        handleResponse(response);
+            handleResponse(response);
+        } catch (Exception e) {
+            throw new ConfigurationClientException(e.getMessage());
+        }
     }
 
     private String handleResponse(Response response) throws ConfigurationClientException {

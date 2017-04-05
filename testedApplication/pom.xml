@@ -91,6 +91,14 @@
             <artifactId>influxdb-java</artifactId>
             <version>2.5</version>
         </dependency>
+
+        <!--Internal-->
+        <dependency>
+            <groupId>com.zalas.masterthesis</groupId>
+            <artifactId>api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
     </dependencies>
 
     <repositories>
