@@ -14,19 +14,19 @@ public class ProductCategoryServiceCached implements ProductCategoryService {
     private static final Logger LOGGER = LoggerFactory.getLogger(ProductCategoryServiceCached.class);
 
     @Autowired
-    private ProductCategoryServiceDirect productCategoryServiceDirect;
+    private ProductCategoryServiceNoCache productCategoryServiceNoCache;
 
     @Cacheable("productCategory")
     @Override
     public ProductCategory findOne(int id) {
         LOGGER.info("findOne() not in cache - direct used");
-        return productCategoryServiceDirect.findOne(id);
+        return productCategoryServiceNoCache.findOne(id);
     }
 
     @CacheEvict(value = "productCategory", allEntries = true)
     @Override
     public ProductCategory update(int id, String newName) {
         LOGGER.info("update() cache cleared");
-        return productCategoryServiceDirect.update(id, newName);
+        return productCategoryServiceNoCache.update(id, newName);
     }
 }

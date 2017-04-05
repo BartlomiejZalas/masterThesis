@@ -8,9 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ProductCategoryServiceDirect implements ProductCategoryService {
+public class ProductCategoryServiceNoCache implements ProductCategoryService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ProductCategoryServiceDirect.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProductCategoryServiceNoCache.class);
 
     @Autowired
     private ProductCategoryRepository productCategoryRepository;
