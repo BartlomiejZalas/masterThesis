@@ -50,24 +50,19 @@ public class WebController {
     }
 
     @GetMapping("/findById")
-    public ResponseEntity<ProductCategory> findById(@RequestParam("id") int id) {
-        ResponseEntity<ProductCategory> responseEntity = new ResponseEntity<>(productCategoryCacheController.getService().findOne(id), HttpStatus.OK);
-        return responseEntity;
+    public ResponseEntity<ProductCategory> findById(@RequestParam("id") int id) throws ConfigurationClientException {
+        return new ResponseEntity<>(productCategoryCacheController.getService().findOne(id), HttpStatus.OK);
     }
 
     @PostMapping("/updateById")
-    public ResponseEntity<ProductCategory> updateById(@RequestParam("id") int id, @RequestParam("newName") String newName) {
+    public ResponseEntity<ProductCategory> updateById(@RequestParam("id") int id, @RequestParam("newName") String newName) throws ConfigurationClientException {
         return new ResponseEntity<>(productCategoryCacheController.getService().update(id, newName), HttpStatus.OK);
     }
 
     @PutMapping("/add")
-    public ResponseEntity<String> add(@RequestParam("categoryName") String categoryName) {
-        try {
+    public ResponseEntity<String> add(@RequestParam("categoryName") String categoryName) throws ConfigurationClientException {
             productCategoryCreatorController.getService().add(categoryName);
             return new ResponseEntity<>("Product category added!", HttpStatus.OK);
-        } catch (ConfigurationClientException e) {
-            return new ResponseEntity<>("Cannot get configuration information about product category service! " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
     }
 
     private void saveDummyCategories() {
