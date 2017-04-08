@@ -3,6 +3,7 @@ package com.zalas.masterthesis.application.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 @Entity
@@ -29,10 +30,12 @@ public class ProductOpinion {
         return id;
     }
 
+    @NotNull
     public String getContent() {
         return content;
     }
 
+    @NotNull
     public Date getDate() {
         return date;
     }

@@ -1,6 +1,7 @@
 package com.zalas.masterthesis.application.model;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.Set;
 
 @Entity
@@ -25,6 +26,7 @@ public class ProductCategory {
         return id;
     }
 
+    @NotNull
     public String getName() {
         return name;
     }

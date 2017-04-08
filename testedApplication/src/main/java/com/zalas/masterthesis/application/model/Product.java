@@ -3,6 +3,7 @@ package com.zalas.masterthesis.application.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.Set;
 
 @Entity
@@ -28,6 +29,7 @@ public class Product {
         return id;
     }
 
+    @NotNull
     public String getName() {
         return name;
     }
