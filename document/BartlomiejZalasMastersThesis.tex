@@ -23,6 +23,9 @@
 \usepackage{pbox}
 \usepackage{pgfplots}
 \usepackage[tableposition=top]{caption}
+\usepackage[rightcaption]{sidecap}
+\usepackage{graphicx} 
+\graphicspath{ {images/} }
 
 
 \renewcommand\theadalign{cb}
@@ -286,7 +289,32 @@ Suitable performance related decisions impose on developers duty to awareness of
 On the base of previous chapters author of this work will try to provide solution which will be addressing most of listed problems from chapter \ref{PerformanceRelatedProblems}. Next subsections provide considerations about possible ways to obtain the best possible solutions with justification. Final goal is to implement system which will demonstrate and evaluate implemented solutions. 
 
 \subsection{Tested application}  
-As mentioned in previous chapters performance optimization can be developed in many areas. For this work author will focus on web based application. The application will be a service simulating product database - basic CRUD operations on products will be provided. For simplicity and in order to concentrate on the topic of this work graphical user interface will be omitted. Communication with application will be provided in form of REST service.  
+As mentioned in previous chapters performance optimization can be developed in many areas. For this work author will focus on web based application. The application will be a service simulating product database - basic CRUD operations on products categories will be provided. Details about entities managed by tested application are presented on Figure \ref{erd}. 
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.6\textwidth]{erd}
+\caption{\textit{ERD diagram of tested application model}}
+\label{erd}
+\end{figure}
+
+For simplicity and in order to concentrate on the topic of this work graphical user interface will be omitted. Communication with application will be provided in form of REST service. Provided REST API is presented in the Table \ref{restapi}.
+
+\begin{table}[!htb]
+\def\arraystretch{1.5}
+\caption{\textit{Tested application REST API}}\label{restapi}
+\begin{tabularx}{\textwidth}{p{2cm}|p{1.2cm}|X|p{2cm}}
+  \textbf{Path} &\textbf{Method} & \textbf{Parameters} & \textbf{Produces} \\
+  \hline
+  addCategories & PUT & - & String \\ 
+  findAll & GET & - & JSON\\
+  findPart & GET & page:Integer, size:Integer & JSON\\
+  findById & GET & id:Integer, & JSON \\
+  updateById & POST & id: Integer, newName:String & JSON \\
+  add & PUT & categoryName:String & String\\
+\end{tabularx}
+\end{table}
+
 
 The application will be developed in Java language using Spring Framework. The application server for the application will be Apache Tomcat served by Spring Bootstrap 1.5. Data persistence will be realized in PostgreSQL 9.6 DBMS.  
 
