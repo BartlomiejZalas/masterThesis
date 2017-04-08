@@ -33,7 +33,7 @@ public class WebController {
     @Autowired
     private ProductCategoryCreatorController productCategoryCreatorController;
 
-    @PutMapping("/fillDatabase")
+    @PutMapping("/addCategories")
     public ResponseEntity<String> fillDatabase() {
         saveDummyCategories();
         return new ResponseEntity<>("Product Categoreis saved", HttpStatus.CREATED);
