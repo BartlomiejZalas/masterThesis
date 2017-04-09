@@ -1,11 +1,9 @@
 package com.zalas.masterthesis.configurationserver.api.client;
 
 import com.zalas.masterthesis.configurationserver.api.constants.ConfigurationConstants;
+import org.glassfish.jersey.client.ClientProperties;
 
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.Invocation;
-import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.client.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -17,7 +15,9 @@ public class ConfigurationClient {
 
     public Value getConfiguration(ConfigurationConstants key) throws ConfigurationClientException {
         try {
-            WebTarget target = ClientBuilder.newClient().target(CONFIGURATION_ENDPOINT_URL).path("/get").queryParam("key", key);
+            Client client = ClientBuilder.newClient();
+            client.property(ClientProperties.CONNECT_TIMEOUT, 1000);
+            WebTarget target = client.target(CONFIGURATION_ENDPOINT_URL).path("/get").queryParam("key", key);
             Invocation.Builder invocationBuilder = target.request();
             Response response = invocationBuilder.get();
 

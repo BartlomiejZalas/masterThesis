@@ -18,8 +18,9 @@ public class ProductCategoryCreatorServiceDirect implements ProductCreatorServic
     private static final Logger LOGGER = LoggerFactory.getLogger(ProductCategoryCreatorServiceDirect.class);
 
     @Override
-    public void add(String categoryName) {
+    public ProductCategory add(String categoryName) {
         ProductCategory category = productCategoryRepository.save(dummyCategoryCreator.create(categoryName));
         LOGGER.info("Product category " + category.getId() + " saved!");
+        return category;
     }
 }

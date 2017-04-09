@@ -24,6 +24,9 @@ public class ProductCategoryServiceNoCache implements ProductCategoryService {
     @Override
     public ProductCategory update(int id, String newName) {
         ProductCategory productCategory = productCategoryRepository.findOne(id);
+        if (productCategory == null) {
+            return null;
+        }
         productCategory.setName(newName);
         ProductCategory savedCategory = productCategoryRepository.save(productCategory);
 

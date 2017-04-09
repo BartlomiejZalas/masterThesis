@@ -24,7 +24,7 @@ public class ProductCategoryCreatorServiceBatched implements ProductCreatorServi
     private List<ProductCategory> batchedCategories = new ArrayList<>();
 
     @Override
-    public void add(String categoryName) {
+    public ProductCategory add(String categoryName) {
         ProductCategory newCategory = dummyCategoryCreator.create(categoryName);
         batchedCategories.add(newCategory);
 
@@ -34,5 +34,6 @@ public class ProductCategoryCreatorServiceBatched implements ProductCreatorServi
             batchedCategories.clear();
         }
         LOGGER.info("Batch size: " + batchedCategories.size());
+        return newCategory;
     }
 }

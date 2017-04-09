@@ -5,6 +5,7 @@ import com.zalas.masterthesis.application.model.ProductCategory;
 import com.zalas.masterthesis.application.model.ProductOpinion;
 
 import java.util.Date;
+import java.util.HashSet;
 
 import static com.google.common.collect.Sets.newHashSet;
 
@@ -12,16 +13,22 @@ public class DummyCategoryCreator {
     public ProductCategory create(String name) {
         ProductCategory category = new ProductCategory();
         category.setName(name);
-        Product p1 = new Product();
-        p1.setName("Product 1");
-        p1.setProductCategory(category);
-        p1.setProductOpinions(newHashSet(new ProductOpinion("Content 1", new Date(), p1)));
-        Product p2 = new Product();
-        p2.setName("Product 2");
-        p2.setProductCategory(category);
-        p2.setProductOpinions(newHashSet(new ProductOpinion("Content 2", new Date(), p2)));
 
-        category.setProducts(newHashSet(p1, p2));
+        HashSet<Product> products = newHashSet();
+        for (int p = 1; p <= (int) (Math.random() * 4) + 1; p++) {
+            Product product = new Product();
+            product.setName("Product " + p);
+            product.setProductCategory(category);
+
+            HashSet<ProductOpinion> opinions = newHashSet();
+            for (int o = 1; o <= (int) (Math.random() * 4) + 1; o++) {
+                ProductOpinion opinion = new ProductOpinion("Content " + o, new Date(), product);
+                opinions.add(opinion);
+            }
+            product.setProductOpinions(opinions);
+            products.add(product);
+        }
+        category.setProducts(products);
         return category;
     }
 }

@@ -23,11 +23,16 @@ public class ProductCategoryCacheController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ProductCategoryCacheController.class);
 
-    public ProductCategoryService getService() throws ConfigurationClientException {
-        ConfigurationClient configurationClient = new ConfigurationClient();
-        Value cacheComponentType = configurationClient.getConfiguration(CACHE);
-        LOGGER.info("Using redundant component: " +cacheComponentType);
-        return (cacheComponentType == Value.CACHED) ? cachedService : noCacheService;
+    public ProductCategoryService getService() {
+        try {
+            ConfigurationClient configurationClient = new ConfigurationClient();
+            Value cacheComponentType = configurationClient.getConfiguration(CACHE);
+            LOGGER.info("Using redundant component: " +cacheComponentType);
+            return (cacheComponentType == Value.CACHED) ? cachedService : noCacheService;
+        } catch (ConfigurationClientException e) {
+            LOGGER.warn("Cannot get configuration for Cache component - NoCache used", e);
+            return noCacheService;
+        }
     }
 
 }

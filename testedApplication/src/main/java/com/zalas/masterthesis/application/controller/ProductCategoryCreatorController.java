@@ -5,11 +5,13 @@ import com.zalas.masterthesis.application.service.creator.ProductCategoryCreator
 import com.zalas.masterthesis.application.service.creator.ProductCreatorService;
 import com.zalas.masterthesis.configurationserver.api.client.ConfigurationClient;
 import com.zalas.masterthesis.configurationserver.api.client.ConfigurationClientException;
-import com.zalas.masterthesis.configurationserver.api.constants.ConfigurationConstants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
-import static com.zalas.masterthesis.configurationserver.api.constants.ConfigurationConstants.*;
+import static com.zalas.masterthesis.configurationserver.api.constants.ConfigurationConstants.BATCH;
+import static com.zalas.masterthesis.configurationserver.api.constants.ConfigurationConstants.Value;
 
 @Controller
 public class ProductCategoryCreatorController {
@@ -19,9 +21,16 @@ public class ProductCategoryCreatorController {
     @Autowired
     private ProductCategoryCreatorServiceDirect productCategoryCreatorServiceDirect;
 
-    public ProductCreatorService getService() throws ConfigurationClientException {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProductCategoryCreatorController.class);
+
+    public ProductCreatorService getService() {
+        try {
             ConfigurationClient configurationClient = new ConfigurationClient();
             Value batchComponentType = configurationClient.getConfiguration(BATCH);
             return (batchComponentType == Value.BATCHED) ? productCategoryCreatorServiceBatched : productCategoryCreatorServiceDirect;
+        } catch (ConfigurationClientException e) {
+            LOGGER.warn("Cannot get configuration for Batch component - Direct used", e);
+            return productCategoryCreatorServiceDirect;
+        }
     }
 }
