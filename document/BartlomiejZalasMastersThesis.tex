@@ -37,9 +37,15 @@
 \let\temptwo\enditemize
 \renewenvironment{itemize}{\tempone\addtolength{\itemsep}{-0.4\baselineskip}}{\temptwo}
 
-\let\tempone\enumerate
-\let\temptwo\endenumerate
-\renewenvironment{enumerate}{\tempone\addtolength{\itemsep}{-0.4\baselineskip}}{\temptwo}
+\let\tmpone\enumerate
+\let\tmptwo\endenumerate
+\renewenvironment{enumerate}{\tmpone\addtolength{\itemsep}{-0.4\baselineskip}}{\tmptwo}
+
+\definecolor{bblue}{HTML}{4F81BD}
+\definecolor{rred}{HTML}{C0504D}
+\definecolor{ggreen}{HTML}{9BBB59}
+\definecolor{ppurple}{HTML}{9F4C7C}
+
 
 \author{Bartłomiej Zalas}
 \title{System Optimization Based on Performance Evaluation Tests}
@@ -303,7 +309,7 @@ Figure \ref{erd} presents ERD diagram of data model implemented in the tested ap
 \end{figure}
 
 \subsubsection{REST API} 
-The tested application REST API provides the following services:
+The tested application REST API provides the following resources:
 \vspace{3mm}
 
 \noindent\textbf{Find product category by ID} - returns product category with id defined by parameter \textit{id}.\\
@@ -315,7 +321,7 @@ The tested application REST API provides the following services:
   Response: & Product category in JSON format \\
   \end{tabular} \vspace{5mm}
 
-\noindent\textbf{Add new product category} - creates new category with name defined by parameter \textit{categoryName}. For created category products with opinions are generated. Number of generated product and opinions is chosen randomly but is greater than 1 and less than 5. \\
+\noindent\textbf{Add new product category} - creates new category with name defined by parameter \textit{categoryName}. For created category products with opinions are generated. Number of generated products and opinions is chosen randomly from range 1-4. \\
 \\
   \begin{tabular}{ll}
   Method: & PUT \\
@@ -369,7 +375,7 @@ The tested application REST API provides the following services:
   Response: & No content  \\
   \end{tabular} \vspace{5mm}
   
-\noindent\textbf{Create product categories} - generates number of product categories. The number is defined by \textit{size} parameter. For each category products with opinions are generated. Number of generated product and opinions is chosen randomly but is greater than 1 and less than 5. \\
+\noindent\textbf{Create product categories} - generates number of product categories. The number is defined by \textit{size} parameter. For each category products with opinions are generated. Number of generated products and opinions is chosen randomly from range 1-4. \\
 \\
   \begin{tabular}{ll}
   Method: & PUT \\
@@ -420,6 +426,34 @@ On the base of above principles in next chapter proposition of system realizatio
 Before system architecture will be introduced a set of elements on which performance tuning will be performed must be introduced.  
 Considering existing solutions presented in chapter \ref{ExistingSolutions} author of this work decided to perform performance tuning of the application on the base of two techniques: redundant components and application server configuration parameters. 
 
+\subsubsection{Research Environment}
+
+In order to make right choices about performance improvement realization set of experiments must be performed. 
+For that purpose 10000 product categories with related entities where generated. Each product category may have from 1 to 4 products. Each product may have from 1 to 4 opinions. Exact number of related entities was chosen randomly during generation. In summary number of created entities for experiments is as follows:
+\begin{itemize}
+\item Product category: 10000 entities
+\item Product: about 25000 entities
+\item Product opinion: about 62500 entities
+\end{itemize}  
+
+Execution time of methods was measured by aspect oriented class. The class wrapped method by two dates: start date (measured before method execution) and end date (measured after method execution). Difference between the start and the end date is equal to the execution of method. The execution time was logged and persisted in a time series database (InfluxDB) in order to enable further analysis. 
+
+Required workload was simulated by tests scenarios generated in Gatling Load Testing engine. Following test scenarios was developed:
+\begin{itemize}
+\item \textbf{Squeeze Application} - generates high CPU usage of the tested application by firing 100 parallel requests to CPU consuming resource - "Execute task". 
+\item \textbf{Frequently Changing Model} - generates traffic with alternate firing  "Update product category" and "Find product category by ID" resources in 10 parallel requests.
+\item \textbf{Immutable Model} - generates traffic based on "Find product category by ID" resource (without changes on data model) in 10 parallel requests.
+\item \textbf{Insert} - generates 20 parallel requests to "Add new product category" method. 
+\end{itemize}
+
+In the first experiment different paging mechanism was compared. The execution time for each mechanism was measured by summing up execution time needed to retrieve all 10000 product categories from the tested application.   
+
+In the second experiment cache influence on performance was analyzed. Methods "Update product category" and "Find product category by ID" where tested with and without cache enabled against scenarios: Frequently Changing Model and    Immutable Model. 
+
+In the next experiment solution with batched inserts was tested. Batch with size equal to 10 entities was used. Total time of execution during scenario Insert was compared with solution without batch. 
+
+The last experiment tested influence of number of threads used by application server. In order to simulate complex tasks execution by each thread Squeeze Application scenario was used against 2, 10, 25 and 100 threads. 
+
 \subsubsection{Redundant Components}
 Redundant components, by definition, provide the same services but with different implementation. From the performance perspective that idea can be used to implement component which will provide the same services with different performance characteristic. What is also important, usage of redundant components must be justified - there must exist circumstance where given redundant component will offer better performance than another redundant component. 
 
@@ -449,16 +483,17 @@ Top performance circumstances & When impossible to query all records by No Pagin
             ymin=0,
             enlarge x limits={abs=1cm},
             xlabel={Page Size [records]},
-            ylabel={Execution time [ms]}
+            ylabel={Execution time [ms]},
+            ymajorgrids = true,
           ]
-            \addplot[ybar,fill=gray] coordinates {
+            \addplot[ybar,style={bblue,fill=bblue,mark=none}] coordinates {
                 ({2500},  100)
                 ({1000},  211)
                 ({250},   299)
             };
         \end{axis}
 \end{tikzpicture}
-\caption{\textit{Execution time comparision for different page size for 10000 records}} \label{fig:pagesizetime}
+\caption{\textit{Execution time comparision for different page size for 10000 product categories}} \label{fig:pagesizetime}
 \end{figure}
 
 As shown in Figure \ref{fig:pagesizetime} the bigger page size is, the smaller execution time is. It is related to fact that every query to a database generates additional overhead. 
@@ -508,9 +543,10 @@ Efficiency & High & Low\\
             ymin=0,
             enlarge x limits={abs=1cm},
             xlabel={Redundant component},
+            ymajorgrids = true,
             ylabel={Execution time [ms]}
           ]
-            \addplot[ybar,fill=gray] coordinates {
+            \addplot[ybar,style={bblue,fill=bblue,mark=none}] coordinates {
                 (Batched,  386)
                 (Direct,   563)
             };
@@ -529,30 +565,41 @@ Author of this work decided to take into consideration 2 possible configurations
 
 EJB pooling mechanism reduces time needed for creating new bean instances (beans are created on start up and kept in pool) and support parallel request handling. In case of this work tested application is developed in Spring framework in which all beans are singletons by default. Therefore EJB pool configuration has no effect on application performance. Influence of EJB pool size on performance of enterprise application was used up in other work \cite{autotuning} where authors already proved that tuning EJB pool size has positive influence on a JEE application performance. Taking into account this arguments EJB pool will be not implemented in the system. 
 
-Number of threads has key meaning in handling incoming requests into an application server. When number of threads is less than parallel incoming requests not handled part will be waiting in the queue until threads will be free again. Too large number of threads results in increased CPU usage and slower performance. This fact is documented in the Figure \ref{fig:threads}. For 100 incoming parallel requests tested 3 configuration of thread number: 10 threads, 200 threads, 10000 threads. As one can see the worst mean response time was when number of threads was smaller than number of requests. Too high number of threads also negatively influences performance.   
+Number of threads has key meaning in handling incoming requests into an application server. When number of threads is less than parallel incoming requests not handled part will be waiting in the queue until threads will be free again. Too large number of threads results in increased CPU usage and slower performance. This fact is documented in the Figure \ref{fig:threads}. For 100 incoming parallel requests tested 4 configuration of thread number: 2 threads, 10 threads, 25 threads, 100 threads. As one can see the worst mean response time was when to many parallel threads was executed or when number of threads was not sufficiently large to handle incoming requests.    
 
+\pgfplotstableread[row sep=\\,col sep=&]{
+    category           & t2    & t10    & t25   & t100\\
+    Min response time  & 2091  & 3926   & 10706 & 32067\\
+    Max response time  & 56558 & 38739  & 38327 & 35279\\
+    Mean response time & 29641 & 21531  & 25213 & 34216\\
+    }\mydata
 \begin{figure}[!htb]
 \centering
 \begin{tikzpicture}
-        \begin{axis}[
-            symbolic x coords={10, 200, 10000},
+    \begin{axis}[
+            ybar,
+            bar width=.6cm,
+            width=\textwidth,
+            height=.6\textwidth,
+            legend style={at={(0.5,-0.15)},
+                anchor=north,legend columns=-1},
+            symbolic x coords={Min response time,Max response time,Mean response time},
             xtick=data,
-            bar width=1cm,
-            x=2cm,
-            ymin=0,
-            enlarge x limits={abs=1cm},
-            xlabel={Number of threads},
-            ylabel={Execution time [ms]}
-          ]
-            \addplot[ybar,fill=gray] coordinates {
-                (10,  17236)
-                (200,   3296)
-                (10000,   3963)
-            };
-        \end{axis}
+            ymin=0,ymax=60000,
+            ylabel={Execution time [ms]},
+            enlarge x limits={abs=2cm},
+            ymajorgrids = true,
+        ]
+        \addplot[style={bblue,fill=bblue,mark=none}] table[x=category,y=t2]{\mydata};
+        \addplot[style={rred,fill=rred,mark=none}] table[x=category,y=t10]{\mydata};
+        \addplot[style={ggreen,fill=ggreen,mark=none}] table[x=category,y=t25]{\mydata};
+        \addplot[style={ppurple,fill=ppurple,mark=none}] table[x=category,y=t100]{\mydata};
+        \legend{2 threads, 10 threads, 25 threads, 100 threads}
+    \end{axis}
 \end{tikzpicture}
 \caption{\textit{Mean response time from 100 incoming paraller requests}} \label{fig:threads}
 \end{figure}
+
 
 Number of threads has large impact on application performance and it configuration will be implemented in the system. 
 
@@ -681,7 +728,6 @@ Diaconescu A., \textit{A framework for using component redundancy for self-adapt
 
 \bibitem{springperformance}
 Chakraborty, A., Ditt, J., Vukotic, A., Machacek, J., \textit{Pro Spring 2.5}, Berkeley, CA, Apress, 2008, 829-855,  
-
 
 \end{thebibliography}
 
