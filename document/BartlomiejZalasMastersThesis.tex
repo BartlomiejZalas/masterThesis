@@ -289,7 +289,11 @@ Suitable performance related decisions impose on developers duty to awareness of
 On the base of previous chapters author of this work will try to provide solution which will be addressing most of listed problems from chapter \ref{PerformanceRelatedProblems}. Next subsections provide considerations about possible ways to obtain the best possible solutions with justification. Final goal is to implement system which will demonstrate and evaluate implemented solutions. 
 
 \subsection{Tested application}  
-As mentioned in previous chapters performance optimization can be developed in many areas. For this work author will focus on web based application. The application will be a service simulating product database - basic CRUD operations on products categories will be provided. Details about entities managed by tested application are presented on Figure \ref{erd}. 
+\subsubsection{Domain} 
+As mentioned in previous chapters performance optimization can be developed in many areas. For this work author will focus on web based application. The application will be a service simulating product database - basic CRUD operations on products categories will be provided. For simplicity and in order to concentrate on the topic of this work graphical user interface will be omitted. Communication with application will be provided in form of REST service.
+
+\subsubsection{Data model} 
+Figure \ref{erd} presents ERD diagram of data model implemented in the tested application. Entity ProductCategory may have zero or many Products. Entity Product may have Zero or many ProductOpinions. Each entity has basic set of attributes (like id, name, date, etc.).  
 
 \begin{figure}[h]
 \centering
@@ -298,25 +302,94 @@ As mentioned in previous chapters performance optimization can be developed in m
 \label{erd}
 \end{figure}
 
-For simplicity and in order to concentrate on the topic of this work graphical user interface will be omitted. Communication with application will be provided in form of REST service. Provided REST API is presented in the Table \ref{restapi}.
+\subsubsection{REST API} 
+The tested application REST API provides the following services:
+\vspace{3mm}
 
-\begin{table}[!htb]
-\def\arraystretch{1.5}
-\caption{\textit{Tested application REST API}}\label{restapi}
-\begin{tabularx}{\textwidth}{p{2cm}|p{1.2cm}|X|p{2cm}}
-  \textbf{Path} &\textbf{Method} & \textbf{Parameters} & \textbf{Produces} \\
-  \hline
-  addCategories & PUT & - & String \\ 
-  findAll & GET & - & JSON\\
-  findPart & GET & page:Integer, size:Integer & JSON\\
-  findById & GET & id:Integer, & JSON \\
-  updateById & POST & id: Integer, newName:String & JSON \\
-  add & PUT & categoryName:String & String\\
-\end{tabularx}
-\end{table}
+\noindent\textbf{Find product category by ID} - returns product category with id defined by parameter \textit{id}.\\
+\\
+  \begin{tabular}{ll}
+  Method: & GET\\
+  Path: & /find/\{id\}\\
+  Parameters: & id (parameter type: path, data type: integer, required: yes)\\
+  Response: & Product category in JSON format \\
+  \end{tabular} \vspace{5mm}
 
+\noindent\textbf{Add new product category} - creates new category with name defined by parameter \textit{categoryName}. For created category products with opinions are generated. Number of generated product and opinions is chosen randomly but is greater than 1 and less than 5. \\
+\\
+  \begin{tabular}{ll}
+  Method: & PUT \\
+  Path: & /add/ \\
+  Parameters: & categoryName (parameter type: request, data type: string, required: yes)\\
+  Response: & Created product category in JSON format  \\
+  \end{tabular} \vspace{5mm}
 
-The application will be developed in Java language using Spring Framework. The application server for the application will be Apache Tomcat served by Spring Bootstrap 1.5. Data persistence will be realized in PostgreSQL 9.6 DBMS.  
+\noindent\textbf{Update product category} - updates category defined by parameter \textit{id} by name from parameter \textit{newName}. \\
+\\
+  \begin{tabular}{ll}
+  Method: & POST \\
+  Path: & /update/\{id\} \\
+  Parameters: & id (parameter type: path, data type: integer, required: yes)\\
+              & newName (parameter type: request, data type: string, required: yes)\\
+  Response: & Updated product category in JSON format  \\
+  \end{tabular} \vspace{5mm}
+
+\noindent\textbf{Remove product category} - removes product category with related products and opinions for given \textit{id}.\\
+\\
+  \begin{tabular}{ll}
+  Method: & DELETE \\
+  Path: & /remove/\{id\} \\
+  Parameters: & id (parameter type: path, data type: integer, required: yes)\\
+  Response: & No content  \\
+  \end{tabular} \vspace{5mm}
+
+\noindent\textbf{Get all product categories paged} - returns product categories with products and opinions for page defined by parameters \textit{page} and \textit{size}.\\
+\\
+  \begin{tabular}{ll}
+  Method: & GET \\
+  Path: & /findPart/ \\
+  Parameters: & page (parameter type: request, data type: integer, required: yes)\\
+              & size (parameter type: request, data type: integer, required: yes)\\
+  Response: & Product categories in JSON format  \\
+  \end{tabular} \vspace{5mm}
+  
+\noindent\textbf{Get all product categories} - returns all product categories with products and opinions.\\
+\\
+  \begin{tabular}{ll}
+  Method: & GET \\
+  Path: & /findAll/ \\
+  Response: & Product categories in JSON format  \\
+  \end{tabular} \vspace{5mm}
+  
+\noindent\textbf{Remove all product categories} - removes all product categories with related products and opinions.\\
+\\
+  \begin{tabular}{ll}
+  Method: & DELETE \\
+  Path: & /removeAll/ \\
+  Response: & No content  \\
+  \end{tabular} \vspace{5mm}
+  
+\noindent\textbf{Create product categories} - generates number of product categories. The number is defined by \textit{size} parameter. For each category products with opinions are generated. Number of generated product and opinions is chosen randomly but is greater than 1 and less than 5. \\
+\\
+  \begin{tabular}{ll}
+  Method: & PUT \\
+  Path: & /addCategories/ \\
+  Parameters: & size (parameter type: request, data type: integer, required: yes)\\
+  Response: & String message  \\
+  \end{tabular} \vspace{5mm}
+
+\noindent\textbf{Execute task} - starts task which will simulate high CPU usage (40th number of Fibonacci sequence). \\
+\\
+  \begin{tabular}{ll}
+  Method: & GET \\
+  Path: & /task/ \\
+  Response: & No content  \\
+  \end{tabular} \vspace{2mm}
+  
+Services \textit{Find product category by ID}, \textit{Add new product category}, \textit{Update product category}, \textit{Remove product category} provides basic usage from client perspective. Remaining services was developed for testing purposes (performance tests for different configuration and redundant components from Chapter \ref{realization}).
+  
+\subsubsection{Implementation decisions} 
+The application will be implemented in Java 1.8. Web based features will be implemented in Spring Framework 4.3.7 and Hibernate 5.0.12. The application server for the application will be Apache Tomcat 8.5.11 served by Spring Bootstrap 1.5.2. Data persistence will be realized with PostgreSQL 9.6 DBMS.  
 
 \subsection{System Principles}
 The key in every successful project is to define goals and needs at the beginning.
@@ -342,7 +415,7 @@ On the base of above consideration following set of principles of the system can
 
 On the base of above principles in next chapter proposition of system realization will be introduced.  
 
-\subsection{Performance Improvement Realization}
+\subsection{Performance Improvement Realization} \label{realization}
 
 Before system architecture will be introduced a set of elements on which performance tuning will be performed must be introduced.  
 Considering existing solutions presented in chapter \ref{ExistingSolutions} author of this work decided to perform performance tuning of the application on the base of two techniques: redundant components and application server configuration parameters. 
