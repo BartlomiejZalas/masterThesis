@@ -6,6 +6,7 @@ import com.zalas.masterthesis.application.controller.ProductCategoryCreatorContr
 import com.zalas.masterthesis.application.model.ProductCategory;
 import com.zalas.masterthesis.application.repo.ProductCategoryRepository;
 import com.zalas.masterthesis.application.service.creator.DummyCategoryCreator;
+import com.zalas.masterthesis.application.service.simulation.CpuExhaustor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,8 @@ public class WebController {
     private ProductCategoryCacheController productCategoryCacheController;
     @Autowired
     private ProductCategoryCreatorController productCategoryCreatorController;
+    @Autowired
+    private CpuExhaustor cpuExhaustor;
 
     @GetMapping("/find/{id}")
     public ResponseEntity<ProductCategory> findById(@PathVariable("id") int id) {
@@ -74,6 +77,12 @@ public class WebController {
     @GetMapping("/findPart")
     public ResponseEntity<List<ProductCategory>> findPartProductCategories(@RequestParam int page, @RequestParam int size) {
         return new ResponseEntity<>(Lists.newArrayList(productCategoryRepository.findAll(new PageRequest(page, size)).getContent()), HttpStatus.OK);
+    }
+
+    @GetMapping("/task")
+    public ResponseEntity cpuExhaustiveTask() {
+        cpuExhaustor.executeCpuExhaustingTask(1);
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     private void saveDummyCategories(int numberOfNewCategories) {

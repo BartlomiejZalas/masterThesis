@@ -92,11 +92,23 @@
             <version>2.5</version>
         </dependency>
 
+        <!--Jodatime-->
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+            <version>2.9.9</version>
+        </dependency>
+
         <!--Internal-->
         <dependency>
             <groupId>com.zalas.masterthesis</groupId>
             <artifactId>api</artifactId>
             <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>RELEASE</version>
         </dependency>
 
     </dependencies>
