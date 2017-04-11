@@ -24,6 +24,7 @@
         <module>testedApplication</module>
         <module>requestDispatcher</module>
         <module>configurationserver</module>
+        <module>automatedPerformanceTuning</module>
     </modules>
 
     <properties>
