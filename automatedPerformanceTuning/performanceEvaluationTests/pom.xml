@@ -9,5 +9,10 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>performanceevaluationtests</artifactId>
+    <packaging>pom</packaging>
+    <modules>
+        <module>petFramework</module>
+        <module>petTestCases</module>
+    </modules>
 
 </project>
