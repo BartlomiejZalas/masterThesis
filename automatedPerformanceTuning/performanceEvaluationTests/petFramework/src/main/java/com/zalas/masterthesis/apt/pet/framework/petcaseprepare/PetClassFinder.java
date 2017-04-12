@@ -12,7 +12,13 @@ import static java.lang.Thread.*;
 
 public class PetClassFinder {
 
-    public Set<String> getPetClassesNames(String pack4ge) {
+    private String pack4ge;
+
+    public PetClassFinder(String pack4ge) {
+        this.pack4ge = pack4ge;
+    }
+
+    public Set<String> getPetClassesNames() {
         Set<String> petClassNames = newHashSet();
         for (ClassInfo classInfo : getClassPath().getTopLevelClasses(pack4ge)) {
             petClassNames.add(classInfo.getName());

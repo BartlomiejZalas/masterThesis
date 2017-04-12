@@ -10,15 +10,14 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static java.util.concurrent.Executors.newScheduledThreadPool;
 
 public class PetCaseExecutor {
     private final Set<PetCaseData> petCaseData;
     private ScheduledExecutorService scheduledExecutor;
 
-    public PetCaseExecutor(Set<PetCaseData> petCaseData) {
+    public PetCaseExecutor(Set<PetCaseData> petCaseData, ScheduledExecutorService scheduledExecutorService) {
         this.petCaseData = petCaseData;
-        this.scheduledExecutor = newScheduledThreadPool(petCaseData.size());
+        this.scheduledExecutor = scheduledExecutorService;
     }
 
     public void execute() {

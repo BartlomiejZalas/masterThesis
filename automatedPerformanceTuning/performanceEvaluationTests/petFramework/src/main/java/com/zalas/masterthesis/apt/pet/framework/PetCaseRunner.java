@@ -7,15 +7,19 @@ import com.zalas.masterthesis.apt.pet.framework.petcaseprepare.PetClassFinder;
 import java.util.HashSet;
 import java.util.Set;
 
+import static java.util.concurrent.Executors.newScheduledThreadPool;
+
 public class PetCaseRunner {
 
-    private Set<PerformanceIssue> performanceIssues = new HashSet<>();
-
     public void run(String pack4ge) {
-        PetClassFinder petClassFinder = new PetClassFinder();
-        Set<PetCaseData> petCaseData = new PetCaseExtractor(petClassFinder).extractPetCasesFromPackage(pack4ge);
-        new PetCaseExecutor(petCaseData).execute();
+        createExecutor(pack4ge).execute();
     }
 
+    private PetCaseExecutor createExecutor(String pack4ge) {
+        PetClassFinder petClassFinder = new PetClassFinder(pack4ge);
+        PetCaseExtractor petCaseExtractor = new PetCaseExtractor(petClassFinder);
+        Set<PetCaseData> petCaseData = petCaseExtractor.extractPetCasesFromPackage();
 
+        return new PetCaseExecutor(petCaseData, newScheduledThreadPool(petCaseData.size()));
+    }
 }

@@ -18,8 +18,8 @@ public class PetCaseExtractor {
         this.petClassFinder = petClassFinder;
     }
 
-    public Set<PetCaseData> extractPetCasesFromPackage(String p4ckage) {
-        return getPetClasses(p4ckage).stream()
+    public Set<PetCaseData> extractPetCasesFromPackage() {
+        return getPetClasses().stream()
                 .map(this::extractPetCasesForClass)
                 .flatMap(Set::stream)
                 .collect(toSet());
@@ -32,8 +32,8 @@ public class PetCaseExtractor {
                 .collect(toSet());
     }
 
-    private Set<Class> getPetClasses(String p4ckage) {
-        return petClassFinder.getPetClassesNames(p4ckage).stream()
+    private Set<Class> getPetClasses() {
+        return petClassFinder.getPetClassesNames().stream()
                 .map(this::getClassForName)
                 .filter(this::isPet)
                 .collect(toSet());
