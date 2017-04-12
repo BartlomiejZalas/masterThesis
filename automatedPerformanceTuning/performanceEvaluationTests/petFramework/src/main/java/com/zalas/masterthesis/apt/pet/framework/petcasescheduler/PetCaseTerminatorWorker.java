@@ -1,4 +1,4 @@
-package com.zalas.masterthesis.apt.pet.framework;
+package com.zalas.masterthesis.apt.pet.framework.petcasescheduler;
 
 import java.util.concurrent.ScheduledFuture;
 

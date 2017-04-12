@@ -1,4 +1,4 @@
-package com.zalas.masterthesis.apt.pet.framework;
+package com.zalas.masterthesis.apt.pet.framework.petcasescheduler;
 
 import com.zalas.masterthesis.apt.pet.framework.petcaseprepare.PetCaseData;
 
@@ -24,9 +24,9 @@ public class PetCaseExecutor {
         List<ScheduledFuture> scheduledWorkers = newArrayList();
 
         for (PetCaseData petCase : petCaseData) {
-            ScheduledFuture scheduledPerCaseWrorker = schedulePetCase(petCase, new PetCaseWorker(petCase));
-            schedulePetCaseTerminator(petCase, scheduledPerCaseWrorker);
-            scheduledWorkers.add(scheduledPerCaseWrorker);
+            ScheduledFuture petCaseWorkerHandler = schedulePetCase(petCase, new PetCaseInvokeWorker(petCase));
+            schedulePetCaseTerminator(petCase, petCaseWorkerHandler);
+            scheduledWorkers.add(petCaseWorkerHandler);
         }
 
         waitUntilAllTasksAreFinished(scheduledWorkers);
@@ -37,8 +37,8 @@ public class PetCaseExecutor {
         scheduledExecutor.schedule(new PetCaseTerminatorWorker(handler), petCase.getDurationInSec(), TimeUnit.SECONDS);
     }
 
-    private ScheduledFuture<?> schedulePetCase(PetCaseData petCase, PetCaseWorker petCaseWorker) {
-        return scheduledExecutor.scheduleAtFixedRate(petCaseWorker, 0, petCase.getMonitorIntervalInSec(), TimeUnit.SECONDS);
+    private ScheduledFuture<?> schedulePetCase(PetCaseData petCase, PetCaseInvokeWorker petCaseInvokeWorker) {
+        return scheduledExecutor.scheduleAtFixedRate(petCaseInvokeWorker, 0, petCase.getMonitorIntervalInSec(), TimeUnit.SECONDS);
     }
 
     private void waitUntilAllTasksAreFinished(List<ScheduledFuture> scheduledWorkers) {

@@ -1,15 +1,15 @@
-package com.zalas.masterthesis.apt.pet.framework;
+package com.zalas.masterthesis.apt.pet.framework.petcasescheduler;
 
 import com.zalas.masterthesis.apt.pet.framework.petcaseprepare.PetCaseData;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-public class PetCaseWorker implements Runnable {
+public class PetCaseInvokeWorker implements Runnable {
 
     private PetCaseData petCase;
 
-    public PetCaseWorker(PetCaseData petCase) {
+    public PetCaseInvokeWorker(PetCaseData petCase) {
         this.petCase = petCase;
     }
 

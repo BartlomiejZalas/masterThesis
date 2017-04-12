@@ -3,8 +3,8 @@ package com.zalas.masterthesis.apt.pet.framework;
 import com.zalas.masterthesis.apt.pet.framework.petcaseprepare.PetCaseData;
 import com.zalas.masterthesis.apt.pet.framework.petcaseprepare.PetCaseExtractor;
 import com.zalas.masterthesis.apt.pet.framework.petcaseprepare.PetClassFinder;
+import com.zalas.masterthesis.apt.pet.framework.petcasescheduler.PetCaseExecutor;
 
-import java.util.HashSet;
 import java.util.Set;
 
 import static java.util.concurrent.Executors.newScheduledThreadPool;
