@@ -6,12 +6,11 @@ import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
+import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Sets.newHashSet;
 
 public class PetCaseRunner {
@@ -25,17 +24,35 @@ public class PetCaseRunner {
         Set<PetCaseInvokeData> petMethodsInvokations = getPetMethodsInvokations(petClassesNames);
 
         ScheduledExecutorService executor = Executors.newScheduledThreadPool(petMethodsInvokations.size());
+        List<ScheduledFuture> scheduledWorkers = newArrayList();
 
         for (PetCaseInvokeData petCase : petMethodsInvokations) {
             PetCaseWorker petCaseWorker = new PetCaseWorker(petCase);
-            final ScheduledFuture<?> handler = executor.scheduleAtFixedRate(petCaseWorker, 0, petCase.getTestCaseAnnotation().monitorIntervalInSec(), TimeUnit.SECONDS);
+            final ScheduledFuture handler = executor.scheduleAtFixedRate(petCaseWorker, 0, petCase.getTestCaseAnnotation().monitorIntervalInSec(), TimeUnit.SECONDS);
             executor.schedule(new Runnable() {
                 public void run() {
+                    System.out.println("cancelling" + handler);
                     handler.cancel(true);
-                    executor.shutdown();
                 }
             }, petCase.getTestCaseAnnotation().durationInSec(), TimeUnit.SECONDS);
+            scheduledWorkers.add(handler);
         }
+
+        while (true) {
+            boolean allFinished = scheduledWorkers.stream().allMatch(Future::isDone);
+            System.out.println("allFinished?: " + allFinished);
+            if (allFinished) {
+                executor.shutdown();
+                break;
+            }
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+
+        }
+        System.out.println("We've done here");
     }
 
     private Set<PetCaseInvokeData> getPetMethodsInvokations(Set<String> petClassesNames) {
@@ -57,7 +74,7 @@ public class PetCaseRunner {
         return petCaseInvokeData;
     }
 
-    private Class<?> getClassForName(String className) {
+    private Class getClassForName(String className) {
         try {
             return Class.forName(className);
         } catch (ClassNotFoundException e) {
