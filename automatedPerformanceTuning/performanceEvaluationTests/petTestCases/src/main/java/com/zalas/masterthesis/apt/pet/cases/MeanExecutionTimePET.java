@@ -1,5 +1,7 @@
-import com.zalas.masterthesis.apt.pet.framework.Pet;
-import com.zalas.masterthesis.apt.pet.framework.PetCase;
+package com.zalas.masterthesis.apt.pet.cases;
+
+import com.zalas.masterthesis.apt.pet.framework.annotations.Pet;
+import com.zalas.masterthesis.apt.pet.framework.annotations.PetCase;
 
 import static org.junit.Assert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -14,11 +16,4 @@ public class MeanExecutionTimePET {
         assertThat(meanExecutionTimeFromLastOneMinute, lessThan(1200.0));
     }
 
-    public void test1() {
-
-    }
-
-    private void test2() {
-
-    }
 }

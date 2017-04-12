@@ -1,4 +1,4 @@
-package com.zalas.masterthesis.apt.pet.framework;
+package com.zalas.masterthesis.apt.pet.framework.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

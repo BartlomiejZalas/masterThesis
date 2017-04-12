@@ -1,25 +1,21 @@
 package com.zalas.masterthesis.apt.pet.framework;
 
+import com.zalas.masterthesis.apt.pet.framework.petcaseprepare.PetCaseData;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public class PetCaseWorker implements Runnable {
 
-    private PetCaseInvokeData petCase;
+    private PetCaseData petCase;
 
-    public PetCaseWorker(PetCaseInvokeData petCase) {
+    public PetCaseWorker(PetCaseData petCase) {
         this.petCase = petCase;
     }
 
     @Override
     public void run() {
-        System.out.println("Start " + petCase.getPetCaseMethod().getName());
-        try {
-            executePetCase(petCase.getPetClass(), petCase.getPetCaseMethod());
-        } catch (Exception e) {
-            System.out.println("jednak cośsię przedarło");
-        }
-        System.out.println( petCase.getPetCaseMethod().getName() + " end after "+petCase.getTestCaseAnnotation().monitorIntervalInSec() +"sec.");
+        executePetCase(petCase.getPetClass(), petCase.getPetCaseMethod());
     }
 
     private void executePetCase(Class clazz, Method method) {
@@ -37,6 +33,6 @@ public class PetCaseWorker implements Runnable {
     }
 
     private void notifyAboutFailedTestCase(AssertionError e, String methodName) {
-        System.out.println("Failed testCase: " +methodName + " reason: " + e.getMessage());
+        System.out.println("Failed testCase: " + methodName + " reason: " + e.getMessage());
     }
 }

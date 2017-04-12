@@ -5,7 +5,6 @@ import com.zalas.masterthesis.apt.pet.framework.PetCaseRunner;
 public class AptRunner {
 
     public static void main(String[] args) {
-        PetCaseRunner runner = new PetCaseRunner();
-        runner.run();
+        new PetCaseRunner().run("com.zalas.masterthesis.apt.pet.cases");
     }
 }
