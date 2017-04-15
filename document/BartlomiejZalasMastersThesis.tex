@@ -296,7 +296,7 @@ On the base of previous chapters author of this work will try to provide solutio
 
 \subsection{Tested application}  
 \subsubsection{Domain} 
-As mentioned in previous chapters performance optimization can be developed in many areas. For this work author will focus on web based application. The application will be a service simulating product database - basic CRUD operations on products categories will be provided. For simplicity and in order to concentrate on the topic of this work graphical user interface will be omitted. Communication with application will be provided in form of REST service.
+As mentioned in previous chapters performance optimization can be developed in many areas. For this work author will focus on a web application. The application will be a service simulating product database - basic CRUD operations on products categories will be provided. For simplicity and in order to concentrate on the topic of this work graphical user interface will be omitted. Communication with application will be provided in form of REST service.
 
 \subsubsection{Data model} 
 Figure \ref{erd} presents ERD diagram of data model implemented in the tested application. Entity ProductCategory may have zero or many Products. Entity Product may have Zero or many ProductOpinions. Each entity has basic set of attributes (like id, name, date, etc.).  
@@ -384,7 +384,7 @@ The tested application REST API provides the following resources:
   Response: & String message  \\
   \end{tabular} \vspace{5mm}
 
-\noindent\textbf{Execute task} - starts task which will simulate high CPU usage (40th number of Fibonacci sequence). \\
+\noindent\textbf{Execute task} - starts task which will simulate high CPU usage. For that purpose generation of 40th number of Fibonacci sequence was chosen. \\
 \\
   \begin{tabular}{ll}
   Method: & GET \\
@@ -396,6 +396,8 @@ Services \textit{Find product category by ID}, \textit{Add new product category}
   
 \subsubsection{Implementation decisions} 
 The application will be implemented in Java 1.8. Web based features will be implemented in Spring Framework 4.3.7 and Hibernate 5.0.12. The application server for the application will be Apache Tomcat 8.5.11 served by Spring Bootstrap 1.5.2. Data persistence will be realized with PostgreSQL 9.6 DBMS.  
+
+Above tools are commonly used solutions in a web development. That fact makes implemented solution applicable and easily translated to other web applications based on similar technologies.  
 
 \subsection{System Principles}
 The key in every successful project is to define goals and needs at the beginning.
@@ -428,25 +430,27 @@ Considering existing solutions presented in chapter \ref{ExistingSolutions} auth
 
 \subsubsection{Research Environment}
 
-In order to make right choices about performance improvement realization set of experiments must be performed. 
-For that purpose 10000 product categories with related entities where generated. Each product category may have from 1 to 4 products. Each product may have from 1 to 4 opinions. Exact number of related entities was chosen randomly during generation. In summary number of created entities for experiments is as follows:
+In order to make right choices about performance improvement realization a set of experiments must be performed. 
+For that purpose 10000 product categories with related entities were generated. Each product category may have from 1 to 4 products. Each product may have from 1 to 4 opinions. Exact number of related entities was chosen randomly during generation. In summary number of created entities for experiments is as follows:
 \begin{itemize}
 \item Product category: 10000 entities
-\item Product: about 25000 entities
-\item Product opinion: about 62500 entities
+\item Product: 22269 entities
+\item Product opinion: 49406 entities
 \end{itemize}  
 
-Execution time of methods was measured by aspect oriented class. The class wrapped method by two dates: start date (measured before method execution) and end date (measured after method execution). Difference between the start and the end date is equal to the execution of method. The execution time was logged and persisted in a time series database (InfluxDB) in order to enable further analysis. 
+Execution time of methods was measured by aspect oriented class. The class wraps method by execution time measurement by calculation difference between two dates: start date (measured before method execution) and end date (measured after method execution). The execution time was logged and persisted in a time series database (InfluxDB) in order to enable further analysis. In order to make execution time more accurate each experiment was developed 10 times and final execution time was calculated as arithmetic mean of 10 values obtained in individual experiments. 
 
-Required workload was simulated by tests scenarios generated in Gatling Load Testing engine. Following test scenarios was developed:
+Required workload was simulated by tests scenarios generated in Gatling Load and Performance testing engine\cite{gatling}. Following test scenarios was developed:
 \begin{itemize}
 \item \textbf{Squeeze Application} - generates high CPU usage of the tested application by firing 100 parallel requests to CPU consuming resource - "Execute task". 
 \item \textbf{Frequently Changing Model} - generates traffic with alternate firing  "Update product category" and "Find product category by ID" resources in 10 parallel requests.
 \item \textbf{Immutable Model} - generates traffic based on "Find product category by ID" resource (without changes on data model) in 10 parallel requests.
-\item \textbf{Insert} - generates 20 parallel requests to "Add new product category" method. 
+\item \textbf{Insert} - generates 20 sequenced requests to "Add new product category" resource. 
 \end{itemize}
 
-In the first experiment different paging mechanism was compared. The execution time for each mechanism was measured by summing up execution time needed to retrieve all 10000 product categories from the tested application.   
+Author of this work decided to took into consideration following candidates: paging, cache, batched inputs. The decision was based on facts that all of mentioned candidates are able to increase performance of the  tested application domain and it is possible to develop a switchable equivalent for given a candidate. 
+
+In the first experiment different paging mechanism was analyzed. The execution time for each mechanism was measured by summing up execution time needed to retrieve all 10000 product categories from the tested application.   
 
 In the second experiment cache influence on performance was analyzed. Methods "Update product category" and "Find product category by ID" where tested with and without cache enabled against scenarios: Frequently Changing Model and    Immutable Model. 
 
@@ -456,8 +460,6 @@ The last experiment tested influence of number of threads used by application se
 
 \subsubsection{Redundant Components}
 Redundant components, by definition, provide the same services but with different implementation. From the performance perspective that idea can be used to implement component which will provide the same services with different performance characteristic. What is also important, usage of redundant components must be justified - there must exist circumstance where given redundant component will offer better performance than another redundant component. 
-
-Author of this work decided to took into consideration following candidates: paging, cache, batched inputs. The decision was based on facts that all of mentioned candidates are able to increase performance of the  tested application domain and it is possible to develop a switchable equivalent for given a candidate. 
 
 Paging is database query realization in which in a single select query only part (page) of records is returned instead of querying all records from database. Table \ref{pagingcomponents} shows comparison of two proposed redundant components: Paging and No Paging.  
 \begin{table}[!htb]
@@ -476,7 +478,7 @@ Top performance circumstances & When impossible to query all records by No Pagin
 \centering
 \begin{tikzpicture}
         \begin{axis}[
-            symbolic x coords={{2500}, {1000}, {250}},
+            symbolic x coords={{10000}, {5000}, {2500}, {1250}, {625}},
             xtick=data,
             bar width=1cm,
             x=2cm,
@@ -487,13 +489,17 @@ Top performance circumstances & When impossible to query all records by No Pagin
             ymajorgrids = true,
           ]
             \addplot[ybar,style={bblue,fill=bblue,mark=none}] coordinates {
-                ({2500},  100)
-                ({1000},  211)
-                ({250},   299)
+                ({10000}, 46)
+                ({5000},  60)
+                ({2500},  94)
+                ({1250},  114)
+                ({625},   127)
             };
         \end{axis}
 \end{tikzpicture}
-\caption{\textit{Execution time comparision for different page size for 10000 product categories}} \label{fig:pagesizetime}
+
+\caption{\textit{Execution time comparision for different page sizes for 10000 product categories}} \label{fig:pagesizetime}
+
 \end{figure}
 
 As shown in Figure \ref{fig:pagesizetime} the bigger page size is, the smaller execution time is. It is related to fact that every query to a database generates additional overhead. 
@@ -552,26 +558,26 @@ Efficiency & High & Low\\
             };
         \end{axis}
 \end{tikzpicture}
-\caption{\textit{Execution time comparision for Batched and Direct redundant components for batch with size = 10 and 20 inserted records}} \label{fig:batchedtime}
+\caption{\textit{Execution time comparision for Batched and Direct redundant components for batch with size = 10 and number of records = 20}} \label{fig:batchedtime}
 \end{figure}
 
 The components comparison in Table \ref{batchedcomponents} shows different characteristic of both redundant components. Batched one is in general more efficient and faster than No Batched. However, process of batching records introduces delays in real effect of batched statement (equal to time in which given records sf "frozen" in the batch). In proposed implementation batched statement will be fired when batch is full. Both facts lead to conclusion that Batched component should be used only in circumstances when such delay is acceptable by users or when number of inserts into a database is so high that efficiency improvement is needed. Another thing is the more frequent inserts into a database (faster filling up of batch) the smaller delay. Therefore Batched component should be used only in case when number of inserts into a database is very high. Otherwise Direct component should be used. Above considerations justify choice of Batched/Direct redundant components to be used in the system.   
 
 \subsubsection{Application Server Configuration Parameters}
 
-Configuration of application server is crucial in performance of application. Application servers provide wast number of parameters which can be configured. Such parameters may be slightly different depending from vendor but in most cases configuration provide possibility to adjust: thread number, JDBC connection pools, EJB pools, JVM configuration. 
+Configuration of application server is crucial for performance of application. Application servers provide wast number of parameters which can be configured. Such parameters may be slightly different depending from vendor but in most cases configuration provide possibility to adjust: thread number, JDBC connection pools, EJB pools, JVM configuration. 
 
 Author of this work decided to take into consideration 2 possible configurations: EJB pool size and thread number of application server. Both configurations have direct influence on number of requests which are handled by application and should provide high performance improvements in the application domain. 
 
-EJB pooling mechanism reduces time needed for creating new bean instances (beans are created on start up and kept in pool) and support parallel request handling. In case of this work tested application is developed in Spring framework in which all beans are singletons by default. Therefore EJB pool configuration has no effect on application performance. Influence of EJB pool size on performance of enterprise application was used up in other work \cite{autotuning} where authors already proved that tuning EJB pool size has positive influence on a JEE application performance. Taking into account this arguments EJB pool will be not implemented in the system. 
+EJB pooling mechanism reduces time needed for creating new bean instances (beans are created on start up and kept in pool) and support parallel request handling. In case of this work tested application is developed in Spring framework with singleton scoped beans (there is one instance of bean for entire application) - therefore EJB pool configuration has no effect on application performance (singleton beans are not pooled). Influence of EJB pool size on performance of enterprise application was used up in other work \cite{autotuning} where authors already proved that tuning EJB pool size has positive influence on a JEE application performance. Taking into account this arguments EJB pool will be not implemented in the system. 
 
-Number of threads has key meaning in handling incoming requests into an application server. When number of threads is less than parallel incoming requests not handled part will be waiting in the queue until threads will be free again. Too large number of threads results in increased CPU usage and slower performance. This fact is documented in the Figure \ref{fig:threads}. For 100 incoming parallel requests tested 4 configuration of thread number: 2 threads, 10 threads, 25 threads, 100 threads. As one can see the worst mean response time was when to many parallel threads was executed or when number of threads was not sufficiently large to handle incoming requests.    
+Number of threads has key meaning in handling incoming requests into an application server. When number of threads is less than a number of parallel incoming requests not handled part will be waiting in the queue until threads will be free again. Too large number of threads results in increased CPU usage and slower performance. This fact is documented in the Figure \ref{fig:threads}. For 100 incoming parallel requests three different configuration of thread number was tested: 1 thread, 10 threads, 100 threads. As one can see mean response time was high when too many parallel threads was executed or when number of threads was not sufficiently large to handle incoming requests.    
 
 \pgfplotstableread[row sep=\\,col sep=&]{
-    category           & t2    & t10    & t25   & t100\\
-    Min response time  & 2091  & 3926   & 10706 & 32067\\
-    Max response time  & 56558 & 38739  & 38327 & 35279\\
-    Mean response time & 29641 & 21531  & 25213 & 34216\\
+    category           & t1    & t10    & t100  \\
+    Min response time  & 1161.3  & 3549.8   & 33610.6 \\
+    Max response time  & 85256 & 33587.1  & 37619.3 \\
+    Mean response time & 43260.1 & 18705.5  & 36441.2 \\
     }\mydata
 \begin{figure}[!htb]
 \centering
@@ -585,16 +591,15 @@ Number of threads has key meaning in handling incoming requests into an applicat
                 anchor=north,legend columns=-1},
             symbolic x coords={Min response time,Max response time,Mean response time},
             xtick=data,
-            ymin=0,ymax=60000,
+            ymin=0,ymax=90000,
             ylabel={Execution time [ms]},
             enlarge x limits={abs=2cm},
             ymajorgrids = true,
         ]
-        \addplot[style={bblue,fill=bblue,mark=none}] table[x=category,y=t2]{\mydata};
+        \addplot[style={bblue,fill=bblue,mark=none}] table[x=category,y=t1]{\mydata};
         \addplot[style={rred,fill=rred,mark=none}] table[x=category,y=t10]{\mydata};
-        \addplot[style={ggreen,fill=ggreen,mark=none}] table[x=category,y=t25]{\mydata};
-        \addplot[style={ppurple,fill=ppurple,mark=none}] table[x=category,y=t100]{\mydata};
-        \legend{2 threads, 10 threads, 25 threads, 100 threads}
+        \addplot[style={ggreen,fill=ggreen,mark=none}] table[x=category,y=t100]{\mydata};
+        \legend{1 thread, 10 threads, 100 threads}
     \end{axis}
 \end{tikzpicture}
 \caption{\textit{Mean response time from 100 incoming paraller requests}} \label{fig:threads}
@@ -727,7 +732,10 @@ Diaconescu A., Mos A., Murphy J., \textit{Automatic performance management in co
 Diaconescu A., \textit{A framework for using component redundancy for self-adapting and self-optimising component-based enterprise systems}, 2003, In Companion of the 18th annual ACM SIGPLAN conference on Object-oriented programming, systems, languages, and applications (OOPSLA '03). ACM, New York, NY, USA, 390-391. 
 
 \bibitem{springperformance}
-Chakraborty, A., Ditt, J., Vukotic, A., Machacek, J., \textit{Pro Spring 2.5}, Berkeley, CA, Apress, 2008, 829-855,  
+Chakraborty, A., Ditt, J., Vukotic, A., Machacek, J., \textit{Pro Spring 2.5}, Berkeley, CA, Apress, 2008, 829-855.  
+
+\bibitem{gatling}
+Gatling Load and Performance testing - Open-source load and performance testing - \textit{http://gatling.io}, (access: 15.04.2017).
 
 \end{thebibliography}
 
