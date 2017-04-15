@@ -1,5 +1,6 @@
 package com.zalas.masterthesis.apt.pet.framework.petcasescheduler;
 
+import com.zalas.masterthesis.apt.pet.framework.assertions.KpiAssertionException;
 import com.zalas.masterthesis.apt.pet.framework.petcaseprepare.PetCaseData;
 
 import java.lang.reflect.InvocationTargetException;
@@ -27,15 +28,15 @@ public class PetCaseInvokeWorker implements Runnable {
         } catch (IllegalAccessException | InstantiationException e) {
             throw new RuntimeException("Cannot invoke PET case: " + method.getName(), e);
         } catch (InvocationTargetException e) {
-            if (e.getCause() instanceof AssertionError) {
-                notifyAboutFailedTestCase((AssertionError) e.getCause(), method.getName());
+            if (e.getCause() instanceof KpiAssertionException) {
+                notifyAboutFailedTestCase((KpiAssertionException) e.getCause(), method.getName());
             } else {
                 throw new RuntimeException("Cannot invoke PET case: " + method.getName(), e);
             }
         }
     }
 
-    private void notifyAboutFailedTestCase(AssertionError e, String methodName) {
+    private void notifyAboutFailedTestCase(KpiAssertionException e, String methodName) {
         issues.add("Failed testCase: " + methodName + " reason: ?");
         System.out.println("Failed testCase: " + methodName + " reason: " + e.getMessage());
     }
