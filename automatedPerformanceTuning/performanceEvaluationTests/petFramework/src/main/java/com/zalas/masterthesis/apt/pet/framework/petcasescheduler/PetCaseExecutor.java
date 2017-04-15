@@ -1,5 +1,6 @@
 package com.zalas.masterthesis.apt.pet.framework.petcasescheduler;
 
+import com.zalas.masterthesis.apt.pet.framework.PerformanceIssues;
 import com.zalas.masterthesis.apt.pet.framework.petcaseprepare.PetCaseData;
 
 import java.util.List;
@@ -14,9 +15,9 @@ import static com.google.common.collect.Lists.newArrayList;
 public class PetCaseExecutor {
     private final Set<PetCaseData> petCaseData;
     private ScheduledExecutorService scheduledExecutor;
-    private Set<String> issues;
+    private PerformanceIssues issues;
 
-    public PetCaseExecutor(Set<PetCaseData> petCaseData, ScheduledExecutorService scheduledExecutorService, Set<String> issues) {
+    public PetCaseExecutor(Set<PetCaseData> petCaseData, ScheduledExecutorService scheduledExecutorService, PerformanceIssues issues) {
         this.petCaseData = petCaseData;
         this.scheduledExecutor = scheduledExecutorService;
         this.issues = issues;
@@ -60,7 +61,7 @@ public class PetCaseExecutor {
         }
     }
 
-    public Set<String> getIssues() {
+    public PerformanceIssues getIssues() {
         return issues;
     }
 }

@@ -5,14 +5,14 @@ import com.zalas.masterthesis.apt.pet.framework.petcaseprepare.PetCaseExtractor;
 import com.zalas.masterthesis.apt.pet.framework.petcaseprepare.PetClassFinder;
 import com.zalas.masterthesis.apt.pet.framework.petcasescheduler.PetCaseExecutor;
 
-import java.util.*;
+import java.util.Set;
 
 import static java.util.concurrent.Executors.newScheduledThreadPool;
 
 public class PetCaseRunner extends Thread {
 
     private String pack4ge;
-    private Set<String> issues = Collections.synchronizedSet(new HashSet<String>());
+    private PerformanceIssues performanceIssues = new PerformanceIssues();
 
     public PetCaseRunner(String pack4ge) {
         this.pack4ge = pack4ge;
@@ -28,10 +28,12 @@ public class PetCaseRunner extends Thread {
         PetCaseExtractor petCaseExtractor = new PetCaseExtractor(petClassFinder);
         Set<PetCaseData> petCaseData = petCaseExtractor.extractPetCasesFromPackage();
 
-        return new PetCaseExecutor(petCaseData, newScheduledThreadPool(petCaseData.size()), issues);
+        return new PetCaseExecutor(petCaseData, newScheduledThreadPool(petCaseData.size()), performanceIssues);
     }
 
-    public Set<String> getIssues() {
-        return issues;
+    public Set<PerformanceIssue> getNewIssues() {
+        Set<PerformanceIssue> performanceIssues = this.performanceIssues.getPerformanceIssues();
+        this.performanceIssues.clear();
+        return performanceIssues;
     }
 }
