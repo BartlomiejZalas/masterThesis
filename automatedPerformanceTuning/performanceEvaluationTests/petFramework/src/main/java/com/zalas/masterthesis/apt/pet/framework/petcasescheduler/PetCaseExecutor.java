@@ -14,18 +14,20 @@ import static com.google.common.collect.Lists.newArrayList;
 public class PetCaseExecutor {
     private final Set<PetCaseData> petCaseData;
     private ScheduledExecutorService scheduledExecutor;
+    private Set<String> issues;
 
-    public PetCaseExecutor(Set<PetCaseData> petCaseData, ScheduledExecutorService scheduledExecutorService) {
+    public PetCaseExecutor(Set<PetCaseData> petCaseData, ScheduledExecutorService scheduledExecutorService, Set<String> issues) {
         this.petCaseData = petCaseData;
         this.scheduledExecutor = scheduledExecutorService;
+        this.issues = issues;
     }
 
     public void execute() {
         List<ScheduledFuture> scheduledWorkers = newArrayList();
 
         for (PetCaseData petCase : petCaseData) {
-            ScheduledFuture petCaseWorkerHandler = schedulePetCase(petCase, new PetCaseInvokeWorker(petCase));
-            schedulePetCaseTerminator(petCase, petCaseWorkerHandler);
+            ScheduledFuture petCaseWorkerHandler = schedulePetCase(petCase.getMonitorIntervalInSec(), new PetCaseInvokeWorker(petCase, issues));
+            schedulePetCaseTerminator(petCase.getDurationInSec(), petCaseWorkerHandler);
             scheduledWorkers.add(petCaseWorkerHandler);
         }
 
@@ -33,12 +35,12 @@ public class PetCaseExecutor {
         scheduledExecutor.shutdown();
     }
 
-    private void schedulePetCaseTerminator(PetCaseData petCase, ScheduledFuture handler) {
-        scheduledExecutor.schedule(new PetCaseTerminatorWorker(handler), petCase.getDurationInSec(), TimeUnit.SECONDS);
+    private void schedulePetCaseTerminator(int durationInSec, ScheduledFuture handler) {
+        scheduledExecutor.schedule(new PetCaseTerminatorWorker(handler), durationInSec, TimeUnit.SECONDS);
     }
 
-    private ScheduledFuture<?> schedulePetCase(PetCaseData petCase, PetCaseInvokeWorker petCaseInvokeWorker) {
-        return scheduledExecutor.scheduleAtFixedRate(petCaseInvokeWorker, 0, petCase.getMonitorIntervalInSec(), TimeUnit.SECONDS);
+    private ScheduledFuture<?> schedulePetCase(int intervalInSec, PetCaseInvokeWorker petCaseInvokeWorker) {
+        return scheduledExecutor.scheduleAtFixedRate(petCaseInvokeWorker, 0, intervalInSec, TimeUnit.SECONDS);
     }
 
     private void waitUntilAllTasksAreFinished(List<ScheduledFuture> scheduledWorkers) {
@@ -56,5 +58,9 @@ public class PetCaseExecutor {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public Set<String> getIssues() {
+        return issues;
     }
 }

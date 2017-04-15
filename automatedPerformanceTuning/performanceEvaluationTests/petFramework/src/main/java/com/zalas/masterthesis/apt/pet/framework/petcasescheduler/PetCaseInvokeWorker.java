@@ -4,13 +4,16 @@ import com.zalas.masterthesis.apt.pet.framework.petcaseprepare.PetCaseData;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Set;
 
 public class PetCaseInvokeWorker implements Runnable {
 
     private PetCaseData petCase;
+    private Set<String> issues;
 
-    public PetCaseInvokeWorker(PetCaseData petCase) {
+    public PetCaseInvokeWorker(PetCaseData petCase, Set<String> issues) {
         this.petCase = petCase;
+        this.issues = issues;
     }
 
     @Override
@@ -33,6 +36,7 @@ public class PetCaseInvokeWorker implements Runnable {
     }
 
     private void notifyAboutFailedTestCase(AssertionError e, String methodName) {
+        issues.add("Failed testCase: " + methodName + " reason: ?");
         System.out.println("Failed testCase: " + methodName + " reason: " + e.getMessage());
     }
 }
