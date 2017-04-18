@@ -28,6 +28,7 @@
 \graphicspath{ {images/} }
 
 
+
 \renewcommand\theadalign{cb}
 \renewcommand\theadfont{\bfseries}
 \renewcommand\theadgape{\Gape[4pt]}
@@ -399,7 +400,7 @@ The application will be implemented in Java 1.8. Web based features will be impl
 
 Above tools are commonly used solutions in a web development. That fact makes implemented solution applicable and easily translated to other web applications based on similar technologies.  
 
-\subsection{System Principles}
+\subsection{System Principles} \label{principles}
 The key in every successful project is to define goals and needs at the beginning.
 In case of this work it will be realized as system principles definition on the base of  performance problems from chapter \ref{PerformanceRelatedProblems}.
 
@@ -421,7 +422,7 @@ On the base of above consideration following set of principles of the system can
 \item The system should have minimal impact on production environment
 \end{itemize}
 
-On the base of above principles in next chapter proposition of system realization will be introduced.  
+On the base of above principles in the next chapter proposition of system realization will be introduced.  
 
 \subsection{Performance Improvement Realization} \label{realization}
 
@@ -614,8 +615,42 @@ Above considerations contain justification about accepted or declined candidates
 
 
 \subsection{The System Architecture}
-...
 
+\subsubsection{Automated Performance Tuning System (APTS)}
+
+In order to enable performance tuning in the tested application on the base of solutions described in Chapter \ref{realization} the Automated Performance Tuning System (APTS) is introduced. The APTS is based on principles formulated in Chapter \ref{principles}. Main functionality of the system is to enable automated  performance tuning of the tested application in real time. 
+
+\subsubsection{APTS Components}
+
+As presented on Figure \ref{componentapts}, the system is composed of the following components: \textit{Workload Generator}, \textit{APTS Manager} which includes \textit{PET Cases} and \textit{Decision Module}, \textit{InfluxDB Service}, \textit{Configuration Service} and \textit{Tested Application}. 
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=1\textwidth]{APTSComponentDiagram}
+\caption{\textit{Component diagram of the APTS}}
+\label{componentapts}
+\end{figure}
+
+The goal of \textit{Workload Generator} is to provide simulation of network traffic to the tested application. Traffic simulation is realized as HTTP requests generation based on Gatling library\cite{gatling}. The \textit{Workload Generator} is independent from the APTS and it communicates directly to the tested application. Thank to that features the module can be easily disabled in production environment where real traffic is analyzed.  
+
+The \textit{APTS Manager} is main part of the system. It is responsible for enabling performance tuning by performing performance evaluation tests and reporting performance issues discovered by tests to \textit{Decision Module}. 
+
+The \textit{PET Cases} component contains performance evaluation scenarios written with help of PET Framework (see Chapter \ref{framework}). 
+
+
+
+\subsubsection{APTS Deployment}
+
+The system, as presented on Figure \ref{deploymentapts}, is deployed on \textit{Client Workstation}, \textit{Application Server} and \textit{Service Server}. 
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=1\textwidth]{APTSDeploymentDiagram}
+\caption{\textit{Deployment diagram of the APTS}}
+\label{deploymentapts}
+\end{figure}
+
+\subsubsection{PET Framework} \label{framework}
 
 
 \pagebreak
