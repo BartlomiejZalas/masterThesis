@@ -10,8 +10,8 @@ import java.lang.annotation.Target;
 public @interface PetCase {
 
     public boolean enabled() default true;
-    public int monitorIntervalInSec() default 5;
-    public int durationInSec() default 30;
+    public int monitorIntervalInSec() default 60;
+    public int durationInSec() default 3600;
     public boolean exitOnFailure() default false;
 
 }
