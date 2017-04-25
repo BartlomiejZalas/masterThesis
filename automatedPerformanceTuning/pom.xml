@@ -15,7 +15,7 @@
     <modules>
         <module>performanceEvaluationTests</module>
         <module>decisionModule</module>
-        <module>runner</module>
+        <module>manager</module>
     </modules>
 
 
