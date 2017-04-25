@@ -1,6 +1,7 @@
 package com.zalas.masterthesis.configurationserver.service;
 
 import com.zalas.masterthesis.configurationserver.api.constants.ConfigurationConstants;
+import com.zalas.masterthesis.configurationserver.api.model.ApplicationConfiguration;
 import org.springframework.beans.factory.InitializingBean;
 
 import java.util.Arrays;
@@ -8,7 +9,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.zalas.masterthesis.configurationserver.api.constants.ConfigurationConstants.*;
-
 
 @org.springframework.stereotype.Service
 public class ConfigurationService implements InitializingBean {
@@ -36,6 +36,10 @@ public class ConfigurationService implements InitializingBean {
         validateKeyString(configurationKeyString);
 
         return configuration.get(ConfigurationConstants.valueOf(configurationKeyString)).toString();
+    }
+
+    public ApplicationConfiguration getConfiguration() {
+        return new ApplicationConfiguration(configuration.get(BATCH), configuration.get(CACHE), configuration.get(THREADS));
     }
 
     private void validateIsAllowedValueForKey(ConfigurationConstants configurationConstantKey, ConfigurationConstants.Value value) throws ConfigurationException {

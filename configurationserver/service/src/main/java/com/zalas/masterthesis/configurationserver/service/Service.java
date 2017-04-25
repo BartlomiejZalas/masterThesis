@@ -1,5 +1,6 @@
 package com.zalas.masterthesis.configurationserver.service;
 
+import com.zalas.masterthesis.configurationserver.api.model.ApplicationConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,11 @@ public class Service {
         } catch (ConfigurationException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @GetMapping("/getAll")
+    public ResponseEntity<ApplicationConfiguration> getAllConfiguration() {
+        return new ResponseEntity<>(configurationService.getConfiguration(), HttpStatus.OK);
     }
 
     @PostMapping("/change")
