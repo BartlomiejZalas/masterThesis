@@ -4,11 +4,11 @@ import com.zalas.masterthesis.apts.decisionmodule.api.PerformanceIssue;
 import com.zalas.masterthesis.apts.decisionmodule.api.Rule;
 import com.zalas.masterthesis.configurationserver.api.model.ApplicationConfiguration;
 
-public class DoNothingRule{
+public class EmptyRule {
 
     private static Rule instance = createDoNothingRule();
 
-    private DoNothingRule() {
+    private EmptyRule() {
     }
 
     public static Rule getInstance() {
