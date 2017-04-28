@@ -1,6 +1,6 @@
 package com.zalas.masterthesis.apts.decisionmodule.impl;
 
-import com.zalas.masterthesis.apts.decisionmodule.api.PerformanceIssue;
+import com.zalas.masterthesis.apts.decisionmodule.api.ProblemToSolve;
 import com.zalas.masterthesis.apts.decisionmodule.api.Rule;
 import com.zalas.masterthesis.configurationserver.api.model.ApplicationConfiguration;
 import org.junit.Test;
@@ -32,7 +32,7 @@ public class RuleComparatorFromHighToLowTest {
     private Rule createRuleWithPriority(int priority) {
         return new Rule() {
             @Override
-            public boolean isRuleApplicable(PerformanceIssue performanceIssue, ApplicationConfiguration currentConfiguration) {
+            public boolean isRuleApplicable(ProblemToSolve problemToSolve, ApplicationConfiguration currentConfiguration) {
                 return false;
             }
 

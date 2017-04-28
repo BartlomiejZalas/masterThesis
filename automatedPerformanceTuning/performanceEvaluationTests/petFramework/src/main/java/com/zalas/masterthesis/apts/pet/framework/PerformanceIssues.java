@@ -7,20 +7,20 @@ import java.util.Set;
 import static com.google.common.collect.ImmutableSet.copyOf;
 
 public class PerformanceIssues {
-    private Set<PerformanceIssue> issues = Collections.synchronizedSet(new HashSet<PerformanceIssue>());
+    private Set<PerformanceIssueTO> issues = Collections.synchronizedSet(new HashSet<PerformanceIssueTO>());
 
-    public void add(PerformanceIssue performanceIssue) {
-        if (issues.contains(performanceIssue)) {
-            issues.remove(performanceIssue);
+    public void add(PerformanceIssueTO performanceIssueTO) {
+        if (issues.contains(performanceIssueTO)) {
+            issues.remove(performanceIssueTO);
         }
-        issues.add(performanceIssue);
+        issues.add(performanceIssueTO);
     }
 
     public void clear() {
         issues.clear();
     }
 
-    public Set<PerformanceIssue> getPerformanceIssues() {
+    public Set<PerformanceIssueTO> getPerformanceIssues() {
         return copyOf(issues);
     }
 }

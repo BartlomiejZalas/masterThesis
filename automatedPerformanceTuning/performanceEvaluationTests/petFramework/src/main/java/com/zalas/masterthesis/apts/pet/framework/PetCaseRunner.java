@@ -31,9 +31,9 @@ public class PetCaseRunner extends Thread {
         return new PetCaseExecutor(petCaseData, newScheduledThreadPool(petCaseData.size()), performanceIssues);
     }
 
-    public Set<PerformanceIssue> getNewIssues() {
-        Set<PerformanceIssue> performanceIssues = this.performanceIssues.getPerformanceIssues();
+    public Set<PerformanceIssueTO> getNewIssues() {
+        Set<PerformanceIssueTO> performanceIssueTOs = this.performanceIssues.getPerformanceIssues();
         this.performanceIssues.clear();
-        return performanceIssues;
+        return performanceIssueTOs;
     }
 }

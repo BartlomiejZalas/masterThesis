@@ -25,6 +25,7 @@
         <module>requestDispatcher</module>
         <module>configurationserver</module>
         <module>automatedPerformanceTuning</module>
+        <module>aptmodel</module>
     </modules>
 
     <properties>

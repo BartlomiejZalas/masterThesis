@@ -14,10 +14,9 @@ public class PetAssertTest {
         try {
             assertKpiLessThan("KPI", 12., 10.);
             fail();
-        } catch (KpiAssertionException e) {
-            assertEquals("KPI", e.getKpiName());
+        } catch (PerformanceIssue e) {
+            assertEquals("KPI", e.getMetric());
             Assert.assertEquals(Reason.EXCEDEED, e.getReason());
-            assertEquals(20, e.getPercentageDeviation(), 2);
         }
     }
 
@@ -31,10 +30,9 @@ public class PetAssertTest {
         try {
             assertKpiGreaterThan("KPI", 8., 10.);
             fail();
-        } catch (KpiAssertionException e) {
-            assertEquals("KPI", e.getKpiName());
+        } catch (PerformanceIssue e) {
+            assertEquals("KPI", e.getMetric());
             Assert.assertEquals(Reason.UNDER, e.getReason());
-            assertEquals(20, e.getPercentageDeviation(), 2);
         }
     }
 
@@ -48,10 +46,9 @@ public class PetAssertTest {
         try {
             assertKpiEqual("KPI", 12., 10.);
             fail();
-        } catch (KpiAssertionException e) {
-            assertEquals("KPI", e.getKpiName());
+        } catch (PerformanceIssue e) {
+            assertEquals("KPI", e.getMetric());
             Assert.assertEquals(Reason.NOT_EQUAL, e.getReason());
-            assertEquals(20, e.getPercentageDeviation(), 2);
         }
     }
 
@@ -60,10 +57,9 @@ public class PetAssertTest {
         try {
             assertKpiEqual("KPI", 8., 10.);
             fail();
-        } catch (KpiAssertionException e) {
-            assertEquals("KPI", e.getKpiName());
+        } catch (PerformanceIssue e) {
+            assertEquals("KPI", e.getMetric());
             Assert.assertEquals(Reason.NOT_EQUAL, e.getReason());
-            assertEquals(20, e.getPercentageDeviation(), 2);
         }
     }
 

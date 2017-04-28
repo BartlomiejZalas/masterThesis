@@ -27,7 +27,11 @@ public class PetCaseExecutor {
         List<ScheduledFuture> scheduledWorkers = newArrayList();
 
         for (PetCaseData petCase : petCaseData) {
-            ScheduledFuture petCaseWorkerHandler = schedulePetCase(petCase.getMonitorIntervalInSec(), new PetCaseInvokeWorker(petCase, issues));
+            ScheduledFuture petCaseWorkerHandler = schedulePetCase(
+                    petCase.getMonitorIntervalInSec(),
+                    petCase.getDelay(),
+                    new PetCaseInvokeWorker(petCase, issues)
+            );
             schedulePetCaseTerminator(petCase.getDurationInSec(), petCaseWorkerHandler);
             scheduledWorkers.add(petCaseWorkerHandler);
         }
@@ -40,8 +44,8 @@ public class PetCaseExecutor {
         scheduledExecutor.schedule(new PetCaseTerminatorWorker(handler), durationInSec, TimeUnit.SECONDS);
     }
 
-    private ScheduledFuture<?> schedulePetCase(int intervalInSec, PetCaseInvokeWorker petCaseInvokeWorker) {
-        return scheduledExecutor.scheduleAtFixedRate(petCaseInvokeWorker, 0, intervalInSec, TimeUnit.SECONDS);
+    private ScheduledFuture<?> schedulePetCase(int intervalInSec, int delay, PetCaseInvokeWorker petCaseInvokeWorker) {
+        return scheduledExecutor.scheduleAtFixedRate(petCaseInvokeWorker, delay, intervalInSec, TimeUnit.SECONDS);
     }
 
     private void waitUntilAllTasksAreFinished(List<ScheduledFuture> scheduledWorkers) {

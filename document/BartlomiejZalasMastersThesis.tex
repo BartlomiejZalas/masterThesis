@@ -737,18 +737,18 @@ Annotations are used to mark POJOs to be interpreted as PET cases and to configu
 
 In order to evaluate current KPIs against specified values a set of assertion was introduced. In case of assertion failure PET Framework convert exception to the performance issue. Signatures of assertions are presented on Listing  \ref{assertions}. As presented, for the performance evaluation tests three assertions where implemented (to ensure that KPI is less, greater of equal to specified value).  Parameters used in assertions are: 
 \begin{itemize} 
-\item \textit{kpiName} - identifier of KPI used in performance issue. 
+\item \textit{metric} - identifier of KPI used in performance issue.
 \item \textit{currentValue} - current value of KPI measured on an tested application
 \item \textit{limit}/\textit{expectedValue} - value to which currentValue is compared to. In case when limit is exceeded or value is different than expected assertion error is thrown.
 \end{itemize}
 
 \begin{listing}[ht]\begin{minted}[fontsize=\footnotesize]{java}
 
-void assertKpiLessThan(String kpiName, Double currentValue, Double limit);
+void assertKpiLessThan(String metric, Double currentValue, Double limit);
 
-void assertKpiGreaterThan(String kpiName, Double currentValue, Double limit);
+void assertKpiGreaterThan(String metric, Double currentValue, Double limit);
 
-void assertKpiEqual(String kpiName, Double currentValue, Double expectedValue);
+void assertKpiEqual(String metric, Double currentValue, Double expectedValue);
 \end{minted}
 \caption{PET assertions signatures} \label{assertions}
 \end{listing}
@@ -764,7 +764,7 @@ Important part of the PET Framework is the Performance Issue entity. When PET as
 Attributes of the class are: 
 \begin{itemize}
 \item \textit{testName} - name of the test case from which error was reported
-\item \textit{kpiName} - information about KPI which was different than expected
+\item \textit{metric} - information about KPI which was different than expected
 \item \textit{reason} - enum representing reason of the failure. Possible values are:  exceeded, under or not equal. 
 \item \textit{percentageDeviation} - information how much KPI value was different from expected value in percentage. 
 \item \textit{message} - human readable message with explanation about test failure

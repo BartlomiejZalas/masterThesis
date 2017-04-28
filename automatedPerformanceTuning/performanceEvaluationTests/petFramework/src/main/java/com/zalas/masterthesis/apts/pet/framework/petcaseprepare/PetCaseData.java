@@ -10,7 +10,7 @@ public class PetCaseData {
     private boolean isEnabled;
     private int monitorIntervalInSec;
     private int durationInSec;
-    private boolean exitOnFailure;
+    private final int delay;
 
     public PetCaseData(Method petCaseMethod, Class petClass, PetCase testCaseAnnotation) {
         this.petCaseMethod = petCaseMethod;
@@ -18,7 +18,7 @@ public class PetCaseData {
         this.isEnabled = testCaseAnnotation.enabled();
         this.monitorIntervalInSec = testCaseAnnotation.monitorIntervalInSec();
         this.durationInSec = testCaseAnnotation.durationInSec();
-        this.exitOnFailure = testCaseAnnotation.exitOnFailure();
+        this.delay = testCaseAnnotation.delayInSec();
     }
 
     public Method getPetCaseMethod() {
@@ -38,7 +38,8 @@ public class PetCaseData {
     public int getDurationInSec() {
         return durationInSec;
     }
-    public boolean getExitOnFailure() {
-        return exitOnFailure;
+
+    public int getDelay() {
+        return delay;
     }
 }

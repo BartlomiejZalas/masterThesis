@@ -110,6 +110,11 @@
             <artifactId>junit</artifactId>
             <version>RELEASE</version>
         </dependency>
+        <dependency>
+            <groupId>com.zalas.masterthesis</groupId>
+            <artifactId>aptmodel</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
 
     </dependencies>
 

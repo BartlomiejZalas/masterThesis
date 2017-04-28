@@ -22,7 +22,7 @@ public class InfluxClient {
                 .time(System.currentTimeMillis(), TimeUnit.MILLISECONDS)
                 .addField("duration", executionTime)
                 .addField("methodName", methodName)
-                .addField("type", trafficProfile)
+                .tag("trafficProfile", trafficProfile)
                 .build();
 
         BatchPoints batchPoints = creaeBatch();

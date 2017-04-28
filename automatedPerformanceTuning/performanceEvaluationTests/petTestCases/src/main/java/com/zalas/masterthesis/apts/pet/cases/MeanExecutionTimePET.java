@@ -5,7 +5,7 @@ import com.zalas.masterthesis.apts.pet.framework.annotations.PetCase;
 
 import static com.zalas.masterthesis.apts.pet.framework.assertions.PetAssert.assertKpiLessThan;
 
-@Pet
+//@Pet
 public class MeanExecutionTimePET {
 
     @PetCase

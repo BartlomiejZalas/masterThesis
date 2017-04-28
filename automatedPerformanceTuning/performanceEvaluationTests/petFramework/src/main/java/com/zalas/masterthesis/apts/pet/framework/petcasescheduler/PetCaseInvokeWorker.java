@@ -1,8 +1,8 @@
 package com.zalas.masterthesis.apts.pet.framework.petcasescheduler;
 
-import com.zalas.masterthesis.apts.pet.framework.PerformanceIssue;
+import com.zalas.masterthesis.apts.pet.framework.PerformanceIssueTO;
 import com.zalas.masterthesis.apts.pet.framework.PerformanceIssues;
-import com.zalas.masterthesis.apts.pet.framework.assertions.KpiAssertionException;
+import com.zalas.masterthesis.apts.pet.framework.assertions.PerformanceIssue;
 import com.zalas.masterthesis.apts.pet.framework.petcaseprepare.PetCaseData;
 
 import java.lang.reflect.InvocationTargetException;
@@ -29,16 +29,16 @@ public class PetCaseInvokeWorker implements Runnable {
         } catch (IllegalAccessException | InstantiationException e) {
             throw new RuntimeException("Cannot invoke PET case: " + method.getName(), e);
         } catch (InvocationTargetException e) {
-            if (e.getCause() instanceof KpiAssertionException) {
-                notifyAboutFailedTestCase((KpiAssertionException) e.getCause(), method.getName());
+            if (e.getCause() instanceof PerformanceIssue) {
+                notifyAboutNewIssue((PerformanceIssue) e.getCause());
             } else {
                 throw new RuntimeException("Cannot invoke PET case: " + method.getName(), e);
             }
         }
     }
 
-    private void notifyAboutFailedTestCase(KpiAssertionException e, String testName) {
-        performanceIssues.add(new PerformanceIssue(testName, e.getKpiName(), e.getReason(), e.getPercentageDeviation(), e.getMessage()));
-        System.out.println("Failed testCase: " + testName + " reason: " + e.getMessage());
+    private void notifyAboutNewIssue(PerformanceIssue e) {
+        performanceIssues.add(new PerformanceIssueTO(e.getMetric(), e.getReason()));
+        System.out.println("Failed testCase: " + e.getMetric() + " reason: " + e.getReason());
     }
 }
