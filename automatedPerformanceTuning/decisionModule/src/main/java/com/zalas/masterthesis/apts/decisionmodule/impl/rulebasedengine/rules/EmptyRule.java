@@ -1,6 +1,6 @@
 package com.zalas.masterthesis.apts.decisionmodule.impl.rulebasedengine.rules;
 
-import com.zalas.masterthesis.apts.decisionmodule.api.ProblemToSolve;
+import com.zalas.masterthesis.apts.decisionmodule.api.IssueToHandle;
 import com.zalas.masterthesis.apts.decisionmodule.api.Rule;
 import com.zalas.masterthesis.configurationserver.api.model.ApplicationConfiguration;
 
@@ -18,7 +18,7 @@ public class EmptyRule {
     private static Rule createDoNothingRule() {
         return new Rule() {
             @Override
-            public boolean isRuleApplicable(ProblemToSolve problemToSolve, ApplicationConfiguration currentConfiguration) {
+            public boolean isRuleApplicable(IssueToHandle issueToHandle, ApplicationConfiguration currentConfiguration) {
                 return true;
             }
 

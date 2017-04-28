@@ -22,9 +22,7 @@ public class MonitorTrafficProfilePET {
 
     @PetCase(durationInSec = 60, monitorIntervalInSec = MONITOR_INTERVAL)
     public void monitorMutabilityOfTraffic_shouldReportIssueWhenChanged() {
-        System.out.println("checking profile");
         TrafficProfile trafficProfile = getTrafficProfile(MONITOR_INTERVAL);
-        System.out.println("profile is " + trafficProfile);
 
         throw new PerformanceIssue("trafficProfile monitoring", "trafficProfile", trafficProfile.toString());
     }
@@ -39,7 +37,7 @@ public class MonitorTrafficProfilePET {
         double countImmutable = getCountForTag(series, IMMUTABLE.toString());
         double countMutable = getCountForTag(series, MUTABLE.toString());
 
-        return countImmutable > countMutable ? IMMUTABLE : MUTABLE;
+        return countImmutable >= countMutable ? IMMUTABLE : MUTABLE;
     }
 
     private double getCountForTag(List<QueryResult.Series> series, String tag) {

@@ -4,7 +4,7 @@ import com.zalas.masterthesis.configurationserver.api.model.ApplicationConfigura
 
 public interface Rule {
 
-    boolean isRuleApplicable(ProblemToSolve problemToSolve, ApplicationConfiguration currentConfiguration);
+    boolean isRuleApplicable(IssueToHandle issueToHandle, ApplicationConfiguration currentConfiguration);
 
     void executeAction();
 

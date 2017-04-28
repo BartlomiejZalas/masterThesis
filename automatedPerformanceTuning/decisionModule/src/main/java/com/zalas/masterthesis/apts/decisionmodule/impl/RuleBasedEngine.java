@@ -1,6 +1,6 @@
 package com.zalas.masterthesis.apts.decisionmodule.impl;
 
-import com.zalas.masterthesis.apts.decisionmodule.api.ProblemToSolve;
+import com.zalas.masterthesis.apts.decisionmodule.api.IssueToHandle;
 import com.zalas.masterthesis.apts.decisionmodule.api.Rule;
 import com.zalas.masterthesis.apts.decisionmodule.impl.rulebasedengine.rules.EmptyRule;
 import com.zalas.masterthesis.configurationserver.api.model.ApplicationConfiguration;
@@ -17,18 +17,18 @@ public class RuleBasedEngine {
         rules.add(rule);
     }
 
-    public Rule getBestRule(ProblemToSolve problemToSolve, ApplicationConfiguration applicationConfiguration) {
-        List<Rule> applicableRules = getApplicableRules(problemToSolve, applicationConfiguration);
+    public Rule getBestRule(IssueToHandle issueToHandle, ApplicationConfiguration applicationConfiguration) {
+        List<Rule> applicableRules = getApplicableRules(issueToHandle, applicationConfiguration);
 
         applicableRules.sort(new RuleComparatorFromHighToLow());
 
         return getFirst(applicableRules, EmptyRule.getInstance());
     }
 
-    private List<Rule> getApplicableRules(ProblemToSolve problemToSolve, ApplicationConfiguration applicationConfiguration) {
+    private List<Rule> getApplicableRules(IssueToHandle issueToHandle, ApplicationConfiguration applicationConfiguration) {
         List<Rule> applicableRules = new ArrayList<>();
         for (Rule rule : rules) {
-            if (rule.isRuleApplicable(problemToSolve, applicationConfiguration)) {
+            if (rule.isRuleApplicable(issueToHandle, applicationConfiguration)) {
                 applicableRules.add(rule);
             }
         }

@@ -1,6 +1,6 @@
 package com.zalas.masterthesis.apts.manager;
 
-import com.zalas.masterthesis.apts.decisionmodule.api.ProblemToSolve;
+import com.zalas.masterthesis.apts.decisionmodule.api.IssueToHandle;
 import com.zalas.masterthesis.apts.decisionmodule.main.DecisionModule;
 import com.zalas.masterthesis.apts.decisionmodule.main.DecisionModuleFactory;
 import com.zalas.masterthesis.apts.pet.framework.PerformanceIssueTO;
@@ -18,14 +18,15 @@ public class AptsManger {
 
         while(petCaseRunner.isAlive()) {
             Thread.sleep(1000);
-            System.out.println(petCaseRunner.getNewIssues());
-//            handleIssues(petCaseRunner.getNewIssues());
+            Set<PerformanceIssueTO> newIssues = petCaseRunner.getNewIssues();
+            System.out.println(newIssues);
+            handleIssues(newIssues);
         }
     }
 
     private void handleIssues(Set<PerformanceIssueTO> performanceIssueTOs) {
         for (PerformanceIssueTO issue : performanceIssueTOs) {
-            decisionModule.performDecision(new ProblemToSolve(issue.getKpiName(), issue.getReason().toString()));
+            decisionModule.performDecision(new IssueToHandle(issue.getMetric(), issue.getReason()));
         }
     }
 

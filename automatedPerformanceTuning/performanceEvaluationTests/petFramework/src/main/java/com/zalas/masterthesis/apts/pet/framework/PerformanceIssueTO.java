@@ -1,19 +1,17 @@
 package com.zalas.masterthesis.apts.pet.framework;
 
-import com.zalas.masterthesis.apts.pet.framework.assertions.Reason;
-
 public class PerformanceIssueTO {
 
-    private final String kpiName;
+    private final String metric;
     private final String reason;
 
     public PerformanceIssueTO(String metric, String reason) {
-        this.kpiName = metric;
+        this.metric = metric;
         this.reason = reason;
     }
 
-    public String getKpiName() {
-        return kpiName;
+    public String getMetric() {
+        return metric;
     }
 
     public String getReason() {
@@ -23,7 +21,7 @@ public class PerformanceIssueTO {
     @Override
     public String toString() {
         return "PerformanceIssueTO{" +
-                "kpiName='" + kpiName + '\'' +
+                "metric='" + metric + '\'' +
                 ", reason=" + reason +
                 '}';
     }
