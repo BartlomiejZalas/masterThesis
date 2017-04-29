@@ -1,4 +1,4 @@
-package com.zalas.masterthesis.apts.decisionmodule.impl.rulebasedengine.rules;
+package com.zalas.masterthesis.apts.decisionmodule.impl.rulebasedengine.rules.cache;
 
 import com.zalas.masterthesis.apts.decisionmodule.api.IssueToHandle;
 import com.zalas.masterthesis.apts.decisionmodule.api.Rule;
