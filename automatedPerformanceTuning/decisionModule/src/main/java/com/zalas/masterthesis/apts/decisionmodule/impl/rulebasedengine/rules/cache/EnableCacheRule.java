@@ -29,7 +29,7 @@ public class EnableCacheRule implements Rule {
     }
 
     private boolean isTrafficImmutable(IssueToHandle issueToHandle) {
-        return issueToHandle.getReason().equals(IMMUTABLE.toString());
+        return issueToHandle.getStatus().equals(IMMUTABLE.toString());
     }
 
     private boolean isCacheDisabled(ApplicationConfiguration currentConfiguration) {

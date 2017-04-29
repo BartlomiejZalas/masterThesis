@@ -30,7 +30,7 @@ public class EnableBatchRule implements Rule {
     }
 
     private boolean isInsertsLevelHigh(IssueToHandle issueToHandle) {
-        return issueToHandle.getReason().equals(HIGH.toString());
+        return issueToHandle.getStatus().equals(HIGH.toString());
     }
 
     private boolean isBatchDisabled(ApplicationConfiguration currentConfiguration) {

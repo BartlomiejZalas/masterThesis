@@ -3,26 +3,26 @@ package com.zalas.masterthesis.apts.pet.framework;
 public class PerformanceIssueTO {
 
     private final String metric;
-    private final String reason;
+    private final String status;
 
-    public PerformanceIssueTO(String metric, String reason) {
+    public PerformanceIssueTO(String metric, String status) {
         this.metric = metric;
-        this.reason = reason;
+        this.status = status;
     }
 
     public String getMetric() {
         return metric;
     }
 
-    public String getReason() {
-        return reason;
+    public String getStatus() {
+        return status;
     }
 
     @Override
     public String toString() {
         return "PerformanceIssueTO{" +
                 "metric='" + metric + '\'' +
-                ", reason=" + reason +
+                ", status=" + status +
                 '}';
     }
 }

@@ -26,7 +26,7 @@ public class AptsManger {
 
     private void handleIssues(Set<PerformanceIssueTO> performanceIssueTOs) {
         for (PerformanceIssueTO issue : performanceIssueTOs) {
-            decisionModule.performDecision(new IssueToHandle(issue.getMetric(), issue.getReason()));
+            decisionModule.performDecision(new IssueToHandle(issue.getMetric(), issue.getStatus()));
         }
     }
 

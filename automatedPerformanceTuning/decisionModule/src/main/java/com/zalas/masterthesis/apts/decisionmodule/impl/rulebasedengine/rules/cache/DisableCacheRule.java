@@ -30,7 +30,7 @@ public class DisableCacheRule implements Rule {
     }
 
     private boolean isTrafficMutable(IssueToHandle issueToHandle) {
-        return issueToHandle.getReason().equals(MUTABLE.toString());
+        return issueToHandle.getStatus().equals(MUTABLE.toString());
     }
 
     private boolean isCacheEnabled(ApplicationConfiguration currentConfiguration) {
