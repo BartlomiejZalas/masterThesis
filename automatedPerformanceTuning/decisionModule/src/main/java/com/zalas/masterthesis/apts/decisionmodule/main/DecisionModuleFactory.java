@@ -14,6 +14,7 @@ public class DecisionModuleFactory {
         ruleBasedEngine.register(new EnableCacheRule(configurationClient));
         ruleBasedEngine.register(new DisableCacheRule(configurationClient));
         ruleBasedEngine.register(new EnableBatchRule(configurationClient));
+        ruleBasedEngine.register(new DisableCacheRule(configurationClient));
 
         return new DecisionModule(ruleBasedEngine);
     }
