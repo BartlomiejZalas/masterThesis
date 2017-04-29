@@ -16,7 +16,7 @@ public class PetAssertTest {
             fail();
         } catch (PerformanceIssue e) {
             assertEquals("KPI", e.getMetric());
-            Assert.assertEquals(Reason.EXCEDEED, e.getReason());
+            Assert.assertEquals(Reason.EXCEDEED.toString(), e.getReason());
         }
     }
 
@@ -32,7 +32,7 @@ public class PetAssertTest {
             fail();
         } catch (PerformanceIssue e) {
             assertEquals("KPI", e.getMetric());
-            Assert.assertEquals(Reason.UNDER, e.getReason());
+            Assert.assertEquals(Reason.UNDER.toString(), e.getReason());
         }
     }
 
@@ -48,7 +48,7 @@ public class PetAssertTest {
             fail();
         } catch (PerformanceIssue e) {
             assertEquals("KPI", e.getMetric());
-            Assert.assertEquals(Reason.NOT_EQUAL, e.getReason());
+            Assert.assertEquals(Reason.NOT_EQUAL.toString(), e.getReason());
         }
     }
 
@@ -59,7 +59,7 @@ public class PetAssertTest {
             fail();
         } catch (PerformanceIssue e) {
             assertEquals("KPI", e.getMetric());
-            Assert.assertEquals(Reason.NOT_EQUAL, e.getReason());
+            Assert.assertEquals(Reason.NOT_EQUAL.toString(), e.getReason());
         }
     }
 
