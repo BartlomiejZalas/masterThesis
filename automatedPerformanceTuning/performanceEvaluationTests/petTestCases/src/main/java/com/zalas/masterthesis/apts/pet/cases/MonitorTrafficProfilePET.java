@@ -19,6 +19,7 @@ import static com.zalas.masterthesis.aptmodel.TrafficProfile.MUTABLE;
 public class MonitorTrafficProfilePET {
 
     private static final int MONITOR_INTERVAL = 10;
+    private MeasurementsInfluxDbClient measurementsInfluxDbClient = new MeasurementsInfluxDbClient();
 
     @PetCase(durationInSec = 60, monitorIntervalInSec = MONITOR_INTERVAL)
     public void monitorMutabilityOfTraffic_shouldReportIssueWhenChanged() {
@@ -28,32 +29,8 @@ public class MonitorTrafficProfilePET {
     }
 
     private TrafficProfile getTrafficProfile(int monitorInterval) {
-        InfluxDB influxDB = InfluxDBFactory.connect("http://192.168.56.20:8086");
-        Query query = new Query("select count(*) from execution_time WHERE time > now() - " + monitorInterval + "s  group by *", "pet");
-        QueryResult queryResult = influxDB.query(query);
-
-        List<QueryResult.Series> series = queryResult.getResults().get(0).getSeries();
-
-        double countImmutable = getCountForTag(series, IMMUTABLE.toString());
-        double countMutable = getCountForTag(series, MUTABLE.toString());
-
+        int countImmutable = measurementsInfluxDbClient.getCountForTrafficProfile(IMMUTABLE, monitorInterval);
+        int countMutable = measurementsInfluxDbClient.getCountForTrafficProfile(MUTABLE, monitorInterval);
         return countImmutable >= countMutable ? IMMUTABLE : MUTABLE;
     }
-
-    private double getCountForTag(List<QueryResult.Series> series, String tag) {
-        if (series == null) return 0;
-        for (QueryResult.Series serie : series) {
-            Map<String, String> tags = serie.getTags();
-            if (tags.containsValue(tag)) {
-                return (Double) serie.getValues().get(0).get(1);
-            }
-        }
-        return 0;
-    }
-
-    public static void main(String[] args) {
-        new MonitorTrafficProfilePET().monitorMutabilityOfTraffic_shouldReportIssueWhenChanged();
-    }
-
-
 }
