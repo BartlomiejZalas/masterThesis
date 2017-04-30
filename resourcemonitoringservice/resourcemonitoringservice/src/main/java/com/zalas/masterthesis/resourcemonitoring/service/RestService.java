@@ -1,4 +1,4 @@
-package com.zalas.masterthesis.resourcemonitoringservice.service;
+package com.zalas.masterthesis.resourcemonitoring.service;
 
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
