@@ -24,7 +24,7 @@ public class InfluxClient {
                 .addField("cpu", cpuUsage)
                 .build();
 
-        BatchPoints batchPoints = creaeBatch();
+        BatchPoints batchPoints = createBatch();
         batchPoints.point(point);
         connection.write(batchPoints);
     }
@@ -33,7 +33,7 @@ public class InfluxClient {
         connection.query(new Query("drop measurement " + measurement, DB_NAME));
     }
 
-    private BatchPoints creaeBatch() {
+    private BatchPoints createBatch() {
         return BatchPoints
                     .database(DB_NAME)
                     .tag("async", "true")
