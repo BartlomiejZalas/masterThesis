@@ -1,36 +1,33 @@
-package com.zalas.masterthesis.resourcemonitoring.service;
+package com.zalas.masterthesis.application.monitoring;
 
 import org.influxdb.InfluxDB;
 import org.influxdb.InfluxDBFactory;
 import org.influxdb.dto.BatchPoints;
 import org.influxdb.dto.Point;
-import org.influxdb.dto.Query;
 
 import java.util.concurrent.TimeUnit;
 
-public class InfluxClient {
+public class ExecutionTimeInfluxClient {
 
     private final InfluxDB connection;
     private static final String DB_NAME = "pet";
 
-    public InfluxClient() {
+    public ExecutionTimeInfluxClient() {
         connection = InfluxDBFactory.connect("http://192.168.56.20:8086");
     }
 
-    public void saveCpuUsage(double cpuUsage) {
+    public void saveExecutionTime(long executionTime, String methodName, String trafficProfile) {
 
-        Point point = Point.measurement("resources")
+        Point point = Point.measurement("execution_time")
                 .time(System.currentTimeMillis(), TimeUnit.MILLISECONDS)
-                .addField("cpu", cpuUsage)
+                .addField("duration", executionTime)
+                .addField("methodName", methodName)
+                .tag("trafficProfile", trafficProfile)
                 .build();
 
         BatchPoints batchPoints = createBatch();
         batchPoints.point(point);
         connection.write(batchPoints);
-    }
-
-    public void clearMeasurement(String measurement) {
-        connection.query(new Query("drop measurement " + measurement, DB_NAME));
     }
 
     private BatchPoints createBatch() {

@@ -11,13 +11,13 @@ public class MonitoringThread implements Runnable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RestService.class);
 
-    private InfluxClient influxClient = new InfluxClient();
+    private CpuUsageInfluxClient cpuUsageInfluxClient = new CpuUsageInfluxClient();
 
     @Override
     public void run() {
         OperatingSystemMXBean osBean = ManagementFactory.getPlatformMXBean(OperatingSystemMXBean.class);
         double systemCpuLoad = osBean.getSystemCpuLoad();
-        influxClient.saveCpuUsage(systemCpuLoad);
+        cpuUsageInfluxClient.saveCpuUsage(systemCpuLoad);
         LOGGER.info("CPU: " + systemCpuLoad);
     }
 }

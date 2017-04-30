@@ -19,7 +19,7 @@ import static com.zalas.masterthesis.aptmodel.TrafficProfile.*;
 public class MethodExecutionTime {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodExecutionTime.class);
-    private InfluxClient influxClient = new InfluxClient();
+    private ExecutionTimeInfluxClient executionTimeInfluxClient = new ExecutionTimeInfluxClient();
 
 
     @Around("execution(* com.zalas.masterthesis.application.controller.rest.WebController.*(..))")
@@ -53,7 +53,7 @@ public class MethodExecutionTime {
 
     private void saveExecutionTime(String methodName, long duration, TrafficProfile trafficProfile) {
         try {
-            influxClient.saveExecutionTime(duration, methodName, trafficProfile.toString());
+            executionTimeInfluxClient.saveExecutionTime(duration, methodName, trafficProfile.toString());
         } catch (Exception e) {
             LOGGER.error("Cannot save execution time in influx: "+ e.getMessage(), e);
         }

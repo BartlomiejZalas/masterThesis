@@ -29,7 +29,7 @@ public class MonitoringService {
     }
 
     private void clearOldData() {
-        new InfluxClient().clearMeasurement("resources");
+        new CpuUsageInfluxClient().clearMeasurement("resources");
     }
 
     private void validateIsThreadInactive() throws MonitoringServiceUsageException {
