@@ -3,14 +3,13 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>configurationserver</artifactId>
+        <artifactId>resourcemonitoring</artifactId>
         <groupId>com.zalas.masterthesis</groupId>
         <version>1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>service</artifactId>
-    <name>Master Thesis - Configuration Server - com.zalas.masterthesis.resourcemonitoringservice.service.Service</name>
 
+    <artifactId>resourcemonitoringservice</artifactId>
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -18,13 +17,20 @@
         </dependency>
         <dependency>
             <groupId>com.zalas.masterthesis</groupId>
-            <artifactId>api</artifactId>
+            <artifactId>resourcemonitoringapi</artifactId>
             <version>${project.version}</version>
+        </dependency>
+
+        <!--Influx-->
+        <dependency>
+            <groupId>org.influxdb</groupId>
+            <artifactId>influxdb-java</artifactId>
+            <version>2.5</version>
         </dependency>
     </dependencies>
 
     <build>
-        <finalName>configurationServer</finalName>
+        <finalName>resourceMonitoringService</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

@@ -26,6 +26,7 @@
         <module>configurationserver</module>
         <module>automatedPerformanceTuning</module>
         <module>aptmodel</module>
+        <module>resourcemonitoringservice</module>
     </modules>
 
     <properties>
