@@ -25,12 +25,12 @@ public class InfluxClient {
                 .tag("trafficProfile", trafficProfile)
                 .build();
 
-        BatchPoints batchPoints = creaeBatch();
+        BatchPoints batchPoints = createBatch();
         batchPoints.point(point);
         connection.write(batchPoints);
     }
 
-    private BatchPoints creaeBatch() {
+    private BatchPoints createBatch() {
         return BatchPoints
                     .database(DB_NAME)
                     .tag("async", "true")
