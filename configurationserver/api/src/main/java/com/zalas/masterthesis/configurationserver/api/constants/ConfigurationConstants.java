@@ -10,7 +10,7 @@ public enum ConfigurationConstants {
 
     BATCH(BATCHED, DIRECT),
     CACHE(CACHED, NO_CACHE),
-    THREADS(T100, T200, T300);
+    THREADS(T20, T50, T80);
 
     private final Set<Value> possibleValues;
 
@@ -23,7 +23,7 @@ public enum ConfigurationConstants {
     }
 
     public enum Value {
-        BATCHED, DIRECT, CACHED, NO_CACHE, T100, T200, T300;
+        BATCHED, DIRECT, CACHED, NO_CACHE, T20, T50, T80;
 
         public static boolean contains(String test) {
             for (Value c : Value.values()) {

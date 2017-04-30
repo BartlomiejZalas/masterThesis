@@ -17,7 +17,7 @@ public class DecisionModule {
         ApplicationConfiguration applicationConfiguration = new ApplicationConfiguration(
                 ConfigurationConstants.Value.BATCHED,
                 ConfigurationConstants.Value.NO_CACHE,
-                ConfigurationConstants.Value.T100
+                ConfigurationConstants.Value.T20
         );
         Rule bestRule = aptsRuleBasedEngine.getBestRule(issueToHandle, applicationConfiguration);
         bestRule.executeAction();

@@ -19,7 +19,7 @@ public class ConfigurationService implements InitializingBean {
     public void afterPropertiesSet() throws Exception {
         configuration.put(BATCH, ConfigurationConstants.Value.DIRECT);
         configuration.put(CACHE, ConfigurationConstants.Value.NO_CACHE);
-        configuration.put(THREADS, ConfigurationConstants.Value.T100);
+        configuration.put(THREADS, ConfigurationConstants.Value.T20);
     }
 
     public void change(String configurationKeyString, String newValueString) throws ConfigurationException {
