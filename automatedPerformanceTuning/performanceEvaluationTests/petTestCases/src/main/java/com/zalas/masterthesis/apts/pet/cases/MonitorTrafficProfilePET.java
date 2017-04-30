@@ -4,13 +4,7 @@ import com.zalas.masterthesis.aptmodel.TrafficProfile;
 import com.zalas.masterthesis.apts.pet.framework.annotations.Pet;
 import com.zalas.masterthesis.apts.pet.framework.annotations.PetCase;
 import com.zalas.masterthesis.apts.pet.framework.assertions.PerformanceIssue;
-import org.influxdb.InfluxDB;
-import org.influxdb.InfluxDBFactory;
-import org.influxdb.dto.Query;
-import org.influxdb.dto.QueryResult;
-
-import java.util.List;
-import java.util.Map;
+import com.zalas.masterthesis.apts.pet.utils.MeasurementsInfluxDbClient;
 
 import static com.zalas.masterthesis.aptmodel.TrafficProfile.IMMUTABLE;
 import static com.zalas.masterthesis.aptmodel.TrafficProfile.MUTABLE;
