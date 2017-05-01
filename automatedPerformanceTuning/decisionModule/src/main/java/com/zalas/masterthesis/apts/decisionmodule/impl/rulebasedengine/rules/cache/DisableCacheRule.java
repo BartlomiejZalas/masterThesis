@@ -34,7 +34,7 @@ public class DisableCacheRule implements Rule {
     }
 
     private boolean isCacheEnabled(ApplicationConfiguration currentConfiguration) {
-        return currentConfiguration.getCache().equals(Value.NO_CACHE);
+        return currentConfiguration.getCache().equals(Value.CACHED);
     }
 
     @Override
