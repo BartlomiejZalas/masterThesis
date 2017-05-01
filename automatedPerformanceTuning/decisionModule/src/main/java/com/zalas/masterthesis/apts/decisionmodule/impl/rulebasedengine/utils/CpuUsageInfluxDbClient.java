@@ -1,11 +1,9 @@
 package com.zalas.masterthesis.apts.decisionmodule.impl.rulebasedengine.utils;
 
-import com.zalas.masterthesis.aptmodel.TrafficProfile;
 import org.influxdb.InfluxDB;
 import org.influxdb.InfluxDBFactory;
 import org.influxdb.dto.Query;
 import org.influxdb.dto.QueryResult;
-import sun.plugin2.gluegen.runtime.CPU;
 
 import java.util.List;
 
@@ -14,7 +12,7 @@ import static java.lang.String.format;
 public class CpuUsageInfluxDbClient {
     private final InfluxDB connection;
     private static final String DB_NAME = "pet";
-    private static final String COUNT_TP_TEMP ="select mean(cpu) from resources WHERE time > now() - %ds";
+    private static final String COUNT_TP_TEMP = "select mean(cpu) from resources WHERE time > now() - %ds";
 
     public CpuUsageInfluxDbClient() {
         connection = InfluxDBFactory.connect("http://192.168.56.20:8086");
