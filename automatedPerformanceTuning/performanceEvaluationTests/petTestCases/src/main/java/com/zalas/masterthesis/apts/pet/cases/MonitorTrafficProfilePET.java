@@ -4,7 +4,7 @@ import com.zalas.masterthesis.aptmodel.TrafficProfile;
 import com.zalas.masterthesis.apts.pet.framework.annotations.Pet;
 import com.zalas.masterthesis.apts.pet.framework.annotations.PetCase;
 import com.zalas.masterthesis.apts.pet.framework.assertions.PerformanceIssue;
-import com.zalas.masterthesis.apts.pet.utils.MeasurementsInfluxDbClient;
+import com.zalas.masterthesis.apts.pet.utils.ExecutionTimeInfluxDbClient;
 
 import static com.zalas.masterthesis.aptmodel.TrafficProfile.IMMUTABLE;
 import static com.zalas.masterthesis.aptmodel.TrafficProfile.MUTABLE;
@@ -13,7 +13,7 @@ import static com.zalas.masterthesis.aptmodel.TrafficProfile.MUTABLE;
 public class MonitorTrafficProfilePET {
 
     private static final int MONITOR_INTERVAL = 10;
-    private MeasurementsInfluxDbClient measurementsInfluxDbClient = new MeasurementsInfluxDbClient();
+    private ExecutionTimeInfluxDbClient executionTimeInfluxDbClient = new ExecutionTimeInfluxDbClient();
 
     @PetCase(durationInSec = 60, monitorIntervalInSec = MONITOR_INTERVAL)
     public void monitorMutabilityOfTraffic_shouldReportIssueWhenChanged() {
@@ -23,8 +23,8 @@ public class MonitorTrafficProfilePET {
     }
 
     private TrafficProfile getTrafficProfile(int monitorInterval) {
-        int countImmutable = measurementsInfluxDbClient.getCountForTrafficProfile(IMMUTABLE, monitorInterval);
-        int countMutable = measurementsInfluxDbClient.getCountForTrafficProfile(MUTABLE, monitorInterval);
+        int countImmutable = executionTimeInfluxDbClient.getCountForTrafficProfile(IMMUTABLE, monitorInterval);
+        int countMutable = executionTimeInfluxDbClient.getCountForTrafficProfile(MUTABLE, monitorInterval);
         return countImmutable >= countMutable ? IMMUTABLE : MUTABLE;
     }
 }
