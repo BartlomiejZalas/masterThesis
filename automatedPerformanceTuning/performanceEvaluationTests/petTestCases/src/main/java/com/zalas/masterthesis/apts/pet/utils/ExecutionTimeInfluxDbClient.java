@@ -15,6 +15,8 @@ public class ExecutionTimeInfluxDbClient {
     private static final String DB_NAME = "pet";
     private static final String COUNT_TP_TEMP =
             "select count(*) from execution_time WHERE time > now() - %ds  and trafficProfile='%s'";
+    private static final String COUNT_INSERTS =
+            "select count(*) from execution_time WHERE time > now() - %ds  and methodName='add'";
 
     public ExecutionTimeInfluxDbClient() {
         connection = InfluxDBFactory.connect("http://192.168.56.20:8086");
@@ -22,6 +24,15 @@ public class ExecutionTimeInfluxDbClient {
 
     public int getCountForTrafficProfile(TrafficProfile trafficProfile, int monitorInterval) {
         Query query = new Query(format(COUNT_TP_TEMP, monitorInterval, trafficProfile.toString()), DB_NAME);
+        return getCount(query);
+    }
+
+    public int getInserts(int monitorInterval) {
+        Query query = new Query(format(COUNT_INSERTS, monitorInterval), DB_NAME);
+        return getCount(query);
+    }
+
+    private int getCount(Query query) {
         QueryResult queryResult = connection.query(query);
         List<QueryResult.Series> series = queryResult.getResults().get(0).getSeries();
         if (series == null) {
