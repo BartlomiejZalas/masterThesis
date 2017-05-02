@@ -5,6 +5,7 @@ import com.zalas.masterthesis.apts.decisionmodule.main.DecisionModule;
 import com.zalas.masterthesis.apts.decisionmodule.main.DecisionModuleFactory;
 import com.zalas.masterthesis.apts.pet.framework.PerformanceIssueTO;
 import com.zalas.masterthesis.apts.pet.framework.PetCaseRunner;
+import com.zalas.masterthesis.configurationserver.api.client.ConfigurationClientException;
 import com.zalas.masterthesis.resourcemonitoring.api.ResourceMonitoringServiceClient;
 
 import java.util.Set;
@@ -28,9 +29,9 @@ public class AptsManger {
         monitoringServiceClient.stop();
     }
 
-    private void handleIssues(Set<PerformanceIssueTO> performanceIssueTOs) {
+    private void handleIssues(Set<PerformanceIssueTO> performanceIssueTOs) throws ConfigurationClientException {
         for (PerformanceIssueTO issue : performanceIssueTOs) {
-//            decisionModule.performDecision(new IssueToHandle(issue.getMetric(), issue.getStatus()));
+            decisionModule.performDecision(new IssueToHandle(issue.getMetric(), issue.getStatus()));
         }
     }
 
