@@ -15,7 +15,7 @@ public class MonitorTrafficProfilePET {
     private static final int MONITOR_INTERVAL = 10;
     private ExecutionTimeInfluxDbClient executionTimeInfluxDbClient = new ExecutionTimeInfluxDbClient();
 
-    @PetCase(durationInSec = 60, monitorIntervalInSec = MONITOR_INTERVAL)
+    @PetCase(enabled = false, durationInSec = 60, monitorIntervalInSec = MONITOR_INTERVAL)
     public void monitorMutabilityOfTraffic_shouldReportIssueWhenChanged() {
         TrafficProfile trafficProfile = getTrafficProfile(MONITOR_INTERVAL);
 

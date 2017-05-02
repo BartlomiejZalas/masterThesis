@@ -5,7 +5,6 @@ import com.zalas.masterthesis.apts.decisionmodule.api.Rule;
 import com.zalas.masterthesis.apts.decisionmodule.impl.RuleBasedEngine;
 import com.zalas.masterthesis.configurationserver.api.client.ConfigurationClient;
 import com.zalas.masterthesis.configurationserver.api.client.ConfigurationClientException;
-import com.zalas.masterthesis.configurationserver.api.constants.ConfigurationConstants;
 import com.zalas.masterthesis.configurationserver.api.model.ApplicationConfiguration;
 
 import static com.zalas.masterthesis.configurationserver.api.constants.ConfigurationConstants.*;

@@ -5,6 +5,7 @@ import com.zalas.masterthesis.configurationserver.api.model.ApplicationConfigura
 import org.springframework.beans.factory.InitializingBean;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,7 +29,7 @@ public class ConfigurationService implements InitializingBean {
         ConfigurationConstants configurationConstantKey = ConfigurationConstants.valueOf(configurationKeyString);
         ConfigurationConstants.Value value = ConfigurationConstants.Value.valueOf(newValueString);
         validateIsAllowedValueForKey(configurationConstantKey, value);
-
+        System.out.println(new Date().toString() + "Configuration changed:" + configurationConstantKey + ":"+value);
         configuration.put(configurationConstantKey, value);
     }
 
