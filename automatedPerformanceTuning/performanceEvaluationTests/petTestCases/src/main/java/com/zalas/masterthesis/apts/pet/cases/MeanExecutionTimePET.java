@@ -2,17 +2,27 @@ package com.zalas.masterthesis.apts.pet.cases;
 
 import com.zalas.masterthesis.apts.pet.framework.annotations.Pet;
 import com.zalas.masterthesis.apts.pet.framework.annotations.PetCase;
+import com.zalas.masterthesis.apts.pet.utils.ExecutionTimeInfluxDbClient;
 
 import static com.zalas.masterthesis.apts.pet.framework.assertions.PetAssert.assertKpiLessThan;
 
 @Pet
 public class MeanExecutionTimePET {
 
-    @PetCase(enabled = false, durationInSec = 60, monitorIntervalInSec = 20)
-    public void meanExecutionTime_shouldBeOnAcceptableLevel() throws Exception {
-        double meanExecutionTimeFromLastOneMinute = 1200.5641;
+    private static final int MONITORING_INTERVAL = 20;
+    private ExecutionTimeInfluxDbClient executionTimeInfluxDbClient = new ExecutionTimeInfluxDbClient();
 
-        assertKpiLessThan("executionTime", meanExecutionTimeFromLastOneMinute, 1200.0);
+
+    @PetCase(enabled = false, durationInSec = 60, monitorIntervalInSec = MONITORING_INTERVAL)
+    public void meanExecutionTime_shouldBeOnAcceptableLevel() throws Exception {
+        double meanExecutionTime = getMeanExecutionTimeInMillis(MONITORING_INTERVAL);
+
+        System.out.println(meanExecutionTime);
+        assertKpiLessThan("executionTime", meanExecutionTime, 1200.0);
+    }
+
+    private double getMeanExecutionTimeInMillis(int monitoringInterval) {
+        return executionTimeInfluxDbClient.getMeanExecutionTime(3600)/1000000;
     }
 
 }
