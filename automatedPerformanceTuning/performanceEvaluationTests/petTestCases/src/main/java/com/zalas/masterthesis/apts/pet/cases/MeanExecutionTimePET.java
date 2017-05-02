@@ -17,7 +17,6 @@ public class MeanExecutionTimePET {
     public void meanExecutionTime_shouldBeOnAcceptableLevel() throws Exception {
         double meanExecutionTime = getMeanExecutionTimeInMillis(MONITORING_INTERVAL);
 
-        System.out.println(meanExecutionTime);
         assertKpiLessThan("executionTime", meanExecutionTime, 1200.0);
     }
 
