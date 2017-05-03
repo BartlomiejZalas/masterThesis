@@ -7,26 +7,34 @@ import com.zalas.masterthesis.apts.pet.framework.PerformanceIssueTO;
 import com.zalas.masterthesis.apts.pet.framework.PetCaseRunner;
 import com.zalas.masterthesis.configurationserver.api.client.ConfigurationClientException;
 import com.zalas.masterthesis.resourcemonitoring.api.ResourceMonitoringServiceClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Set;
 
 public class AptsManger {
 
+    private static final Logger LOG = LoggerFactory.getLogger(AptsManger.class);
+
     private final DecisionModule decisionModule = new DecisionModuleFactory().create();
     private final PetCaseRunner petCaseRunner = new PetCaseRunner("com.zalas.masterthesis.apts.pet.cases");
     private final ResourceMonitoringServiceClient monitoringServiceClient = new ResourceMonitoringServiceClient();
 
-    public void run() throws Exception{
-        monitoringServiceClient.start();
-        petCaseRunner.start();
 
-        while(petCaseRunner.isAlive()) {
-            Thread.sleep(1000);
-            Set<PerformanceIssueTO> newIssues = petCaseRunner.getNewIssues();
-            System.out.println(newIssues);
-            handleIssues(newIssues);
+    public void run() throws Exception {
+        try {
+            monitoringServiceClient.start();
+            petCaseRunner.start();
+
+            while (petCaseRunner.isAlive()) {
+                Thread.sleep(1000);
+                Set<PerformanceIssueTO> newIssues = petCaseRunner.getNewIssues();
+                LOG.info("Reported issues: " + newIssues);
+                handleIssues(newIssues);
+            }
+        } finally {
+            monitoringServiceClient.stop();
         }
-        monitoringServiceClient.stop();
     }
 
     private void handleIssues(Set<PerformanceIssueTO> performanceIssueTOs) throws ConfigurationClientException {

@@ -6,7 +6,7 @@ import com.zalas.masterthesis.configurationserver.api.model.ApplicationConfigura
 
 public class EmptyRule {
 
-    private static Rule instance = createDoNothingRule();
+    private static Rule instance = new DoNothingRule();
 
     private EmptyRule() {
     }
@@ -15,22 +15,21 @@ public class EmptyRule {
         return instance;
     }
 
-    private static Rule createDoNothingRule() {
-        return new Rule() {
-            @Override
-            public boolean isRuleApplicable(IssueToHandle issueToHandle, ApplicationConfiguration currentConfiguration) {
-                return true;
-            }
+    static class DoNothingRule implements Rule {
+        @Override
+        public boolean isRuleApplicable(IssueToHandle issueToHandle, ApplicationConfiguration currentConfiguration) {
+            return true;
+        }
 
-            @Override
-            public void executeAction() {
+        @Override
+        public void executeAction() {
 
-            }
+        }
 
-            @Override
-            public int getPriority() {
-                return 0;
-            }
-        };
+        @Override
+        public int getPriority() {
+            return 0;
+        }
     }
+
 }

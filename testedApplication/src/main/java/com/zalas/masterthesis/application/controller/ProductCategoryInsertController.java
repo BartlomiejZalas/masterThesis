@@ -14,20 +14,22 @@ import static com.zalas.masterthesis.configurationserver.api.constants.Configura
 import static com.zalas.masterthesis.configurationserver.api.constants.ConfigurationConstants.Value;
 
 @Controller
-public class ProductCategoryCreatorController {
+public class ProductCategoryInsertController {
 
     @Autowired
     private ProductCategoryCreatorServiceBatched productCategoryCreatorServiceBatched;
     @Autowired
     private ProductCategoryCreatorServiceDirect productCategoryCreatorServiceDirect;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ProductCategoryCreatorController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProductCategoryInsertController.class);
 
     public ProductCreatorService getService() {
         try {
             ConfigurationClient configurationClient = new ConfigurationClient();
             Value batchComponentType = configurationClient.getConfiguration(BATCH);
-            return (batchComponentType == Value.BATCHED) ? productCategoryCreatorServiceBatched : productCategoryCreatorServiceDirect;
+            ProductCreatorService productCreatorService = (batchComponentType == Value.BATCHED) ? productCategoryCreatorServiceBatched : productCategoryCreatorServiceDirect;
+            LOGGER.info("Used redundant component: " + productCreatorService.getClass().getSimpleName());
+            return productCreatorService;
         } catch (ConfigurationClientException e) {
             LOGGER.warn("Cannot get configuration for Batch component - Direct used", e);
             return productCategoryCreatorServiceDirect;

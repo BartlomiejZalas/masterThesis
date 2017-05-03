@@ -39,6 +39,5 @@ public class PetCaseInvokeWorker implements Runnable {
 
     private void notifyAboutNewIssue(PerformanceIssue e) {
         performanceIssues.add(new PerformanceIssueTO(e.getMetric(), e.getReason()));
-        System.out.println("Failed testCase: " + e.getMetric() + " reason: " + e.getReason());
     }
 }

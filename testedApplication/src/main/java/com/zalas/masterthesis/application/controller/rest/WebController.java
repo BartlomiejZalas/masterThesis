@@ -2,7 +2,7 @@ package com.zalas.masterthesis.application.controller.rest;
 
 import com.google.common.collect.Lists;
 import com.zalas.masterthesis.application.controller.ProductCategoryCacheController;
-import com.zalas.masterthesis.application.controller.ProductCategoryCreatorController;
+import com.zalas.masterthesis.application.controller.ProductCategoryInsertController;
 import com.zalas.masterthesis.application.model.ProductCategory;
 import com.zalas.masterthesis.application.repo.ProductCategoryRepository;
 import com.zalas.masterthesis.application.service.creator.DummyCategoryCreator;
@@ -27,7 +27,7 @@ public class WebController {
     @Autowired
     private ProductCategoryCacheController productCategoryCacheController;
     @Autowired
-    private ProductCategoryCreatorController productCategoryCreatorController;
+    private ProductCategoryInsertController productCategoryInsertController;
     @Autowired
     private CpuExhaustor cpuExhaustor;
 
@@ -40,7 +40,7 @@ public class WebController {
 
     @PutMapping("/add")
     public ResponseEntity<ProductCategory> add(@RequestParam("categoryName") String categoryName) {
-        ProductCategory createdCategory = productCategoryCreatorController.getService().add(categoryName);
+        ProductCategory createdCategory = productCategoryInsertController.getService().add(categoryName);
         return new ResponseEntity<>(createdCategory, HttpStatus.OK);
     }
 

@@ -27,7 +27,7 @@ public class ProductCategoryCacheController {
         try {
             ConfigurationClient configurationClient = new ConfigurationClient();
             Value cacheComponentType = configurationClient.getConfiguration(CACHE);
-            LOGGER.info("Using redundant component: " +cacheComponentType);
+            LOGGER.info("Used redundant component: " + cacheComponentType);
             return (cacheComponentType == Value.CACHED) ? cachedService : noCacheService;
         } catch (ConfigurationClientException e) {
             LOGGER.warn("Cannot get configuration for Cache component - NoCache used", e);

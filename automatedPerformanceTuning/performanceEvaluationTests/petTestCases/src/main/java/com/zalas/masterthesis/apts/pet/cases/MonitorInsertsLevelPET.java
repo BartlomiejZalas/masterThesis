@@ -25,7 +25,6 @@ public class MonitorInsertsLevelPET {
     private InsertsLevel getInsertsLevel(int monitorInterval) {
         int inserts = executionTimeInfluxDbClient.getInserts(monitorInterval);
         double insertsPerSeconds = (double) inserts / (double) monitorInterval;
-        System.out.println(insertsPerSeconds +"="+(double) inserts+ "/"+(double) monitorInterval );
         return (insertsPerSeconds < 10) ? LOW : HIGH;
     }
 }
