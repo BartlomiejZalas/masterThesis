@@ -2,6 +2,8 @@ package com.zalas.masterthesis.configurationserver.service;
 
 import com.zalas.masterthesis.configurationserver.api.constants.ConfigurationConstants;
 import com.zalas.masterthesis.configurationserver.api.model.ApplicationConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 
 import java.util.Arrays;
@@ -16,11 +18,14 @@ public class ConfigurationService implements InitializingBean {
 
     private Map<ConfigurationConstants, ConfigurationConstants.Value> configuration = new HashMap<>();
 
+    private static final Logger LOG = LoggerFactory.getLogger(ConfigurationService.class);
+
     @Override
     public void afterPropertiesSet() throws Exception {
         configuration.put(BATCH, ConfigurationConstants.Value.DIRECT);
         configuration.put(CACHE, ConfigurationConstants.Value.NO_CACHE);
-        configuration.put(THREADS, ConfigurationConstants.Value.T20);
+        configuration.put(THREADS, ConfigurationConstants.Value.T50);
+        LOG.info("Default configuration created: " + configuration);
     }
 
     public void change(String configurationKeyString, String newValueString) throws ConfigurationException {

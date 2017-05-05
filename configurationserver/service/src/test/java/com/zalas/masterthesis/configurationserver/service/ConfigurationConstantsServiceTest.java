@@ -22,7 +22,7 @@ public class ConfigurationConstantsServiceTest {
 
         assertEquals(DIRECT.toString(), configurationService.get(BATCH.toString()));
         assertEquals(NO_CACHE.toString(), configurationService.get(CACHE.toString()));
-        assertEquals(T20.toString(), configurationService.get(THREADS.toString()));
+        assertEquals(T50.toString(), configurationService.get(THREADS.toString()));
     }
 
     @Test(expected = ConfigurationException.class)

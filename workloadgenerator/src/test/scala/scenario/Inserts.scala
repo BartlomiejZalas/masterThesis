@@ -7,7 +7,7 @@ import scala.concurrent.duration._
 class Inserts extends Simulation {
 
   val httpConf = http
-    .baseURL("http://localhost:8080/testedApplication/")
+    .baseURL("http://localhost:8000/testedApplication/")
     .acceptHeader("text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
 
   val scn = scenario("Inserts")

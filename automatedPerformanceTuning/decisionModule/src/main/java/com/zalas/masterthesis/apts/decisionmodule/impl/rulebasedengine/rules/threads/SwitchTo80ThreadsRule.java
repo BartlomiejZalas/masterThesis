@@ -36,7 +36,9 @@ public class SwitchTo80ThreadsRule implements Rule {
     }
 
     private boolean cpuUsageIsLow() {
-        return cpuUsageInfluxDbClient.getMeanCpuUsage(5) <= 0.8;
+        double meanCpuUsage = cpuUsageInfluxDbClient.getMeanCpuUsage(5);
+        System.out.println("Cpu usage: "+meanCpuUsage);
+        return meanCpuUsage <= 0.8;
     }
 
     @Override

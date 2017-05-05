@@ -30,6 +30,7 @@ public class MonitoringService {
 
     private void clearOldData() {
         new CpuUsageInfluxClient().clearMeasurement("resources");
+        new CpuUsageInfluxClient().clearMeasurement("execution_time");
     }
 
     private void validateIsThreadInactive() throws MonitoringServiceUsageException {

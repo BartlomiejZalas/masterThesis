@@ -49,7 +49,7 @@ class PortRedirector extends AbstractHandler {
                 case T20:
                     return 8020;
                 case T50:
-                    return 8050;
+                    return 8051;
                 case T80:
                     return 8080;
                 default:
