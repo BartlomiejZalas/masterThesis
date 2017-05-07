@@ -30,10 +30,6 @@ public class PetAssert {
         }
     }
 
-    private static double calculatePercentageDeviation(Double currentValue, Double expectedValue) {
-        return Math.abs((currentValue-expectedValue) / expectedValue * 100);
-    }
-
     public static void assertKpiEqual(String kpiName, String expected, String current) {
         try {
             assertThat(expected, equalTo(current));
