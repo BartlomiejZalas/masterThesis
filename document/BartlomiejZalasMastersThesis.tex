@@ -26,7 +26,6 @@
 \usepackage[rightcaption]{sidecap}
 \usepackage{graphicx} 
 \usepackage{minted}
-
 \graphicspath{ {images/} }
 
 
@@ -838,27 +837,73 @@ MonitorTrafficProfilePET & trafficProfile & MUTABLE, IMMUTABLE \\
 
 \subsubsection{Decision Module} \label{dm}
 
-The role of the \textit{Decision Module} is to perform performance tuning actions on the base of reported performance issues current configuration of the tested application and current resource consumption on the node where the tested application is deployed. 
+The role of the \textit{Decision Module} is to perform performance tuning actions on the base of reported performance issues, current configuration of the tested application and current resource consumption on the node where the tested application is deployed (see Figure \ref{decisionmodule}). 
 
 \begin{figure}[!htb]
 \centering
-\includegraphics[width=1\textwidth]{DecisionModuleDiagram}
-\caption{\textit{Performing Tuning Action by Decision Module}} \label{issue}
+\includegraphics[width=0.9\textwidth]{DecisionModuleDiagram}
+\caption{\textit{Performing Tuning Action by Decision Module}} \label{decisionmodule}
 \end{figure}
 
-Rules
+Decision module is triggered to analyze above factors and perform action by reported performance issues. Then, Decision Module asks \textit{Configuration Service} and \textit{Resource Monitoring Service} to retrieve information about current configuration of the tested application and resource consumption on the tested application node. Next, decision about the best rule is preformed and action related to the best rule is executed (See Figure \ref{dmsequence}). 
 
-\noindent\textbf{Disable Batch Rule} - rule changes configuration provided by the \textit{Configuration Service} in order to enable usage of Batched Redundant Component by the tested application. 
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=1\textwidth]{DecisionModuleSequenceDiagram}
+\caption{\textit{Sequence diagram presenting Decision Module work flow}} \label{dmsequence}
+\end{figure}
 
-\noindent Applicability conditions: 
+Decision about action to perform is made using rule based system. Implemented rule based system is consist of two parts: set of  the rules and inference engine. The set of rules is related to performance tuning of the tested application. Each rule fulfill contract defined in the form of \textit{Rule} interface presented on the Listing \ref{irule}.
 
-\begin{itemize}
-\item isInsertsLevel   
-\item  isInsertsLevelLow  
-\item  isBatchEnabled 
-\end{itemize}
-\noindent Action: change the configuration of parameter: BATCH to value: DIRECT 
+\begin{listing}[ht]\begin{minted}[fontsize=\footnotesize]{java}
+public interface Rule {
+    boolean isRuleApplicable(
+    	IssueToHandle issueToHandle, 
+    	ApplicationConfiguration currentConfiguration
+    );
+    void executeAction();
+    int getPriority();
+}
+\end{minted}
+\caption{Rule interface} \label{irule}
+\end{listing}
 
+The interface enforce on rules to define applicability condition, action to perform when condition is satisfied and priority.
+
+Below, all implemented rules are presented.  
+
+\noindent\textbf{Disable Batch Rule} \\
+Rule changes configuration provided by the \textit{Configuration Service} in order to disable batching mechanism provided by Batched Redundant Component and enable Direct Redundant Component by the tested application (see the Table \ref{ruledisablebatch}).
+
+\begin{table}[!htb]
+\def\arraystretch{1.5}
+\caption{\textit{Details of the Disable Batch Rule}} \label{ruledisablebatch}
+\begin{tabularx}{\textwidth}{p{2.1cm}|X}
+
+\textbf{Applicability Condition:} & \textbf{issueRelatedToInsertsLevel} \textit{AND} \newline
+\textbf{trafficProfileIsLow} \textit{AND} \newline
+\textbf{batchAlreadyEnabled} \\ \hline
+
+\textbf{Subconditions Definition:} & \textbf{issueRelatedToInsertsLevel} -  Reported performance issue metric equals to "InsertsLevel"  \\
+& \textbf{trafficProfileIsLow} - Reported performance issue status equals to "Low" \\
+& \textbf{batchAlreadyEnabled} - Current application configuration parameter: "BATCH" equals to BATCHED \\ \hline
+
+\textbf{Action:} & Change the configuration of parameter: BATCH to value: DIRECT\\ \hline
+\textbf{Priority:} & 1\\
+\end{tabularx}
+\end{table}
+
+Second part of the implemented rule based system is inference engine. The role of the engine is to choose the best rule from the set of provided rules and perform action related to chosen rule. In order to achieve this the algorithm presented in the Figure \ref{dmalgorithm} is used. 
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=0.55\textwidth]{DecisionModuleActivityDiagram}
+\caption{\textit{The algorithm of selecting best rule by implemented rule based system}} \label{dmalgorithm}
+\end{figure}
+
+First step of the algorithm is to choose only applicable rules from the set of rules. In case when there are applicable rules - rule with the highest priority is chosen as best rule. If there is no applicable rules "Do Nothing Rule" is chosen.
+
+\subsubsection{APTS Manager} \label{dm}
 
 \section{Solution evaluation} 
 \subsection{Cache Redundant Component Evaluation}
