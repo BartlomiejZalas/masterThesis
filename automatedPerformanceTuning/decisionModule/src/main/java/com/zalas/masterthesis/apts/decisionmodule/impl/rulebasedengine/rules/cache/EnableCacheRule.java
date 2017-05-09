@@ -38,12 +38,12 @@ public class EnableCacheRule implements Rule {
 
     @Override
     public void executeAction() {
-//        try {
-//            configurationClient.setConfiguration(ConfigurationConstants.CACHE, ConfigurationConstants.Value.CACHED);
-//            System.out.println("action: enable cache");
-//        } catch (ConfigurationClientException e) {
-//            System.out.println(e.getMessage());
-//        }
+        try {
+            configurationClient.setConfiguration(ConfigurationConstants.CACHE, ConfigurationConstants.Value.CACHED);
+            System.out.println("action: enable cache");
+        } catch (ConfigurationClientException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     @Override

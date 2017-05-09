@@ -494,7 +494,7 @@ Redundant components, by definition, provide the same services but with differen
 Paging is database query realization in which in a single select query only part (page) of records is returned instead of querying all records from database. Table \ref{pagingcomponents} shows comparison of two proposed redundant components: Paging and No Paging.  
 \begin{table}[!htb]
 \def\arraystretch{1.5}
-\caption{\textit{Paging redundant components comparision}}\label{pagingcomponents}
+\caption{\textit{Paging redundant components comparison}}\label{pagingcomponents}
 \begin{tabularx}{\textwidth}{p{3cm}|X|X}
   \textbf{Category} &\textbf{Paging} & \textbf{No Paging} \\
 \hline
@@ -528,7 +528,7 @@ Top performance circumstances & When impossible to query all records by No Pagin
         \end{axis}
 \end{tikzpicture}
 
-\caption{\textit{Execution time comparision for different page sizes for 10000 product categories}} \label{fig:pagesizetime}
+\caption{\textit{Execution time comparison for different page sizes for 10000 product categories}} \label{fig:pagesizetime}
 
 \end{figure}
 
@@ -541,7 +541,7 @@ The paging idea is more related to data presentation layer and user satisfaction
 Next redundant component candidate is cache. There exist many levels of abstraction on which cache can be applied to a web application - request level cache, method level cache, global data cache. For goals of this work method-level cache of service responsible for managing database operations was chosen - in general such operations are time consuming. The cache saves returned value from method and uses input parameters as cache key. Table \ref{cachecomponents} shows comparison of two proposed redundant components: Cache (methods are cached) and No Cache (cache is disabled).
 \begin{table}[!htb]
 \def\arraystretch{1.5}
-\caption{\textit{Cache and No Cache redundant components comparision.}}\label{cachecomponents}
+\caption{\textit{Cache and No Cache redundant components comparison.}}\label{cachecomponents}
 \begin{tabularx}{\textwidth}{p{3cm}|X|X}
   \textbf{Category} &\textbf{Cache} & \textbf{No Cache} \\
 \hline
@@ -558,7 +558,7 @@ Table \ref{batchedcomponents} shows comparison of two proposed redundant compone
 
 \begin{table}[!htb]
 \def\arraystretch{1.5}
-\caption{\textit{Paging redundant components comparision.}}\label{batchedcomponents}
+\caption{\textit{Batched and Direct redundant components comparison.}}\label{batchedcomponents}
 \begin{tabularx}{\textwidth}{p{3cm}|X|X}
   \textbf{Category} &\textbf{Batched} & \textbf{No Batched} \\
 \hline
@@ -588,7 +588,7 @@ Efficiency & High & Low\\
             };
         \end{axis}
 \end{tikzpicture}
-\caption{\textit{Execution time comparision for Batched and Direct redundant components for batch with size = 10 and number of records = 20}} \label{fig:batchedtime}
+\caption{\textit{Execution time comparison for Batched and Direct redundant components for batch with size = 10 and number of records = 20}} \label{fig:batchedtime}
 \end{figure}
 
 The components comparison in Table \ref{batchedcomponents} shows different characteristic of both redundant components. Batched one is in general more efficient and faster than No Batched. However, process of batching records introduces delays in real effect of batched statement (equal to time in which given records sf "frozen" in the batch). In proposed implementation batched statement will be fired when batch is full. Both facts lead to conclusion that Batched component should be used only in circumstances when such delay is acceptable by users or when number of inserts into a database is so high that efficiency improvement is needed. Another thing is the more frequent inserts into a database (faster filling up of batch) the smaller delay. Therefore Batched component should be used only in case when number of inserts into a database is very high. Otherwise Direct component should be used. Above considerations justify choice of Batched/Direct redundant components to be used in the system.   
@@ -868,12 +868,44 @@ public interface Rule {
 \caption{Rule interface} \label{irule}
 \end{listing}
 
-The interface enforce on rules to define applicability condition, action to perform when condition is satisfied and priority.
+The interface enforce on rules to define the following methods: 
+\begin{itemize}
+\item isApplicable - method evaluates boolean condition in order to decide if current rule is applicable for the reported performance issue.   
+\item executeAction - action to perform when given rule is typed by the system as the best rule.   
+\item getPriority - method returns priority of a given rule - the higher number - the higher priority.  
+\end{itemize}
 
-Below, all implemented rules are presented.  
+In order to perform automated tuning of the tested application based on elements defined in the Chapter \ref{realization} the following rules are implemented: \textit{Enable Batch Rule}, \textit{Disable Batch Rule}, \textit{Enable Cache Rule}, \textit{Disable Cache Rule}, \textit{Switch To 20 Threads Rule}, \textit{Switch To 50 Threads Rule}, \textit{Switch To 80 Threads Rule}. Below, all implemented rules are presented in details.  
 
+\vspace{5mm}
+
+%-------------ENABLE BATCH RULE START-----------------
+\noindent\textbf{Enable Batch Rule} \\
+The rule enables batching mechanism provided by Batched redundant component in the tested application when the number of  inserts performed by the tested application is classified by the MonitorIsertsLevelPET test case as "high". Enabling batch mechanism should decrease total time of inserts requests. Details of the rule are presented in the Table \ref{ruleenablebatch}.
+
+\begin{table}[!htb]
+\def\arraystretch{1.5}
+\caption{\textit{Details of the Enable Batch Rule}} \label{ruleenablebatch}
+\begin{tabularx}{\textwidth}{p{2.1cm}|X}
+
+\textbf{Applicability Condition:} & \textbf{isIssueRelatedInsertsLevel} \textit{AND} \newline
+\textbf{isInsertsLevelHigh} \textit{AND} \newline
+\textbf{isBatchDisabled} \\ \hline
+
+\textbf{Subconditions Definition:} & \textbf{isIssueRelatedInsertsLevel} -  Reported performance issue metric is equal to "InsertsLevel"  \\
+& \textbf{isInsertsLevelHigh} - Reported performance issue status is equal to "High" \\
+& \textbf{isBatchDisabled} - Current application configuration parameter "BATCH" is equal to "DIRECT" \\ \hline
+
+\textbf{Action:} & Change the configuration of parameter "BATCH" to value "BATCHED" \\ \hline
+\textbf{Priority:} & 1\\
+\end{tabularx}
+\end{table}
+
+%-------------ENABLE BATCH RULE END-----------------
+\vspace{5mm}
+%-------------DISABLE BATCH RULE START-----------------
 \noindent\textbf{Disable Batch Rule} \\
-Rule changes configuration provided by the \textit{Configuration Service} in order to disable batching mechanism provided by Batched Redundant Component and enable Direct Redundant Component by the tested application (see the Table \ref{ruledisablebatch}).
+The rule disables batching mechanism provided by Batched redundant component. Instead Direct redundant component is used.  The rule is applicable when the number of inserts performed by the tested application is classified by the MonitorIsertsLevelPET test case as "low". Disabling batch mechanism should reduce delay introduced by baych mechanizm and provide instant insert into the database. Details of the rule are presented in the Table \ref{ruledisablebatch}.
 
 \begin{table}[!htb]
 \def\arraystretch{1.5}
@@ -881,17 +913,157 @@ Rule changes configuration provided by the \textit{Configuration Service} in ord
 \begin{tabularx}{\textwidth}{p{2.1cm}|X}
 
 \textbf{Applicability Condition:} & \textbf{issueRelatedToInsertsLevel} \textit{AND} \newline
-\textbf{trafficProfileIsLow} \textit{AND} \newline
-\textbf{batchAlreadyEnabled} \\ \hline
+\textbf{isInsertsLevelLow} \textit{AND} \newline
+\textbf{isBatchEnabled} \\ \hline
 
 \textbf{Subconditions Definition:} & \textbf{issueRelatedToInsertsLevel} -  Reported performance issue metric equals to "InsertsLevel"  \\
-& \textbf{trafficProfileIsLow} - Reported performance issue status equals to "Low" \\
-& \textbf{batchAlreadyEnabled} - Current application configuration parameter: "BATCH" equals to BATCHED \\ \hline
+& \textbf{trafficProfileIsLow} - Reported performance issue status is equal to "Low" \\
+& \textbf{batchAlreadyEnabled} - Current application configuration parameter "BATCH" is equal to "BATCHED" \\ \hline
 
-\textbf{Action:} & Change the configuration of parameter: BATCH to value: DIRECT\\ \hline
+\textbf{Action:} & Change the configuration of parameter "BATCH" to value "DIRECT"\\ \hline
 \textbf{Priority:} & 1\\
 \end{tabularx}
 \end{table}
+%-------------DISABLE BATCH RULE END-----------------
+\vspace{5mm}
+%-------------ENABLE CACHE RULE START-----------------
+\noindent\textbf{Enable Cache Rule} \\
+The rule enables cache mechanism provided by Cache redundant component in the tested application when traffic profile incoming to the tested application is classified by the MonitorTrafficProfilePET test case as "immutable". Enabling cache mechanism should decrease time of requests execution. Details of the rule are presented in the Table \ref{ruleenablecache}.
+
+\begin{table}[!htb]
+\def\arraystretch{1.5}
+\caption{\textit{Details of the Enable Chache Rule}} \label{ruleenablecache}
+\begin{tabularx}{\textwidth}{p{2.1cm}|X}
+
+\textbf{Applicability Condition:} & \textbf{isIssueRelatedTrafficProfile} \textit{AND} \newline
+\textbf{isTrafficImmutable} \textit{AND} \newline
+\textbf{isCacheDisabled} \\ \hline
+
+\textbf{Subconditions Definition:} & \textbf{isIssueRelatedTrafficProfile} -  Reported performance issue metric is equal to "TrafficProfile"  \\
+& \textbf{isTrafficImmutable} - Reported performance issue status is equal to "Immutable" \\
+& \textbf{isCacheDisabled} - Current application configuration parameter "CACHE" is equal to "NO\_CACHE" \\ \hline
+
+\textbf{Action:} & Change the configuration of parameter "CACHE" to value "CACHED" \\ \hline
+\textbf{Priority:} & 1\\
+\end{tabularx}
+\end{table}
+%-------------ENABLE CACHE RULE END-----------------
+\vspace{5mm}
+%-------------DISABLE CACHE RULE START-----------------
+\noindent\textbf{Disable Cache Rule} \\
+The rule disables cache mechanism provided by Cache redundant component. Instead No Cache redundant component is used. The rule is applicable when traffic profile incoming to the tested application is classified by the MonitorTrafficProfilePET test case as "mutable". Disabling cache mechanism should eliminate overhead related to the cache mechanism which in mutable environment is needless. Details of the rule are presented in the Table \ref{ruledisablecache}.
+
+\begin{table}[!htb]
+\def\arraystretch{1.5}
+\caption{\textit{Details of the Disable Cache Rule}} \label{ruledisablecache}
+\begin{tabularx}{\textwidth}{p{2.1cm}|X}
+
+\textbf{Applicability Condition:} & \textbf{isIssueRelatedTrafficProfile} \textit{AND} \newline
+\textbf{isTrafficMutable} \textit{AND} \newline
+\textbf{isCacheEnabled} \\ \hline
+
+\textbf{Subconditions Definition:} & \textbf{isIssueRelatedTrafficProfile} -  Reported performance issue metric is equal to "TrafficProfile"  \\
+& \textbf{isTrafficMutable} - Reported performance issue status is equal to "Mutable" \\
+& \textbf{isCacheEnabled} - Current application configuration parameter "CACHE" is equal to CACHED" \\ \hline
+
+\textbf{Action:} & Change the configuration of parameter "CACHE" to value "NO\_CACHE" \\ \hline
+\textbf{Priority:} & 1\\
+\end{tabularx}
+\end{table}
+%-------------DISABLE CACHE RULE END-----------------
+\vspace{5mm}
+%-------------SWITCH TO 20 THREADS RULE START-----------------
+\noindent\textbf{Switch to 20 Threads Rule} \\
+The rule represents the lowest possible threads number available in the APTS implementation. The rule switches configuration responsible for the number of threads used by application server on which the tested application is deployed to 20 threads. The rule is applicable when mean execution time defined in MeanExecutionTimePET test case is exceeded and CPU usage on the application node is high.  Switching to low threads number should help reduce CPU usage and hence reduce total execution time of the requests. Details of the rule are presented in the Table \ref{rules20}.
+
+\begin{table}[!htb]
+\def\arraystretch{1.5}
+\caption{\textit{Details of the Switch to 20 Threads Rule}} \label{rules20}
+\begin{tabularx}{\textwidth}{p{2.1cm}|X}
+
+\textbf{Applicability Condition:} & \textbf{isExecutionTimeExceeded} \textit{AND} \newline
+\textbf{isThreadsNumberDifferent} \textit{AND} \newline
+\textbf{cpuUsageIsHigh} \\ \hline
+
+\textbf{Subconditions Definition:} & \textbf{isExecutionTimeExceeded} -  Reported performance issue metric is equal to "ExecutionTime"  \\
+& \textbf{isThreadsNumberDifferent} -  Current application configuration parameter "THREADS" is not equal to "T20" \\
+& \textbf{cpuUsageIsHigh} - Current CPU usage on the application node is greater than 80\% \\ \hline
+
+\textbf{Action:} & Change the configuration of parameter "THREADS" to value "T20" \\ \hline
+\textbf{Priority:} & 1\\
+\end{tabularx}
+\end{table}
+%-------------SWITCH TO 20 THREADS END-----------------
+\vspace{5mm}
+%-------------SWITCH TO 50 THREADS RULE START-----------------
+\noindent\textbf{Switch to 50 Threads Rule} \\
+The rule represents the middle possible value of threads number available in the APTS implementation. The rule switches configuration responsible for the number of threads used by application server on which the tested application is deployed to 50 threads. Conditions of applicability of rule are that mean execution time defined in MeanExecutionTimePET test case is exceeded and CPU usage is high or low for respectively low or high threads number. Switching to higher threads number should help reduce execution time of requests which are waiting in the queue to be handled by the application. Switching to lower threads number should help reduce CPU usage and hence reduce total execution time of the requests. In order to perform threads number switching by one level the rule has set higher priority in comparison to other threads related rules. Details of the rule are presented in the Table \ref{rules50}.
+
+\begin{table}[!htb]
+\def\arraystretch{1.5}
+\caption{\textit{Details of the Switch to 80 Threads Rule}} \label{rules50}
+\begin{tabularx}{\textwidth}{p{2.1cm}|X}
+
+\textbf{Applicability Condition:} & \textbf{isExecutionTimeExceeded} \textit{AND} \newline
+(\textbf{isThreadNumber20} \textit{AND} \textbf{cpuUsageIsLow}) \textit{OR} \newline
+(\textbf{isThreadNumber80} \textit{AND} \textbf{cpuUsageIsHigh}) \\ \hline
+
+\textbf{Subconditions Definition:} & \textbf{isExecutionTimeExceeded} -  Reported performance issue metric is equal to "ExecutionTime"  \\
+& \textbf{isThreadNumber20} -  Current application configuration parameter "THREADS" is equal to "T20" \\
+& \textbf{isThreadNumber80} -  Current application configuration parameter "THREADS" is equal to "T80" \\
+& \textbf{cpuUsageIsLow} - Current CPU usage on the application node is not greater than 80\% \\ \hline
+& \textbf{cpuUsageIsHigh} - Current CPU usage on the application node is greater than 80\% \\ \hline
+
+\textbf{Action:} & Change the configuration of parameter "THREADS" to value "T50" \\ \hline
+\textbf{Priority:} & 2\\
+\end{tabularx}
+\end{table}
+%-------------SWITCH TO 50 THREADS END-----------------
+
+\vspace{5mm}
+%-------------SWITCH TO 80 THREADS RULE START-----------------
+\noindent\textbf{Switch to 80 Threads Rule} \\
+The rule represents the highest possible threads number available in the APTS implementation. The rule switches configuration responsible for the number of threads used by application server on which the tested application is deployed to 80 threads. The rule is applicable when mean execution time defined in MeanExecutionTimePET test case is exceeded and CPU usage on the application node is low. Switching to high threads number should help reduce execution time of requests which are waiting in the queue to be handled by the application. Details of the rule are presented in the Table \ref{rules80}.
+
+\begin{table}[!htb]
+\def\arraystretch{1.5}
+\caption{\textit{Details of the Switch to 80 Threads Rule}} \label{rules80}
+\begin{tabularx}{\textwidth}{p{2.1cm}|X}
+
+\textbf{Applicability Condition:} & \textbf{isExecutionTimeExceeded} \textit{AND} \newline
+\textbf{isThreadsNumberDifferent} \textit{AND} \newline
+\textbf{cpuUsageIsLow} \\ \hline
+
+\textbf{Subconditions Definition:} & \textbf{isExecutionTimeExceeded} -  Reported performance issue metric is equal to "ExecutionTime"  \\
+& \textbf{isThreadsNumberDifferent} -  Current application configuration parameter "THREADS" is not equal to "T80" \\
+& \textbf{cpuUsageIsLow} - Current CPU usage on the application node is not greater than 80\% \\ \hline
+
+\textbf{Action:} & Change the configuration of parameter "THREADS" to value "T80" \\ \hline
+\textbf{Priority:} & 1\\
+\end{tabularx}
+\end{table}
+%-------------SWITCH TO 80 THREADS END-----------------
+
+\vspace{10mm}
+%-------------DO NOTHING RULE START-----------------
+\noindent\textbf{Do Nothing Rule} \\
+The rule is returned by the implemented rule based system when there is no applicable rules for the current system state.  The rule is created as consequence of the Null Object Pattern \cite{nop} usage in the implementation of the system and is not stored in the set of available rules of the rule based system. Execution of the rule does not changes anything. Details of the rule are presented in the Table \ref{ruledonothing}.
+
+\begin{table}[!htb]
+\def\arraystretch{1.5}
+\caption{\textit{Details of the Do Nothing Rule}} \label{ruledonothing}
+\begin{tabularx}{\textwidth}{p{2.1cm}|X}
+
+\textbf{Applicability Condition:} & N/A \\ \hline
+
+\textbf{Action:} & N/A \\ \hline
+\textbf{Priority:} & 0\\
+\end{tabularx}
+\end{table}
+%-------------DO NOTHING THREADS END-----------------
+
+\pagebreak
+
 
 Second part of the implemented rule based system is inference engine. The role of the engine is to choose the best rule from the set of provided rules and perform action related to chosen rule. In order to achieve this the algorithm presented in the Figure \ref{dmalgorithm} is used. 
 
@@ -903,7 +1075,14 @@ Second part of the implemented rule based system is inference engine. The role o
 
 First step of the algorithm is to choose only applicable rules from the set of rules. In case when there are applicable rules - rule with the highest priority is chosen as best rule. If there is no applicable rules "Do Nothing Rule" is chosen.
 
-\subsubsection{APTS Manager} \label{dm}
+\subsubsection{APTS Manager} \label{manager}
+
+The APTS Manager is component which is responsible for initiating, run and coordinate PET Cases and Decision Module components. The sequence of actions performed by the manger during performance tuning of the application is presented in the Figure \ref{manager}.
+
+[figure]
+
+When performance tuning is started the manager starts the \textit{Resource Monitoring Service}. Next, performance evaluation test cases are executed by the \textit{PetCaseRunner}. The manager monitors any reported Performance Issues in real time and delegates every new reported issue to the \textit{Decision Module} where decision about performance tuning is made. When all PET cases performed by the \textit{PetCaseRunner} are finished the manager stops the \textit{Resource Monitoring Service} and terminates. 
+
 
 \section{Solution evaluation} 
 \subsection{Cache Redundant Component Evaluation}
@@ -918,8 +1097,10 @@ First step of the algorithm is to choose only applicable rules from the set of r
 \subsubsection{Implemented Scenarios} 
 \subsubsection{Experiments} 
 
-\pagebreak
 
+
+\pagebreak
+\clearpage
 \section{References}
 \renewcommand\refname{}
 \begin{thebibliography}{9}
@@ -1047,6 +1228,10 @@ JUnit - \textit{http://junit.org}, (access: 20.04.2017).
 \bibitem{springaop}
 Aspect Oriented Programming with Spring - \\
 \textit{https://docs.spring.io/spring/docs/current/spring-framework-reference/html/aop.html}, (access: 06.05.2017).
+
+\bibitem{nop}
+Woolf B., Martin R. C., Riehle D., Buschmann F., \textit{"Null Object"}, In Pattern Languages of Program Design 3. Addison-Wesley Longman Publishing Co., Boston, USA, 1997, 5–18. 
+
 
 
 \end{thebibliography}
