@@ -26,6 +26,8 @@
 \usepackage[rightcaption]{sidecap}
 \usepackage{graphicx} 
 \usepackage{minted}
+\usepackage{adjustbox}
+\usepackage{setspace}
 \graphicspath{ {images/} }
 
 
@@ -33,7 +35,8 @@
 \renewcommand\theadfont{\bfseries}
 \renewcommand\theadgape{\Gape[4pt]}
 \renewcommand\cellgape{\Gape[4pt]}
-
+\renewcommand{\baselinestretch}{1.5}
+ 
 \let\tempone\itemize
 \let\temptwo\enditemize
 \renewenvironment{itemize}{\tempone\addtolength{\itemsep}{-0.4\baselineskip}}{\temptwo}
@@ -342,8 +345,8 @@ Figure \ref{erd} presents ERD diagram of data model implemented in the tested ap
 The tested application REST API provides the following resources:
 \vspace{3mm}
 
-\noindent\textbf{Find product category by ID} - returns product category with id defined by parameter \textit{id}.\\
-\\
+\noindent\textbf{Find product category by ID} - returns product category with id defined by parameter \textit{id}.
+
   \begin{tabular}{ll}
   Method: & GET\\
   Path: & /find/\{id\}\\
@@ -351,8 +354,8 @@ The tested application REST API provides the following resources:
   Response: & Product category in JSON format \\
   \end{tabular} \vspace{5mm}
 
-\noindent\textbf{Add new product category} - creates new category with name defined by parameter \textit{categoryName}. For created category products with opinions are generated. Number of generated products and opinions is chosen randomly from range 1-4. \\
-\\
+\noindent\textbf{Add new product category} - creates new category with name defined by parameter \textit{categoryName}. For created category products with opinions are generated. Number of generated products and opinions is chosen randomly from range 1-4. 
+
   \begin{tabular}{ll}
   Method: & PUT \\
   Path: & /add/ \\
@@ -360,8 +363,8 @@ The tested application REST API provides the following resources:
   Response: & Created product category in JSON format  \\
   \end{tabular} \vspace{5mm}
 
-\noindent\textbf{Update product category} - updates category defined by parameter \textit{id} by name from parameter \textit{newName}. \\
-\\
+\noindent\textbf{Update product category} - updates category defined by parameter \textit{id} by name from parameter \textit{newName}. 
+
   \begin{tabular}{ll}
   Method: & POST \\
   Path: & /update/\{id\} \\
@@ -370,8 +373,8 @@ The tested application REST API provides the following resources:
   Response: & Updated product category in JSON format  \\
   \end{tabular} \vspace{5mm}
 
-\noindent\textbf{Remove product category} - removes product category with related products and opinions for given \textit{id}.\\
-\\
+\noindent\textbf{Remove product category} - removes product category with related products and opinions for given \textit{id}.
+
   \begin{tabular}{ll}
   Method: & DELETE \\
   Path: & /remove/\{id\} \\
@@ -379,8 +382,8 @@ The tested application REST API provides the following resources:
   Response: & No content  \\
   \end{tabular} \vspace{5mm}
 
-\noindent\textbf{Get all product categories paged} - returns product categories with products and opinions for page defined by parameters \textit{page} and \textit{size}.\\
-\\
+\noindent\textbf{Get all product categories paged} - returns product categories with products and opinions for page defined by parameters \textit{page} and \textit{size}.
+
   \begin{tabular}{ll}
   Method: & GET \\
   Path: & /findPart/ \\
@@ -389,24 +392,24 @@ The tested application REST API provides the following resources:
   Response: & Product categories in JSON format  \\
   \end{tabular} \vspace{5mm}
   
-\noindent\textbf{Get all product categories} - returns all product categories with products and opinions.\\
-\\
+\noindent\textbf{Get all product categories} - returns all product categories with products and opinions.
+
   \begin{tabular}{ll}
   Method: & GET \\
   Path: & /findAll/ \\
   Response: & Product categories in JSON format  \\
   \end{tabular} \vspace{5mm}
   
-\noindent\textbf{Remove all product categories} - removes all product categories with related products and opinions.\\
-\\
+\noindent\textbf{Remove all product categories} - removes all product categories with related products and opinions.
+
   \begin{tabular}{ll}
   Method: & DELETE \\
   Path: & /removeAll/ \\
   Response: & No content  \\
   \end{tabular} \vspace{5mm}
   
-\noindent\textbf{Create product categories} - generates number of product categories. The number is defined by \textit{size} parameter. For each category products with opinions are generated. Number of generated products and opinions is chosen randomly from range 1-4. \\
-\\
+\noindent\textbf{Create product categories} - generates number of product categories. The number is defined by \textit{size} parameter. For each category products with opinions are generated. Number of generated products and opinions is chosen randomly from range 1-4. 
+
   \begin{tabular}{ll}
   Method: & PUT \\
   Path: & /addCategories/ \\
@@ -414,8 +417,8 @@ The tested application REST API provides the following resources:
   Response: & String message  \\
   \end{tabular} \vspace{5mm}
 
-\noindent\textbf{Execute task} - starts task which will simulate high CPU usage. For that purpose generation of 40th number of Fibonacci sequence was chosen. \\
-\\
+\noindent\textbf{Execute task} - starts task which will simulate high CPU usage. For that purpose generation of 40th number of Fibonacci sequence was chosen. 
+
   \begin{tabular}{ll}
   Method: & GET \\
   Path: & /task/ \\
@@ -542,7 +545,7 @@ Next redundant component candidate is cache. There exist many levels of abstract
 \begin{table}[!htb]
 \def\arraystretch{1.5}
 \caption{\textit{Cache and No Cache redundant components comparison.}}\label{cachecomponents}
-\begin{tabularx}{\textwidth}{p{3cm}|X|X}
+\begin{tabularx}{\textwidth}{p{6cm}|X|X}
   \textbf{Category} &\textbf{Cache} & \textbf{No Cache} \\
 \hline
 Preferable parameters characteristic & Repeatable & Varied \\
@@ -559,7 +562,7 @@ Table \ref{batchedcomponents} shows comparison of two proposed redundant compone
 \begin{table}[!htb]
 \def\arraystretch{1.5}
 \caption{\textit{Batched and Direct redundant components comparison.}}\label{batchedcomponents}
-\begin{tabularx}{\textwidth}{p{3cm}|X|X}
+\begin{tabularx}{\textwidth}{p{4cm}|X|X}
   \textbf{Category} &\textbf{Batched} & \textbf{No Batched} \\
 \hline
 Query execution time & Faster & Slower \\
@@ -668,7 +671,7 @@ The \textit{PET Cases} component contains performance evaluation scenarios writt
 
 The \textit{Decision Module} is responsible for performance issue analysis and performance tuning. This feature is realized in the form of rule based system in which performance issues are conditions and performance tuning decisions are actions.   
 
-The \textit{InfluxDB Service} hosts InfluxDB \cite{influxdb} time series database which provides HTTP API for querying and writing data. The database stores performance measurements which are generated by the tested applications and required by the performance evaluation tests.
+The \textit{InfluxDB Service} hosts InfluxDB \cite{influxdb} time series database which provides HTTP API for querying and writing data. The database stores performance measurements which are generated by the tested applications and required by the performance evaluation tests. In order to visualize data stored in the database in the form of readable graphs the Grafana \cite{grafana} platform was integrated with the InfluxDB. 
 
 The \textit{Configuration Service} is an external service where performance tuning configuration is stored (active redundant component and current application server thread number). The \textit{Configuration Service} provides REST API which enables different parts of the system to check and change current configuration of the tested application.
 
@@ -822,7 +825,7 @@ As presented on the Listing \ref{petrunner}, new instance of PetCaseRunner class
 
 The \textit{MonitorInsertsLevelPET} test case monitors how many database inserts are performed on the tested application. If number of inserts per seconds is greater the a given threshold the reported performance issue contains information about high level of inserts. Otherwise, the performance issue contains information about low level of inserts. The performance issue with above information is reported after every execution of test case. 
 
-The \textit{MonitorTrafficProfilePET} test case monitors traffic profile which comes to the tested application. There are two possible values of traffic profile - mutable and immutable. A mutable traffic profile means that state of the tested application is changed (by inserts or updates operations). An immutable traffic profile means that requests to the application do not change state of the tested application (read requests). The traffic profile if considered as immutable when percentage  of immutable requests are greater than given value. The performance issue with information about traffic profile is reported after every execution of test case.
+The \textit{MonitorTrafficProfilePET} test case monitors traffic profile which comes to the tested application. There are two possible values of traffic profile - mutable and immutable. A mutable traffic profile means that state of the tested application is changed (by inserts or updates operations). An immutable traffic profile means that requests to the application do not change state of the tested application (read requests). The traffic profile is considered as immutable when number of immutable requests is greater than mutable requests. The performance issue with information about traffic profile is reported after every execution of test case.
 
 \begin{table}[!htb]
 \def\arraystretch{1.5}
@@ -837,7 +840,7 @@ MonitorTrafficProfilePET & trafficProfile & MUTABLE, IMMUTABLE \\
 
 \subsubsection{Decision Module} \label{dm}
 
-The role of the \textit{Decision Module} is to perform performance tuning actions on the base of reported performance issues, current configuration of the tested application and current resource consumption on the node where the tested application is deployed (see Figure \ref{decisionmodule}). 
+The role of the \textit{Decision Module} is to perform performance tuning actions on the base of reported performance issues, current configuration of the tested application and current resource consumption on the node where the tested application is deployed (see the Figure \ref{decisionmodule}). 
 
 \begin{figure}[!htb]
 \centering
@@ -845,15 +848,15 @@ The role of the \textit{Decision Module} is to perform performance tuning action
 \caption{\textit{Performing Tuning Action by Decision Module}} \label{decisionmodule}
 \end{figure}
 
-Decision module is triggered to analyze above factors and perform action by reported performance issues. Then, Decision Module asks \textit{Configuration Service} and \textit{Resource Monitoring Service} to retrieve information about current configuration of the tested application and resource consumption on the tested application node. Next, decision about the best rule is preformed and action related to the best rule is executed (See Figure \ref{dmsequence}). 
+Decision module is triggered by a reported performance issues in order to analyze above factors and perform action. Then, the \textit{Decision Module} retrieves information about current configuration of the tested application and resource consumption on the tested application node from \textit{Configuration Service} and \textit{Resource Monitoring Service}. Next, a decision about the best rule is preformed and action related to the best rule is executed (see the Figure \ref{dmsequence}). 
 
 \begin{figure}[!htb]
 \centering
 \includegraphics[width=1\textwidth]{DecisionModuleSequenceDiagram}
-\caption{\textit{Sequence diagram presenting Decision Module work flow}} \label{dmsequence}
+\caption{\textit{Sequence diagram presenting the Decision Module workflow}} \label{dmsequence}
 \end{figure}
 
-Decision about action to perform is made using rule based system. Implemented rule based system is consist of two parts: set of  the rules and inference engine. The set of rules is related to performance tuning of the tested application. Each rule fulfill contract defined in the form of \textit{Rule} interface presented on the Listing \ref{irule}.
+Decision about which action will be performed is made using a rule based system. Implemented rule based system is consist of two parts: set of the rules and inference engine. The set of rules is created with the aim of performance tuning of the tested application. Each rule fulfill contract defined in the form of the \textit{Rule} interface presented on the Listing \ref{irule}.
 
 \begin{listing}[ht]\begin{minted}[fontsize=\footnotesize]{java}
 public interface Rule {
@@ -881,7 +884,7 @@ In order to perform automated tuning of the tested application based on elements
 
 %-------------ENABLE BATCH RULE START-----------------
 \noindent\textbf{Enable Batch Rule} \\
-The rule enables batching mechanism provided by Batched redundant component in the tested application when the number of  inserts performed by the tested application is classified by the MonitorIsertsLevelPET test case as "high". Enabling batch mechanism should decrease total time of inserts requests. Details of the rule are presented in the Table \ref{ruleenablebatch}.
+The rule enables batching mechanism provided by the Batched redundant component in the tested application when the number of  inserts performed by the tested application is classified by the MonitorIsertsLevelPET test case as "high". Enabling batch mechanism should decrease total time of insert requests. Details of the rule are presented in the Table \ref{ruleenablebatch}.
 
 \begin{table}[!htb]
 \def\arraystretch{1.5}
@@ -905,7 +908,7 @@ The rule enables batching mechanism provided by Batched redundant component in t
 \vspace{5mm}
 %-------------DISABLE BATCH RULE START-----------------
 \noindent\textbf{Disable Batch Rule} \\
-The rule disables batching mechanism provided by Batched redundant component. Instead Direct redundant component is used.  The rule is applicable when the number of inserts performed by the tested application is classified by the MonitorIsertsLevelPET test case as "low". Disabling batch mechanism should reduce delay introduced by baych mechanizm and provide instant insert into the database. Details of the rule are presented in the Table \ref{ruledisablebatch}.
+The rule disables batching mechanism provided by Batched redundant component. Instead, the Direct redundant component is used.  The rule is applicable when the number of inserts performed by the tested application is classified by the MonitorIsertsLevelPET test case as "low". Disabling batch mechanism should reduce delay introduced by the batch mechanism and provide instant insert into the database. Details of the rule are presented in the Table \ref{ruledisablebatch}.
 
 \begin{table}[!htb]
 \def\arraystretch{1.5}
@@ -928,7 +931,7 @@ The rule disables batching mechanism provided by Batched redundant component. In
 \vspace{5mm}
 %-------------ENABLE CACHE RULE START-----------------
 \noindent\textbf{Enable Cache Rule} \\
-The rule enables cache mechanism provided by Cache redundant component in the tested application when traffic profile incoming to the tested application is classified by the MonitorTrafficProfilePET test case as "immutable". Enabling cache mechanism should decrease time of requests execution. Details of the rule are presented in the Table \ref{ruleenablecache}.
+The rule enables cache mechanism provided by the Cache redundant component in the tested application when traffic profile incoming to the tested application is classified by the MonitorTrafficProfilePET test case as "immutable". Enabling cache mechanism should decrease time of requests execution. Details of the rule are presented in the Table \ref{ruleenablecache}.
 
 \begin{table}[!htb]
 \def\arraystretch{1.5}
@@ -951,7 +954,7 @@ The rule enables cache mechanism provided by Cache redundant component in the te
 \vspace{5mm}
 %-------------DISABLE CACHE RULE START-----------------
 \noindent\textbf{Disable Cache Rule} \\
-The rule disables cache mechanism provided by Cache redundant component. Instead No Cache redundant component is used. The rule is applicable when traffic profile incoming to the tested application is classified by the MonitorTrafficProfilePET test case as "mutable". Disabling cache mechanism should eliminate overhead related to the cache mechanism which in mutable environment is needless. Details of the rule are presented in the Table \ref{ruledisablecache}.
+The rule disables cache mechanism provided by the Cache redundant component. Instead the  No Cache redundant component is used. The rule is applicable when traffic profile incoming to the tested application is classified by the MonitorTrafficProfilePET test case as "mutable". Disabling cache mechanism should eliminate overhead related to the cache mechanism which in mutable environment is needless. Details of the rule are presented in the Table \ref{ruledisablecache}.
 
 \begin{table}[!htb]
 \def\arraystretch{1.5}
@@ -997,7 +1000,7 @@ The rule represents the lowest possible threads number available in the APTS imp
 \vspace{5mm}
 %-------------SWITCH TO 50 THREADS RULE START-----------------
 \noindent\textbf{Switch to 50 Threads Rule} \\
-The rule represents the middle possible value of threads number available in the APTS implementation. The rule switches configuration responsible for the number of threads used by application server on which the tested application is deployed to 50 threads. Conditions of applicability of rule are that mean execution time defined in MeanExecutionTimePET test case is exceeded and CPU usage is high or low for respectively low or high threads number. Switching to higher threads number should help reduce execution time of requests which are waiting in the queue to be handled by the application. Switching to lower threads number should help reduce CPU usage and hence reduce total execution time of the requests. In order to perform threads number switching by one level the rule has set higher priority in comparison to other threads related rules. Details of the rule are presented in the Table \ref{rules50}.
+The rule represents the middle possible value of threads number available in the APTS implementation. The rule switches configuration responsible for the number of threads used by application server on which the tested application is deployed to 50 threads. Conditions of applicability of rule are as following: mean execution time defined in MeanExecutionTimePET test case is exceeded and CPU usage is high or low for respectively low or high threads number. Switching to the higher threads number should help reduce execution time of requests which are waiting in the queue to be handled by the application. Switching to the lower threads number should help reduce CPU usage and hence reduce total execution time of the requests. In order to perform threads number switching by one level the rule has set higher priority in comparison to other threads related rules (in example: when current thread number is 20, and rules "Switch to 50 Threads Rule" and "Switch to 80 Threads Rule" are evaluated as applicable - rule "Switch to 50 Threads Rule" will be choose because of the higher priority). Details of the rule are presented in the Table \ref{rules50}.
 
 \begin{table}[!htb]
 \def\arraystretch{1.5}
@@ -1047,7 +1050,7 @@ The rule represents the highest possible threads number available in the APTS im
 \vspace{10mm}
 %-------------DO NOTHING RULE START-----------------
 \noindent\textbf{Do Nothing Rule} \\
-The rule is returned by the implemented rule based system when there is no applicable rules for the current system state.  The rule is created as consequence of the Null Object Pattern \cite{nop} usage in the implementation of the system and is not stored in the set of available rules of the rule based system. Execution of the rule does not changes anything. Details of the rule are presented in the Table \ref{ruledonothing}.
+The rule is returned by the implemented rule based system when there is no applicable rules for the current system state.  The rule is created as consequence of the Null Object Pattern \cite{nop} usage in the implementation of the system and is not stored in the set of available rules of the rule based system. Execution of the rule does not change anything - implementation of the method \textit{executeAction()} is empty. Details of the rule are presented in the Table \ref{ruledonothing}.
 
 \begin{table}[!htb]
 \def\arraystretch{1.5}
@@ -1079,25 +1082,175 @@ First step of the algorithm is to choose only applicable rules from the set of r
 
 The APTS Manager is component which is responsible for initiating, run and coordinate PET Cases and Decision Module components. The sequence of actions performed by the manger during performance tuning of the application is presented in the Figure \ref{manager}.
 
-[figure]
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=1\textwidth]{ManagerSequenceDiagram}
+\caption{\textit{Sequence Diagram presenting the APTS Manager workflow}} \label{manager}
+\end{figure}
+
 
 When performance tuning is started the manager starts the \textit{Resource Monitoring Service}. Next, performance evaluation test cases are executed by the \textit{PetCaseRunner}. The manager monitors any reported Performance Issues in real time and delegates every new reported issue to the \textit{Decision Module} where decision about performance tuning is made. When all PET cases performed by the \textit{PetCaseRunner} are finished the manager stops the \textit{Resource Monitoring Service} and terminates. 
 
-
 \section{Solution evaluation} 
-\subsection{Cache Redundant Component Evaluation}
-\subsubsection{Implemented Scenarios} 
-\subsubsection{Experiments} 
+
+In this section the Automated Performance Tuning System will be evaluated. The evaluation of the system should confirm practical advantages of the proposed solution and reveal effectiveness under given circumstances. 
+
+\subsection{Cache Management Evaluation}
+
+Below experiments are focused on Cache and No Cache redundant components. The APTS should manage mentioned components in a way which provide the optimal performance of the tested application.
+
+\subsubsection{Traffic simulation scenario} \label{trafficcachesim}
+
+The most important concern during evaluation of the solution is traffic simulation. All decisions made by the Decision Module are based on analysis and monitoring of the incoming traffic to the application. For the case of redundant components related to cache management the traffic scenario presented in the Figure \ref{trafficcache} was implemented.
+
+\begin{figure}[!htb]
+\begin{tikzpicture}
+\draw[->] (0,0) -- (10,0);
+\foreach \x in {1,5,9}
+\draw(\x cm,3pt) -- (\x cm, -3pt);
+
+\draw (1,0) node[below=3pt] {$0$};
+\draw (5,0) node[below=3pt] {$60$};
+\draw (9,0) node[below=3pt] {$120$};
+
+\draw[fill=bblue] (5,0) rectangle (9,1);
+\draw (7,0) node[above=6pt, align=center, white] {IMMUTABLE requests};
+
+\draw[fill=ggreen] (1,0) rectangle (5,1);
+\draw (3,0) node[above=6pt, align=center] {MUTABLE requests};
+
+\draw (10.8,0) node {$time [s]$};
+\end{tikzpicture}
+\caption{\textit{Traffic simulation scenario for the cache management evaluation}} \label{trafficcache}
+\end{figure}
+
+The simulation takes 120 seconds and is divided in two phases. In the first 60 seconds mutable (UPDATE) requests are generated. In the second phase immutable (GET) requests are generated. The injection step of the requests is constant and is equal to 1 request per second for both phases. In the total 60 immutable and 60 mutable requests are generated during the simulation.   
+
+\subsubsection{Environment Preparation} 
+
+In order to prevent distortion of the results be the others managed elements (batch and threads number) only MonitorTrafficProfilePET case will be enabled during evaluation. The MonitorTrafficProfilePET was configured with parameters presented in the Table \ref{evaluationtestconf}.
+
+\begin{table}[!htb]
+\def\arraystretch{1.5}
+\caption{\textit{The MonitorTrafficProfilePET case parameters}} \label{evaluationtestconf}
+\begin{tabularx}{\textwidth}{X|X}
+
+\textbf{durationInSec} & 180 \\ \hline
+\textbf{monitorIntervalInSec} & 10 \\ \hline
+\textbf{delayInSec:} & 10\\
+\end{tabularx}
+\end{table}
+
+The initial configuration provided by the \textit{Configuration Service} during the experiment is presented in the Table \ref{cacheinitconf}.
+\begin{table}[!htb]
+\caption{\textit{Initial configuration}} \label{cacheinitconf}
+\begin{tabularx}{\textwidth}{X|X}
+\textbf{Configuration Parameter} & \textbf{Value} \\ \hline
+CACHE & NO\_CACHE \\ \hline
+BATCH & DIRECT\\ \hline
+THREADS & T50\\
+\end{tabularx}
+\end{table}
+
+
+\subsubsection{Control Sample} 
+
+The goal of the control sample for this experiment is to provide reference to which results generated by the APTS can be compared. The control sample performs the same experiment as the evaluation sample but no performance tuning is made by the \textit{Decision Module}. In other words - the performance of tested application is evaluated without the APTS tuning. 
+The Figure \ref{cacheCtrlGraph} presents graph generated by the Grafana platform during execution of the control sample. 
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=1\textwidth]{cacheCtrl}
+\caption{\textit{Screenshot from Grafana presenting graph of execution time in time}} \label{cacheCtrlGraph}
+\end{figure}
+
+According to the traffic scenario described in the Chapter \ref{trafficcachesim} two phases during experiment can be easily noticed - first one (from 21:21:25 to 21:22:25) when mutable traffic was generated and second one (from 21:22:25 to 21:23:25) when immutable traffic was generated. The execution time values are presented in the Table \ref{cacheCtrlResutls}. 
+
+\begin{table}[!htb]
+\caption{\textit{Execution time during control sample of cache evaluation}} \label{cacheCtrlResutls}
+\begin{tabularx}{\textwidth}{X|X|X}
+\textbf{Phase} & \textbf{Average Execution Time} & \textbf{Total Execution Time} \\ \hline
+Phase 1 & 0.03s & 1.5s \\ \hline
+Phase 2 & 3.02s & 183s \\ \hline
+Total & 1.52s & 185s \\ 
+\end{tabularx}
+\end{table}
+
+\subsubsection{Evaluation Sample} 
+
+The goal of this evaluation sample is to evaluate the APTS solution for the cache management. The Figure \ref{cacheEvalGraph} presents graph generated by the Grafana platform during the evaluation sample. 
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=1\textwidth]{cacheEval}
+\caption{\textit{Screenshot from Grafana presenting graph of execution time in time}} \label{cacheEvalGraph}
+\end{figure}
+
+Comparing the graph from the Figure \ref{cacheEvalGraph} to control sample from the Figure \ref{cacheCtrlGraph} one can see that first phase proceeded in the same way. The execution time during the second phase was reduced after few seconds due to enabling cache by the APTS what is confirmed in the system logs: 
+
+The APTS Manager:
+
+\noindent\fbox{\parbox{\textwidth}{\setstretch{1.0} \texttt{\footnotesize 
+2017-05-11 22:09:05.409 [main] (...) Chosen rule: EnableCacheRule\\
+action: enable cache
+}}}\vspace{1mm}
+
+The Configuration Service:
+
+\vspace{1mm}\noindent\fbox{\parbox{\textwidth}{\texttt{\footnotesize
+2017-05-11 22:09:05.445 (...) Configuration of CACHE changed to value: CACHED
+}}}\vspace{1mm}
+
+The tested application:
+
+\vspace{1mm}\noindent\fbox{\parbox{\textwidth}{\texttt{\footnotesize
+2017-05-11 22:09:05.856 (...) Used redundant component: CACHED
+}}}\vspace{1mm}
+
+The execution time values are presented in the Table \ref{cacheEvalResutls}. 
+
+\begin{table}[!htb]
+\caption{\textit{Execution time during evaluation sample of cache evaluation}} \label{cacheEvalResutls}
+\begin{tabularx}{\textwidth}{X|X|X}
+\textbf{Phase} & \textbf{Average Execution Time} & \textbf{Total Execution Time} \\ \hline
+Phase 1 & 0.035s & 2.11s \\ \hline
+Phase 2 & 0.72s & 43.45ss \\ \hline
+Total & 0.379s & 45.53s \\ 
+\end{tabularx}
+\end{table}
+
+\subsubsection{Results Comparison} 
+
+The Table \ref{cacheCompResutls} presents comparison of execution time between control and evaluation sample. Improvement between samples was computed using the formula: 
+
+$Improvement = \frac{ControlSampleTimeValue}{EvaluationSampleTimeValue} \cdot 100\%$
+
+\begin{table}[!htb]
+\caption{\textit{Comparison of control and evaluation sample}} \label{cacheCompResutls}
+\begin{tabularx}{\textwidth}{p{4cm}|X|X|X}
+\textbf{Phase} & \textbf{Control \newline Sample} & \textbf{Evaluation Sample} & \textbf{Improvement} \\ \hline
+Average Execution Time &  1.52s & 0.379s & 401\%\\ \hline
+Total Execution Time &  185s & 45.53s & 406\%\\ \hline
+\end{tabularx}
+\end{table}
+
+Usage of the ATPS in cache management of the tested application introduced around 400\% better performance in comparison to control sample. 
 
 \subsection{Batch Redundant Component Evaluation}
-\subsubsection{Implemented Scenarios} 
-\subsubsection{Experiments} 
+\subsubsection{Traffic Simulation Scenario} 
+\subsubsection{Environment Preparation} 
+\subsubsection{Control Sample} 
+\subsubsection{Evaluation Sample} 
+\subsubsection{Results Comparison} 
 
 \subsection{Threads Number Evaluation}
-\subsubsection{Implemented Scenarios} 
-\subsubsection{Experiments} 
+\subsubsection{Traffic Simulation Scenario} 
+\subsubsection{Environment Preparation} 
+\subsubsection{Control Sample} 
+\subsubsection{Evaluation Sample} 
+\subsubsection{Results Comparison} 
 
-
+\subsection{Conclusions} 
 
 \pagebreak
 \clearpage
@@ -1232,7 +1385,8 @@ Aspect Oriented Programming with Spring - \\
 \bibitem{nop}
 Woolf B., Martin R. C., Riehle D., Buschmann F., \textit{"Null Object"}, In Pattern Languages of Program Design 3. Addison-Wesley Longman Publishing Co., Boston, USA, 1997, 5–18. 
 
-
+\bibitem{grafana}
+Grafana - The open platform for beautiful analytics and monitoring \textit{https://grafana.com/}, (access: 10.05.2017).
 
 \end{thebibliography}
 
