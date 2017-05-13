@@ -15,7 +15,7 @@ public class MonitorTrafficProfilePET {
     private static final int MONITOR_INTERVAL = 10;
     private ExecutionTimeInfluxDbClient executionTimeInfluxDbClient = new ExecutionTimeInfluxDbClient();
 
-    @PetCase(enabled = true, durationInSec = 180, monitorIntervalInSec = MONITOR_INTERVAL, delayInSec = MONITOR_INTERVAL)
+    @PetCase(enabled = true, durationInSec = 150, monitorIntervalInSec = MONITOR_INTERVAL, delayInSec = MONITOR_INTERVAL)
     public void monitorMutabilityOfTraffic_shouldReportIssueWhenChanged() {
         TrafficProfile trafficProfile = getTrafficProfile(MONITOR_INTERVAL);
 
@@ -23,8 +23,7 @@ public class MonitorTrafficProfilePET {
     }
 
     private TrafficProfile getTrafficProfile(int monitorInterval) {
-        int countImmutable = executionTimeInfluxDbClient.getCountForTrafficProfile(IMMUTABLE, monitorInterval);
         int countMutable = executionTimeInfluxDbClient.getCountForTrafficProfile(MUTABLE, monitorInterval);
-        return countImmutable > countMutable ? IMMUTABLE : MUTABLE;
+        return countMutable == 0 ? IMMUTABLE : MUTABLE;
     }
 }

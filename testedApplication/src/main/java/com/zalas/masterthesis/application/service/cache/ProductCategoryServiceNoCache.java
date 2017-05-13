@@ -16,8 +16,7 @@ public class ProductCategoryServiceNoCache implements ProductCategoryService {
     private ProductCategoryRepository productCategoryRepository;
 
     public ProductCategory findOne(int id) {
-        LOGGER.info("findOne() direct used");
-        simulateSlowService();
+        LOGGER.info("findOne() no cache used");
         return productCategoryRepository.findOne(id);
     }
 
@@ -32,15 +31,6 @@ public class ProductCategoryServiceNoCache implements ProductCategoryService {
 
         LOGGER.info("productCategory updated");
         return savedCategory;
-    }
-
-    private void simulateSlowService() {
-        try {
-            long time = 3000L;
-            Thread.sleep(time);
-        } catch (InterruptedException e) {
-            throw new IllegalStateException(e);
-        }
     }
 
 }
