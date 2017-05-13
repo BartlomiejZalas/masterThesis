@@ -39,12 +39,12 @@ public class DisableCacheRule implements Rule {
 
     @Override
     public void executeAction() {
-//        try {
-//            configurationClient.setConfiguration(CACHE, Value.NO_CACHE);
-//            System.out.println("action: disable cache");
-//        } catch (ConfigurationClientException e) {
-//            System.out.println(e.getMessage());
-//        }
+        try {
+            configurationClient.setConfiguration(CACHE, Value.NO_CACHE);
+            System.out.println("action: disable cache");
+        } catch (ConfigurationClientException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     @Override
