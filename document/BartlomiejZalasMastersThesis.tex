@@ -51,6 +51,8 @@
 \definecolor{rred}{HTML}{C0504D}
 \definecolor{ggreen}{HTML}{9BBB59}
 \definecolor{ppurple}{HTML}{9F4C7C}
+\definecolor{oorange}{HTML}{FFC04D}
+
 
 
 \author{Bartłomiej Zalas}
@@ -1103,7 +1105,7 @@ Below experiments are focused on Cache and No Cache redundant components. The AP
 
 \subsubsection{Traffic simulation scenario} \label{trafficcachesim}
 
-The most important concern during evaluation of the solution is traffic simulation. All decisions made by the Decision Module are based on analysis and monitoring of the incoming traffic to the application. For the case of redundant components related to cache management the traffic scenario presented in the Figure \ref{trafficcache} was implemented.
+The most important concern during evaluation of the solution is traffic simulation. All decisions made by the Decision Module are based on analysis and monitoring of the incoming traffic to the application. For the case of redundant components related to cache management the traffic simulation presented in the Figure \ref{trafficcache} was implemented.
 
 \begin{figure}[!htb]
 \begin{tikzpicture}
@@ -1126,7 +1128,7 @@ The most important concern during evaluation of the solution is traffic simulati
 \caption{\textit{Traffic simulation scenario for the cache management evaluation}} \label{trafficcache}
 \end{figure}
 
-The simulation takes 120 seconds and is divided in two phases. In the first 60 seconds alternating GET ("Find product category by ID") and UPDATE ("Update product category") requests are generated in order to simulate mutable state of the application. In the second phase only GET ("Find product category by ID") requests are generated what simulates immutable state of the application. In the first phase 60 GET and 60 UPDATE requests are generated with constant injection step 2 requests (1 GET and 1 UPDATE) per second. In the second phase 60 requests are generated with constant injection step 1 request per second. All requests are designated to the same product category (the same ID parameter). 
+The simulation takes 120 seconds and is divided to two phases. In the first 60 seconds alternating GET ("Find product category by ID") and UPDATE ("Update product category") requests are generated in order to simulate mutable state of the application. In the second phase only GET ("Find product category by ID") requests are generated what simulates immutable state of the application. In the first phase 60 GET and 60 UPDATE requests are generated with constant injection step 2 requests (1 GET and 1 UPDATE) per second. In the second phase 60 requests are generated with constant injection step 1 request per second. All requests are designated to the same product category (the same ID parameter). 
 
 From the high level perspective in the first phase enable cache introduces only unnecessary overhead (all cached GET requests are immediately "cleared" from cache by UPDATE requests). In the second phase enabled cache provides benefit - only first request is executed and response for the rest is taken from cache.  
 
@@ -1248,563 +1250,66 @@ Relatively small cache improvement in the implemented scenario is caused by smal
 \subsubsection{Experiment Conclusions} 
 
 
+Performed experiments proves that performance optimization provided by the APTS has positive effect on the execution time of the requests. The improvement obtained during the experiments is equal to 3.38\% (comparing to enabled cache) and 3.84\% (comparing to disable cache). The value of the improvement is relatively small but taking into account that a web applications must handle thousands of the requests even such small improvement matters in higher perspective.  
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Performed experiments proves that performance optimization provided by the APTS has positive effect on the execution time of the requests. The improvement obtained during the experiments is equal to 3.38\% (comparing to enabled cache) and 3.84\% (comparing to disable cache). The value of the improvement is relatively small but taking into account that a web applications must handle nowadays thousands of the requests even such small improvement matters in higher perspective.  
+What is also important, the experiment legitimate implementations of the redundant components with different performance characteristic in a software. In the experiment cache mechanism was used, but there there exist many other possible implementations - for example: stateless and statefull EJB beans, different data storage mechanism (database, in-memory, file system) or different sorting algorithms. Common thing for all mentioned examples is fact, that for a give component there exist alternative which in some circumstances provides better performance.     
 
  
 
 \subsection{Batch Redundant Component Evaluation}
-\subsubsection{Traffic Simulation Scenario} 
+
+Below experiments  are focused on Batched and Direct redundant components. The APTS should ensure proper management for the both components in order to provide optimal performance of the tested application with the highest possible level of user satisfaction.  
+
+\subsubsection{Traffic Simulation Scenario}
+
+For the experiment evaluation the batch management by the APTS the traffic simulation presented in the Figure \ref{trafficbatch} was implemented.
+
+\begin{figure}[!htb]
+\begin{tikzpicture}
+\draw[->] (0,0) -- (10,0);
+\foreach \x in {1,5,9}
+\draw(\x cm,3pt) -- (\x cm, -3pt);
+
+\draw (1,0) node[below=3pt] {$0$};
+\draw (5,0) node[below=3pt] {$60$};
+\draw (9,0) node[below=3pt] {$120$};
+
+\draw[fill=rred] (5,0) rectangle (9,1);
+\draw (7,0) node[above=6pt, align=center, white] {10 requests / s};
+
+\draw[fill=oorange] (1,0) rectangle (5,1);
+\draw (3,0) node[above=6pt, align=center] {1 requests / s};
+
+\draw (10.8,0) node {$time [s]$};
+\end{tikzpicture}
+\caption{\textit{Traffic simulation scenario for the batch management evaluation}} \label{trafficbatch}
+\end{figure}
+
+The simulation takes 120 seconds and is divided to two phases. In the first 60 seconds INSERT ("Add new product category") request are generated with the constant injection step 1 request per second. In the second 60 seconds injection step is increased to 10 requests per second. 
+
+In other words the simulation in the first phase makes usage of batch undesirable (records are inserted when batch is full, so with batch with size = 10 creates 10 seconds of delay what is not acceptable from user perspective). In the second phase because of high inserts rate usage of batch is desirable (with batch with size = 10 introduced delay is only 1 second what is acceptable solution).  
+ 
 \subsubsection{Environment Preparation} 
+
+
+
 \subsubsection{Control Sample} 
 \subsubsection{Evaluation Sample} 
-\subsubsection{Results Comparison} 
+\subsubsection{The Experiment} 
+\subsubsection{The Results} 
+\subsubsection{Interpretation} 
+\subsubsection{Experiment Conclusions} 
 
 \subsection{Threads Number Evaluation}
 \subsubsection{Traffic Simulation Scenario} 
 \subsubsection{Environment Preparation} 
 \subsubsection{Control Sample} 
 \subsubsection{Evaluation Sample} 
-\subsubsection{Results Comparison} 
+\subsubsection{The Experiment} 
+\subsubsection{The Results} 
+\subsubsection{Interpretation} 
+\subsubsection{Experiment Conclusions} 
+
 
 \subsection{Conclusions} 
 
