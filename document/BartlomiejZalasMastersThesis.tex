@@ -1134,7 +1134,7 @@ From the high level perspective in the first phase enable cache introduces only 
 
 \subsubsection{Environment Preparation} 
 
-In order to prevent distortion of the results be the others managed elements (batch and threads number) only MonitorTrafficProfilePET case will be enabled during evaluation. The MonitorTrafficProfilePET was configured with parameters presented in the Table \ref{evaluationtestconf}.
+In order to prevent distortion of the results by others managed elements (batch and threads number) only MonitorTrafficProfilePET case will be enabled during evaluation. The MonitorTrafficProfilePET was configured with parameters presented in the Table \ref{evaluationtestconf}.
 
 \begin{table}[!htb]
 \def\arraystretch{1.5}
@@ -1200,7 +1200,7 @@ The tested application:
 
 \subsubsection{The Results} 
 
-The summary of the execution time during experiments are presented in the Table \ref{cacheEvalResutls}. The table presents average execution time of the requests for each sample during the experiments. The column \textit{Improvement} shows percentage improvement between control samples and \textit{Adapted} sample. In other words the column presents how the APTS decreased the execution time of requests. The value of the \textit{Improvement} column was computed using the formula: 
+The summary of the execution time during experiments are presented in the Table \ref{cacheCompResutls}. The table presents average execution time of the requests for each sample during the experiments. The column \textit{Improvement} shows percentage improvement between control samples and \textit{Adapted} sample. In other words the column presents how the APTS decreased the execution time of requests. The value of the \textit{Improvement} column was computed using the formula: 
 
 \begin{center}
 $Improvement = \frac{ControlSample - AdaptedSample}{ControlSample} \cdot 100\%$
@@ -1256,11 +1256,11 @@ What is also important, the experiment legitimate implementations of the redunda
 
  
 
-\subsection{Batch Redundant Component Evaluation}
+\subsection{Batch Management Evaluation}
 
 Below experiments  are focused on Batched and Direct redundant components. The APTS should ensure proper management for the both components in order to provide optimal performance of the tested application with the highest possible level of user satisfaction.  
 
-\subsubsection{Traffic Simulation Scenario}
+\subsubsection{Traffic Simulation Scenario} \label{batchsimulationscenario}
 
 For the experiment evaluation the batch management by the APTS the traffic simulation presented in the Figure \ref{trafficbatch} was implemented.
 
@@ -1290,12 +1290,60 @@ The simulation takes 120 seconds and is divided to two phases. In the first 60 s
 In other words the simulation in the first phase makes usage of batch undesirable (records are inserted when batch is full, so with batch with size = 10 creates 10 seconds of delay what is not acceptable from user perspective). In the second phase because of high inserts rate usage of batch is desirable (with batch with size = 10 introduced delay is only 1 second what is acceptable solution).  
  
 \subsubsection{Environment Preparation} 
+In order to prevent distortion of the results by others managed elements (cache and threads number) only MonitorInsertsLevelPET case will be enabled during evaluation. The MonitorInsertsLevelPET was configured with parameters presented in the Table \ref{evaluationtestconfbatch}.
 
+\begin{table}[!htb]
+\def\arraystretch{1.5}
+\caption{\textit{The MonitorInsertsLevelPET case parameters}} \label{evaluationtestconfbatch}
+\begin{tabularx}{\textwidth}{X|X}
 
+\textbf{durationInSec} & 180 \\ \hline
+\textbf{monitorIntervalInSec} & 10 \\ \hline
+\textbf{delayInSec:} & 10\\
+\end{tabularx}
+\end{table}
 
-\subsubsection{Control Sample} 
-\subsubsection{Evaluation Sample} 
+The initial configuration provided by the \textit{Configuration Service} during the experiment is presented in the Table \ref{cacheinitconfbatch}.
+\begin{table}[!htb]
+\caption{\textit{Initial configuration}} \label{cacheinitconfbatch}
+\begin{tabularx}{\textwidth}{X|X}
+\textbf{Configuration Parameter} & \textbf{Value} \\ \hline
+CACHE & NO\_CACHE \\ \hline
+BATCH & DIRECT\\ \hline
+THREADS & T50\\
+\end{tabularx}
+\end{table}
+
+During the experiment batch with size equal to 10 will be used. 
+
+\subsubsection{Evaluation Samples} 
+
+In order to measure how the APTS influences performance of the tested application reference the control sample must be introduced. The control sample checks performance of the application with disabled APTS performance tuning. 
+
+For the need of batch measurement experiments only control sample with disabled batch introduced. As mentioned in the Chapter \ref{batchsimulationscenario} implemented traffic scenario with enabled batch introduces not acceptable delay between request execution and actual data persistence in the first phase of simulation. 
+
+During the experiment the same simulation scenario is performed on both samples - control and evaluation (sample with the APTS performance tuning enabled) sample.
+
 \subsubsection{The Experiment} 
+
+The experiment was repeated 10 times for both control and evaluation samples what in total gives 20 repetition of the experiment. 
+
+In the Figure \ref{batchevaluationscreencontrol} and \ref{batchevaluationscreenevaluation} screenshot from Grafana platform with experiment run for both samples is presented. 
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=1\textwidth]{batchCtrl}
+\caption{\textit{Control sample experiment run - Grafana screenshot}} \label{batchevaluationscreencontrol}
+\end{figure}
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=1\textwidth]{batchEval}
+\caption{\textit{Evaluation sample experiment run - Grafana screenshot}} \label{batchevaluationscreenevaluation}
+\end{figure}
+
+
+
+
 \subsubsection{The Results} 
 \subsubsection{Interpretation} 
 \subsubsection{Experiment Conclusions} 
@@ -1532,6 +1580,33 @@ Grafana - The open platform for beautiful analytics and monitoring \textit{https
     9		  &39.46 & 27.60  &\\ 
     10		  &35.51 & 55.60  &\\ \cline{1-4}
         	  &46.88 & 37.38  & Average \\ 
+\end{tabular}
+\end{center}
+\label{appendixmeasurementscache}
+\end{table}
+
+
+\pagebreak
+\section{System evaluation measurements - batch} \label{appendixbatchevaluation}
+
+\begin{table}[ht]
+\begin{center}
+\caption{System evaluation measurements - comparison between the control sample and the APTS solution}
+\begin{tabular}{c| C{1.1cm}  C{1.2cm}  C{1.1cm}|C{1.1cm} C{1.2cm} C{1.1cm} |c}
+    & \multicolumn{6}{c|}{Execution time [ms]}  \\ 
+    & \multicolumn{3}{c|}{Control sample} & \multicolumn{3}{c|}{APTS}\\ 
+    Sample \# & Phase I & Phase II & Total & Phase I & Phase II & Total &\\ \cline{1-7}
+    1		  &32.6  &34.0    &33.9   &33.2  &23.5   &24.3   &\\ 
+    2		  &23.6  &31.7    &31.0   &24.6  &23.4   &23.5   &\\ 
+    3		  &34.2  &26.7    &27.3   &28.8  &22.8   &23.3   &\\ 
+    4		  &24.8  &38.9    &37.7   &31.0  &22.2   &22.9   &\\ 
+    5		  &30.5  &29.8    &29.9   &43.0  &22.3   &24.0   &\\ 
+    6		  &30.9  &33.4    &33.2   &24.6  &23.9   &24.0   &\\ 
+    7		  &33.8  &27.7    &28.2   &35.0  &20.8   &22.0   &\\ 
+    8		  &29.2  &32.3    &32.0   &28.9  &21.6   &22.2   &\\ 
+    9		  &25.8  &32.6    &32.0   &30.2  &22.3   &23.0   &\\ 
+    10		  &34.1  &28.2    &28.7   &29.2  &21.9   &22.5   &\\ \cline{1-8}
+        	  &30.0  &31.5    &31.4   &30.9  &22.5   &23.2   & \multicolumn{1}{c}{Average} \\ 
 \end{tabular}
 \end{center}
 \label{appendixmeasurementscache}

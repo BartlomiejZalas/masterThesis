@@ -18,6 +18,6 @@ class InsertsBatchTest extends Simulation {
     .exec(http("call").put("/add").queryParam("categoryName", "newCategory"))
   setUp(
     scn1.inject(rampUsers(60) over(60 seconds)),
-    scn2.inject(rampUsers(1000) over(60 seconds))
+    scn2.inject(rampUsers(660) over(60 seconds))
   ).protocols(httpConf)
 }
