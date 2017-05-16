@@ -15,7 +15,7 @@ public class MonitorInsertsLevelPET {
     private static final int MONITOR_INTERVAL = 10;
     private ExecutionTimeInfluxDbClient executionTimeInfluxDbClient = new ExecutionTimeInfluxDbClient();
 
-    @PetCase(enabled = true, durationInSec = 180, monitorIntervalInSec = MONITOR_INTERVAL, delayInSec = MONITOR_INTERVAL)
+    @PetCase(enabled = false, durationInSec = 180, monitorIntervalInSec = MONITOR_INTERVAL, delayInSec = MONITOR_INTERVAL)
     public void monitorMutabilityOfTraffic_shouldReportIssueWhenChanged() {
         InsertsLevel insertsLevel = getInsertsLevel(MONITOR_INTERVAL);
 
