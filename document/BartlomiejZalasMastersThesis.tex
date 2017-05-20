@@ -30,7 +30,7 @@
 \usepackage{setspace}
 \usepackage{multirow}
 \usepackage{mathtools}
-
+\usepackage[margin=25mm]{geometry}
 
 \graphicspath{ {images/} }
 
@@ -353,24 +353,29 @@ The tested application REST API provides the following resources:
 
 \noindent\textbf{Find product category by ID} - returns product category with id defined by parameter \textit{id}.
 
+{\renewcommand{\arraystretch}{1}
   \begin{tabular}{ll}
   Method: & GET\\
   Path: & /find/\{id\}\\
   Parameters: & id (parameter type: path, data type: integer, required: yes)\\
   Response: & Product category in JSON format \\
   \end{tabular} \vspace{5mm}
+}
 
 \noindent\textbf{Add new product category} - creates new category with name defined by parameter \textit{categoryName}. For created category products with opinions are generated. Number of generated products and opinions is chosen randomly from range 1-4. 
 
+{\renewcommand{\arraystretch}{1}
   \begin{tabular}{ll}
   Method: & PUT \\
   Path: & /add/ \\
   Parameters: & categoryName (parameter type: request, data type: string, required: yes)\\
   Response: & Created product category in JSON format  \\
   \end{tabular} \vspace{5mm}
+}
 
 \noindent\textbf{Update product category} - updates category defined by parameter \textit{id} by name from parameter \textit{newName}. 
 
+{\renewcommand{\arraystretch}{1}
   \begin{tabular}{ll}
   Method: & POST \\
   Path: & /update/\{id\} \\
@@ -378,18 +383,22 @@ The tested application REST API provides the following resources:
               & newName (parameter type: request, data type: string, required: yes)\\
   Response: & Updated product category in JSON format  \\
   \end{tabular} \vspace{5mm}
+}
 
 \noindent\textbf{Remove product category} - removes product category with related products and opinions for given \textit{id}.
 
+{\renewcommand{\arraystretch}{1}
   \begin{tabular}{ll}
   Method: & DELETE \\
   Path: & /remove/\{id\} \\
   Parameters: & id (parameter type: path, data type: integer, required: yes)\\
   Response: & No content  \\
   \end{tabular} \vspace{5mm}
+}
 
 \noindent\textbf{Get all product categories paged} - returns product categories with products and opinions for page defined by parameters \textit{page} and \textit{size}.
 
+{\renewcommand{\arraystretch}{1}
   \begin{tabular}{ll}
   Method: & GET \\
   Path: & /findPart/ \\
@@ -397,39 +406,59 @@ The tested application REST API provides the following resources:
               & size (parameter type: request, data type: integer, required: yes)\\
   Response: & Product categories in JSON format  \\
   \end{tabular} \vspace{5mm}
+  }
   
 \noindent\textbf{Get all product categories} - returns all product categories with products and opinions.
 
+{\renewcommand{\arraystretch}{1}
   \begin{tabular}{ll}
   Method: & GET \\
   Path: & /findAll/ \\
   Response: & Product categories in JSON format  \\
   \end{tabular} \vspace{5mm}
-  
+}
+
 \noindent\textbf{Remove all product categories} - removes all product categories with related products and opinions.
 
+{\renewcommand{\arraystretch}{1}
   \begin{tabular}{ll}
   Method: & DELETE \\
   Path: & /removeAll/ \\
   Response: & No content  \\
   \end{tabular} \vspace{5mm}
+}
   
 \noindent\textbf{Create product categories} - generates number of product categories. The number is defined by \textit{size} parameter. For each category products with opinions are generated. Number of generated products and opinions is chosen randomly from range 1-4. 
 
+{\renewcommand{\arraystretch}{1}
   \begin{tabular}{ll}
   Method: & PUT \\
   Path: & /addCategories/ \\
   Parameters: & size (parameter type: request, data type: integer, required: yes)\\
   Response: & String message  \\
   \end{tabular} \vspace{5mm}
+}
 
-\noindent\textbf{Execute task} - starts task which will simulate high CPU usage. For that purpose generation of 40th number of Fibonacci sequence was chosen. 
+\noindent\textbf{Execute CPU consuming task} - starts task which will simulate high CPU usage. For that purpose generation of 40th number of Fibonacci sequence was chosen. 
 
+{\renewcommand{\arraystretch}{1}
   \begin{tabular}{ll}
   Method: & GET \\
   Path: & /task/ \\
   Response: & No content  \\
   \end{tabular} \vspace{2mm}
+}
+
+\noindent\textbf{Execute wait task} - starts task which will simulate waiting task without CPU consumption. Real life example of such task could process which sends request to an external service (for example by HTTP) and waits for a response. The task "wait" time is defined by the parameter \textit{sleepTime}. 
+
+{\renewcommand{\arraystretch}{1}
+  \begin{tabular}{ll}
+  Method: & GET \\
+  Path: & /wait/ \\
+  Parameters: & sleepTime (parameter type: request, data type: integer, required: yes)\\
+  Response: & No content  \\
+  \end{tabular} \vspace{5mm}
+}
   
 Services \textit{Find product category by ID}, \textit{Add new product category}, \textit{Update product category}, \textit{Remove product category} provides basic usage from client perspective. Remaining services was developed for testing purposes (performance tests for different configuration and redundant components from Chapter \ref{realization}).
   
@@ -481,7 +510,7 @@ Execution time of methods was measured by aspect oriented class. The class wraps
 
 Required workload was simulated by tests scenarios generated in Gatling Load and Performance testing engine\cite{gatling}. Following test scenarios was developed:
 \begin{itemize}
-\item \textbf{Squeeze Application} - generates high CPU usage of the tested application by firing 100 parallel requests to CPU consuming resource - "Execute task". 
+\item \textbf{Squeeze Application} - generates high CPU usage of the tested application by firing 100 parallel requests to CPU consuming resource - "Execute CPU consuming task". 
 \item \textbf{Frequently Changing Model} - generates traffic with alternate firing  "Update product category" and "Find product category by ID" resources in 10 parallel requests.
 \item \textbf{Immutable Model} - generates traffic based on "Find product category by ID" resource (without changes on data model) in 10 parallel requests.
 \item \textbf{Insert} - generates 20 sequenced requests to "Add new product category" resource. 
@@ -689,9 +718,9 @@ CACHE & NO\_CACHE & Cache is handled by the No Cache component\\\cline{2-3}
       & CACHED    & Cache is handled by the Cached component   \\ \hline
 BATCH & DIRECT    & Batch is handled by the No Batched component   \\\cline{2-3}
 	  & BATCHED   & Batch is handled by the Batched component   \\ \hline
-THREADS & T20     & Application server will use 20 threads\\ \cline{2-3}
-        & T50     & Application server will use 50 threads\\ \cline{2-3}
-        & T80     & Application server will use 80 threads\\ \hline
+THREADS & T10     & Application server will use 10 threads\\ \cline{2-3}
+        & T20     & Application server will use 20 threads\\ \cline{2-3}
+        & T30     & Application server will use 30 threads\\ \hline
 \end{tabularx}
 \end{table}	
 
@@ -799,7 +828,7 @@ Attributes of the class are:
 Sample PET case written with usage of the PET Framework is presented on the Listing \ref{case}. Annotations \textit{@Pet} and \textit{@PetCase} are used to inform framework that this class is implementation of PET case. Method  \textit{meanExecutionTimeShouldBeOnAcceptableLevel} is interpreted as PET case implementation and is configured by annotation \textit{@PetCase} with definied two attributes - \textit{monitorIntervalInSec} with assigned value 60 and \textit{durationInSec} with assigned value 3600. This configuration means that PET case will be executed in every minute by the period of 1 hour. In the body of the method assertion \textit{assertKpiIsLessThan} is defined which simply checks if mean execution time was on acceptable level - below 1.2 second. For simplicity process of retrieving execution time measurement was represented as method  \textit{getExecutionTimeFromLastMinute()}.  
 
 
-\begin{listing}[ht]\begin{minted}[fontsize=\footnotesize]{java}
+\begin{listing}[ht]\begin{minted}{java}
 /*
  * imports
  */
@@ -813,9 +842,7 @@ public class SamplePETCase {
         
         double meanExecutionTime = getExecutionTimeFromLastMinute();
         
-        assertKpiLessThan(
-            "executionTime", meanExecutionTime, acceptableExecutionTime
-        );
+        assertKpiLessThan("executionTime", meanExecutionTime, acceptableExecutionTime);
     }
 }
 \end{minted}
@@ -824,7 +851,7 @@ public class SamplePETCase {
 
 In order to run tests cases the PET Framework provides runner (PetCaseRunner) which will run all tests cases marked with proper annotations from the give package. Because of the need of continuous monitoring of the reported performance issues, the runner is implemented as a thread and provides asynchronous API to retrieve new reported issues. The Listing \ref{petrunner} presents sample usage of the PetCaseRunner. 
 
-\begin{listing}[ht]\begin{minted}[fontsize=\footnotesize]{java}
+\begin{listing}[ht]\begin{minted}{java}
 PetCaseRunner runner = new PetCaseRunner("com.zalas.masterthesis.apts.pet.cases");
 runner.start();
 
@@ -873,13 +900,13 @@ Decision module is triggered by a reported performance issues in order to analyz
 
 \begin{figure}[!htb]
 \centering
-\includegraphics[width=1\textwidth]{DecisionModuleSequenceDiagram}
+\includegraphics[width=0.8\textwidth]{DecisionModuleSequenceDiagram}
 \caption{\textit{Sequence diagram presenting the Decision Module workflow}} \label{dmsequence}
 \end{figure}
 
 Decision about which action will be performed is made using a rule based system. Implemented rule based system is consist of two parts: set of the rules and inference engine. The set of rules is created with the aim of performance tuning of the tested application. Each rule fulfill contract defined in the form of the \textit{Rule} interface presented on the Listing \ref{irule}.
 
-\begin{listing}[ht]\begin{minted}[fontsize=\footnotesize]{java}
+\begin{listing}[ht]\begin{minted}{java}
 public interface Rule {
     boolean isRuleApplicable(
     	IssueToHandle issueToHandle, 
@@ -899,7 +926,7 @@ The interface enforce on rules to define the following methods:
 \item getPriority - method returns priority of a given rule - the higher number - the higher priority.  
 \end{itemize}
 
-In order to perform automated tuning of the tested application based on elements defined in the Chapter \ref{realization} the following rules are implemented: \textit{Enable Batch Rule}, \textit{Disable Batch Rule}, \textit{Enable Cache Rule}, \textit{Disable Cache Rule}, \textit{Switch To 20 Threads Rule}, \textit{Switch To 50 Threads Rule}, \textit{Switch To 80 Threads Rule}. Below, all implemented rules are presented in details.  
+In order to perform automated tuning of the tested application based on elements defined in the Chapter \ref{realization} the following rules are implemented: \textit{Enable Batch Rule}, \textit{Disable Batch Rule}, \textit{Enable Cache Rule}, \textit{Disable Cache Rule}, \textit{Switch To 10 Threads Rule}, \textit{Switch To 20 Threads Rule}, \textit{Switch To 30 Threads Rule}. Below, all implemented rules are presented in details.  
 
 \vspace{5mm}
 
@@ -996,13 +1023,13 @@ The rule disables cache mechanism provided by the Cache redundant component. Ins
 \end{table}
 %-------------DISABLE CACHE RULE END-----------------
 \vspace{5mm}
-%-------------SWITCH TO 20 THREADS RULE START-----------------
-\noindent\textbf{Switch to 20 Threads Rule} \\
-The rule represents the lowest possible threads number available in the APTS implementation. The rule switches configuration responsible for the number of threads used by application server on which the tested application is deployed to 20 threads. The rule is applicable when mean execution time defined in MeanExecutionTimePET test case is exceeded and CPU usage on the application node is high.  Switching to low threads number should help reduce CPU usage and hence reduce total execution time of the requests. Details of the rule are presented in the Table \ref{rules20}.
+%-------------SWITCH TO 10 THREADS RULE START-----------------
+\noindent\textbf{Switch to 10 Threads Rule} \\
+The rule represents the lowest possible threads number available in the APTS implementation. The rule switches configuration responsible for the number of threads used by application server on which the tested application is deployed to 10 threads. The rule is applicable when mean execution time defined in MeanExecutionTimePET test case is exceeded and CPU usage on the application node is high.  Switching to low threads number should help reduce CPU usage and hence reduce total execution time of the requests. Details of the rule are presented in the Table \ref{rules10}.
 
 \begin{table}[!htb]
 \def\arraystretch{1.5}
-\caption{\textit{Details of the Switch to 20 Threads Rule}} \label{rules20}
+\caption{\textit{Details of the Switch to 10 Threads Rule}} \label{rules10}
 \begin{tabularx}{\textwidth}{p{2.1cm}|X}
 
 \textbf{Applicability Condition:} & \textbf{isExecutionTimeExceeded} \textit{AND} \newline
@@ -1010,48 +1037,48 @@ The rule represents the lowest possible threads number available in the APTS imp
 \textbf{cpuUsageIsHigh} \\ \hline
 
 \textbf{Subconditions Definition:} & \textbf{isExecutionTimeExceeded} -  Reported performance issue metric is equal to "ExecutionTime"  \\
-& \textbf{isThreadsNumberDifferent} -  Current application configuration parameter "THREADS" is not equal to "T20" \\
+& \textbf{isThreadsNumberDifferent} -  Current application configuration parameter "THREADS" is not equal to "T10" \\
 & \textbf{cpuUsageIsHigh} - Current CPU usage on the application node is greater than 80\% \\ \hline
 
-\textbf{Action:} & Change the configuration of parameter "THREADS" to value "T20" \\ \hline
+\textbf{Action:} & Change the configuration of parameter "THREADS" to value "T10" \\ \hline
 \textbf{Priority:} & 1\\
 \end{tabularx}
 \end{table}
-%-------------SWITCH TO 20 THREADS END-----------------
+%-------------SWITCH TO 10 THREADS END-----------------
 \vspace{5mm}
-%-------------SWITCH TO 50 THREADS RULE START-----------------
-\noindent\textbf{Switch to 50 Threads Rule} \\
-The rule represents the middle possible value of threads number available in the APTS implementation. The rule switches configuration responsible for the number of threads used by application server on which the tested application is deployed to 50 threads. Conditions of applicability of rule are as following: mean execution time defined in MeanExecutionTimePET test case is exceeded and CPU usage is high or low for respectively low or high threads number. Switching to the higher threads number should help reduce execution time of requests which are waiting in the queue to be handled by the application. Switching to the lower threads number should help reduce CPU usage and hence reduce total execution time of the requests. In order to perform threads number switching by one level the rule has set higher priority in comparison to other threads related rules (in example: when current thread number is 20, and rules "Switch to 50 Threads Rule" and "Switch to 80 Threads Rule" are evaluated as applicable - rule "Switch to 50 Threads Rule" will be choose because of the higher priority). Details of the rule are presented in the Table \ref{rules50}.
+%-------------SWITCH TO 20 THREADS RULE START-----------------
+\noindent\textbf{Switch to 20 Threads Rule} \\
+The rule represents the middle possible value of threads number available in the APTS implementation. The rule switches configuration responsible for the number of threads used by application server on which the tested application is deployed to 20 threads. Conditions of applicability of rule are as following: mean execution time defined in MeanExecutionTimePET test case is exceeded and CPU usage is high or low for respectively low or high threads number. Switching to the higher threads number should help reduce execution time of requests which are waiting in the queue to be handled by the application. Switching to the lower threads number should help reduce CPU usage and hence reduce total execution time of the requests. In order to perform threads number switching by one level the rule has set higher priority in comparison to other threads related rules (in example: when current thread number is 10, and rules "Switch to 20 Threads Rule" and "Switch to 30 Threads Rule" are evaluated as applicable - rule "Switch to 20 Threads Rule" will be choose because of the higher priority). Details of the rule are presented in the Table \ref{rules20}.
 
 \begin{table}[!htb]
 \def\arraystretch{1.5}
-\caption{\textit{Details of the Switch to 80 Threads Rule}} \label{rules50}
+\caption{\textit{Details of the Switch to 20 Threads Rule}} \label{rules20}
 \begin{tabularx}{\textwidth}{p{2.1cm}|X}
 
 \textbf{Applicability Condition:} & \textbf{isExecutionTimeExceeded} \textit{AND} \newline
-(\textbf{isThreadNumber20} \textit{AND} \textbf{cpuUsageIsLow}) \textit{OR} \newline
-(\textbf{isThreadNumber80} \textit{AND} \textbf{cpuUsageIsHigh}) \\ \hline
+(\textbf{isThreadNumber10} \textit{AND} \textbf{cpuUsageIsLow}) \textit{OR} \newline
+(\textbf{isThreadNumber30} \textit{AND} \textbf{cpuUsageIsHigh}) \\ \hline
 
 \textbf{Subconditions Definition:} & \textbf{isExecutionTimeExceeded} -  Reported performance issue metric is equal to "ExecutionTime"  \\
-& \textbf{isThreadNumber20} -  Current application configuration parameter "THREADS" is equal to "T20" \\
-& \textbf{isThreadNumber80} -  Current application configuration parameter "THREADS" is equal to "T80" \\
+& \textbf{isThreadNumber10} -  Current application configuration parameter "THREADS" is equal to "T10" \\
+& \textbf{isThreadNumber30} -  Current application configuration parameter "THREADS" is equal to "T30" \\
 & \textbf{cpuUsageIsLow} - Current CPU usage on the application node is not greater than 80\% \\ \hline
 & \textbf{cpuUsageIsHigh} - Current CPU usage on the application node is greater than 80\% \\ \hline
 
-\textbf{Action:} & Change the configuration of parameter "THREADS" to value "T50" \\ \hline
+\textbf{Action:} & Change the configuration of parameter "THREADS" to value "T20" \\ \hline
 \textbf{Priority:} & 2\\
 \end{tabularx}
 \end{table}
-%-------------SWITCH TO 50 THREADS END-----------------
+%-------------SWITCH TO 20 THREADS END-----------------
 
 \vspace{5mm}
-%-------------SWITCH TO 80 THREADS RULE START-----------------
-\noindent\textbf{Switch to 80 Threads Rule} \\
-The rule represents the highest possible threads number available in the APTS implementation. The rule switches configuration responsible for the number of threads used by application server on which the tested application is deployed to 80 threads. The rule is applicable when mean execution time defined in MeanExecutionTimePET test case is exceeded and CPU usage on the application node is low. Switching to high threads number should help reduce execution time of requests which are waiting in the queue to be handled by the application. Details of the rule are presented in the Table \ref{rules80}.
+%-------------SWITCH TO 30 THREADS RULE START-----------------
+\noindent\textbf{Switch to 30 Threads Rule} \\
+The rule represents the highest possible threads number available in the APTS implementation. The rule switches configuration responsible for the number of threads used by application server on which the tested application is deployed to 30 threads. The rule is applicable when mean execution time defined in MeanExecutionTimePET test case is exceeded and CPU usage on the application node is low. Switching to high threads number should help reduce execution time of requests which are waiting in the queue to be handled by the application. Details of the rule are presented in the Table \ref{rules30}.
 
 \begin{table}[!htb]
 \def\arraystretch{1.5}
-\caption{\textit{Details of the Switch to 80 Threads Rule}} \label{rules80}
+\caption{\textit{Details of the Switch to 30 Threads Rule}} \label{rules30}
 \begin{tabularx}{\textwidth}{p{2.1cm}|X}
 
 \textbf{Applicability Condition:} & \textbf{isExecutionTimeExceeded} \textit{AND} \newline
@@ -1059,14 +1086,14 @@ The rule represents the highest possible threads number available in the APTS im
 \textbf{cpuUsageIsLow} \\ \hline
 
 \textbf{Subconditions Definition:} & \textbf{isExecutionTimeExceeded} -  Reported performance issue metric is equal to "ExecutionTime"  \\
-& \textbf{isThreadsNumberDifferent} -  Current application configuration parameter "THREADS" is not equal to "T80" \\
+& \textbf{isThreadsNumberDifferent} -  Current application configuration parameter "THREADS" is not equal to "T30" \\
 & \textbf{cpuUsageIsLow} - Current CPU usage on the application node is not greater than 80\% \\ \hline
 
-\textbf{Action:} & Change the configuration of parameter "THREADS" to value "T80" \\ \hline
+\textbf{Action:} & Change the configuration of parameter "THREADS" to value "T30" \\ \hline
 \textbf{Priority:} & 1\\
 \end{tabularx}
 \end{table}
-%-------------SWITCH TO 80 THREADS END-----------------
+%-------------SWITCH TO 30 THREADS END-----------------
 
 \vspace{10mm}
 %-------------DO NOTHING RULE START-----------------
@@ -1093,7 +1120,7 @@ Second part of the implemented rule based system is inference engine. The role o
 
 \begin{figure}[!htb]
 \centering
-\includegraphics[width=0.55\textwidth]{DecisionModuleActivityDiagram}
+\includegraphics[width=0.4\textwidth]{DecisionModuleActivityDiagram}
 \caption{\textit{The algorithm of selecting best rule by implemented rule based system}} \label{dmalgorithm}
 \end{figure}
 
@@ -1105,7 +1132,7 @@ The APTS Manager is component which is responsible for initiating, run and coord
 
 \begin{figure}[!htb]
 \centering
-\includegraphics[width=1\textwidth]{ManagerSequenceDiagram}
+\includegraphics[width=0.9\textwidth]{ManagerSequenceDiagram}
 \caption{\textit{Sequence Diagram presenting the APTS Manager workflow}} \label{manager}
 \end{figure}
 
@@ -1130,18 +1157,23 @@ All the experiment was performed on the following machine:
 \item Java version: 1.8.0\_121
 \end{itemize}
 
+\subsubsection{System Deployment}
+
+diagram
+
+
 \subsubsection{The PET Cases Configuration}
 
 During the experiments dedicated to evaluate given mechanism (cache, batch, threads) only PET case related to given mechanism is enabled (MonitorTrafficProfilePET, MonitorInsertsLevelPET, MeanExecutionTimePET respectively) in order to prevent distortions. 
 
-The configuration of the all PET cases is presented in the Table \ref{evaluationtestconf}. The duration is adapted to 2 minutes test scenario. The additional time and delay is introduced due to practical reasons - traffic simulation need to be launch manually. The monitoring interval provides adequate time between individual test run.
+The configuration of the all PET cases is presented in the Table \ref{evaluationtestconf}. The duration is adapted to 2 minutes test scenario. The additional time and delay is introduced due to practical reasons - traffic simulation engine needs few seconds to be initiated before it starts to generate requests. The monitoring interval provides adequate time between individual test run.
 
 \begin{table}[!htb]
 \def\arraystretch{1.5}
 \caption{\textit{The MonitorTrafficProfilePET case parameters}} \label{evaluationtestconf}
 \begin{tabularx}{\textwidth}{X|X}
 
-\textbf{durationInSec} & 150 \\ \hline
+\textbf{durationInSec} & 180 \\ \hline
 \textbf{monitorIntervalInSec} & 10 \\ \hline
 \textbf{delayInSec:} & 10\\
 \end{tabularx}
@@ -1150,7 +1182,7 @@ The configuration of the all PET cases is presented in the Table \ref{evaluation
 
 \subsubsection{Initial Application Configuration}
 
-The initial configuration provided by the \textit{Configuration Service} during the experiments evaluating the APTS presented in the Table \ref{cacheinitconf}. As presented, by default cache and batch are disabled, the application server threads number is set to 50. 
+The initial configuration provided by the \textit{Configuration Service} during the experiments evaluating the APTS presented in the Table \ref{cacheinitconf}. As presented, by default cache and batch are disabled, the application server threads number is set to 20. 
 
 \begin{table}[!htb]
 \caption{\textit{Initial configuration of the tested application during the experiments}} \label{cacheinitconf}
@@ -1158,7 +1190,7 @@ The initial configuration provided by the \textit{Configuration Service} during 
 \textbf{Configuration Parameter} & \textbf{Value} \\ \hline
 CACHE & NO\_CACHE \\ \hline
 BATCH & DIRECT\\ \hline
-THREADS & T50\\
+THREADS & T20\\
 \end{tabularx}
 \end{table}
 
@@ -1607,10 +1639,10 @@ Grafana - The open platform for beautiful analytics and monitoring \textit{https
 
 \appendix
 \setcounter{table}{0}
-%\renewcommand{\thetable}{\Alph{section}.\numberwithin{table}{section}}
-\renewcommand{\thetable}{\Alph{section}}
+\renewcommand{\thesubsection}{\Alph{subsection}}
+\renewcommand{\thetable}{\Alph{subsection}.\numberwithin{table}{subsection}}
 
-\section{System evaluation measurements - cache} \label{appendixcacheeval}
+\subsection{System evaluation measurements - cache} \label{appendixcacheeval}
 
 \newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
 
@@ -1619,7 +1651,7 @@ Grafana - The open platform for beautiful analytics and monitoring \textit{https
 \caption{System evaluation measurements - cache related redundant components}
 \begin{tabular}{c| C{1.5cm}  C{1.5cm}  C{1.5cm} |c}
     & \multicolumn{3}{c|}{Average execution time of requests [ms]} & \\ 
-    Sample \# & Cached & No Cache & Adapted &\\ \cline{1-4}
+    Repetition \# & Cached & No Cache & Adapted &\\ \cline{1-4}
     1		  &22.00 & 21.50  & 20.20 &\\ 
     2		  &20.27 & 20.51  &	20.63 &\\ 
     3		  &21.70 & 22.23  &	19.50 &\\ 
@@ -1638,14 +1670,14 @@ Grafana - The open platform for beautiful analytics and monitoring \textit{https
 
 
 \pagebreak
-\section{Overhead of Spring ConcurrentMapCache class} \label{appendixspringconcurentmap}
+\subsection{Overhead of Spring ConcurrentMapCache class} \label{appendixspringconcurentmap}
 
 \begin{table}[ht]
 \begin{center}
 \caption{Method execution time of \textit{ConcurrentMapCache} class from \textit{org.springframework.cache.concurrent} package.} 
 \begin{tabular}{c| C{1.5cm}  C{1.5cm} |c}
     & \multicolumn{2}{c|}{Method execution time [ms]} \\ 
-    Sample \# & Put & Clear  &\\ \cline{1-3}
+    Repetition \# & Put & Clear  &\\ \cline{1-3}
     1		  &0.55 & 0.53  &\\ 
     2		  &0.59 & 0.62  &\\ 
     3		  &0.57 & 0.48  &\\ 
@@ -1663,14 +1695,14 @@ Grafana - The open platform for beautiful analytics and monitoring \textit{https
 \end{table}
 
 \pagebreak
-\section{Cached and Not Cached Requests Execution Time} \label{appendixcachenotcached}
+\subsection{Cached and Not Cached Requests Execution Time} \label{appendixcachenotcached}
 
 \begin{table}[ht]
 \begin{center}
 \caption{Execution time of requests to resource "Find product category by ID" with enabled and disabled cache.} 
 \begin{tabular}{c| C{2cm}  C{2cm} |c}
     & \multicolumn{2}{c|}{Request execution time [ms]} \\ 
-    Sample \# & No Cache & Cached  &\\ \cline{1-3}
+    Repetition \# & No Cache & Cached  &\\ \cline{1-3}
     1		  &56.27 & 33.25  &\\ 
     2		  &50.83 & 33.86  &\\ 
     3		  &61.59 & 43.07  &\\ 
@@ -1689,7 +1721,7 @@ Grafana - The open platform for beautiful analytics and monitoring \textit{https
 
 
 \pagebreak
-\section{System evaluation measurements - batch} \label{appendixbatchevaluation}
+\subsection{System evaluation measurements - batch} \label{appendixbatchevaluation}
 
 \begin{table}[ht]
 \begin{center}
@@ -1697,7 +1729,7 @@ Grafana - The open platform for beautiful analytics and monitoring \textit{https
 \begin{tabular}{c| C{1.1cm}  C{1.2cm}  C{1.1cm}|C{1.1cm} C{1.2cm} C{1.1cm} |c}
     & \multicolumn{6}{c|}{Execution time [ms]}  \\ 
     & \multicolumn{3}{c|}{Control sample} & \multicolumn{3}{c|}{APTS}\\ 
-    Sample \# & Phase I & Phase II & Total & Phase I & Phase II & Total &\\ \cline{1-7}
+    Repetition \# & Phase I & Phase II & Total & Phase I & Phase II & Total &\\ \cline{1-7}
     1		  &32.6  &34.0    &33.9   &33.2  &23.5   &24.3   &\\ 
     2		  &23.6  &31.7    &31.0   &24.6  &23.4   &23.5   &\\ 
     3		  &34.2  &26.7    &27.3   &28.8  &22.8   &23.3   &\\ 
@@ -1713,6 +1745,57 @@ Grafana - The open platform for beautiful analytics and monitoring \textit{https
 \end{center}
 \label{appendixmeasurementscache}
 \end{table}
+
+
+\pagebreak
+\subsection{System evaluation measurements - threads} \label{appendix:threadsevaluation}
+{\renewcommand{\arraystretch}{1.25}
+\begin{table}[ht]
+\begin{center}
+\caption{System evaluation measurements - control sample} \label{appendix:table:threadscontrol}
+\begin{tabular}{c| C{1cm} C{1.3cm} C{1.5cm}|C{1.3cm} C{1.5cm} | C{1.3cm} C{1.5cm} |C{1cm}}
+    & \multicolumn{3}{c|}{Phase I} & \multicolumn{2}{c|}{Phase II} & \multicolumn{2}{c|}{Total}\\ 
+    Repetition \# & Duration [s] &  Average CPU Usage & Average Execution Time [s] & Average CPU Usage & Average Execution Time [s] & Average CPU Usage & Average Execution Time [s]\\  \cline{1-8}
+    1 & 44 & 38.8\% & 5.0 & 100.0\% & 29.7 & 70.2\% & 11.2 \\
+	2 & 44 & 30.6\% & 5.0 & 100.0\% & 20.3 & 64.5\% & 10.6 \\ 
+    3 & 44 & 30.6\% & 5.0 & 100.0\% & 27.1 & 64.1\% & 10.6 \\
+	4 & 43 & 27.3\% & 5.0 & 100.0\% & 27.4 & 63.3\% & 10.6 \\
+	5 & 43 & 29.4\% & 5.0 & 100.0\% & 27.0 & 63.7\% & 10.5 \\
+	6 & 43 & 29.0\% & 5.0 & 100.0\% & 25.8 & 61.7\% & 10.2 \\
+	7 & 44 & 27.7\% & 5.0 & 100.0\% & 27.4 & 63.7\% & 10.6 \\
+	8 & 44 & 25.3\% & 5.0 & 100.0\% & 27.4 & 62.7\% & 10.6 \\
+	9 & 43 & 24.3\% & 5.0 & 100.0\% & 28.7 & 68.3\% & 10.9 \\
+	10& 44 & 23.5\% & 5.0 & 100.0\% & 27.8 & 70.9\% & 10.7 \\ \cline{1-9}
+   	  & 44 & 28.7\% & 5.0 & 100.0\% & 27.6 & 63.3\% & 10.6 & \multicolumn{1}{c}{Average} \\ 
+\end{tabular}
+\end{center}
+\label{appendixmeasurementscache}
+\end{table}
+
+\begin{table}[ht]
+\begin{center}
+\caption{System evaluation measurements - sample adapted by the APTS} \label{appendix:table:threadeval}
+\begin{tabular}{c| C{1cm} C{1.3cm} C{1.5cm}|C{1.3cm} C{1.5cm} | C{1.3cm} C{1.5cm} |C{1cm}}
+    & \multicolumn{3}{c|}{Phase I} & \multicolumn{2}{c|}{Phase II} & \multicolumn{2}{c|}{Total}\\ 
+    Repetition \# & Duration [s] &  Average CPU Usage & Average Execution Time [s] & Average CPU Usage & Average Execution Time [s] & Average CPU Usage & Average Execution Time [s]\\  \cline{1-8}
+    1 & 30 & 50.6\% & 5.0 & 99.8\% & 19.0 & 70.8\% & 8.5 \\
+    2 & 37 & 34.8\% & 5.0 & 100.0\% & 20.8 & 72.6\% & 9.0\\
+    3 & 29 & 37.2\% & 5.0 & 99.8\% & 21.6 & 65.7\% & 9.1 \\
+    4 & 29 & 39.5\% & 5.0 & 100.0\% & 19.0 & 69.4\% & 8.5 \\
+    5 & 30 & 47.8\% & 5.0 & 99.9\% & 21.2 & 71.5\% & 9.1 \\
+    6 & 46 & 37.8\% & 5.0 & 100.0\% & 18.1 & 69.1\% & 8.3 \\
+    7 & 31 & 53.6\% & 5.0 & 100.0\% & 20.0 & 70.8\% & 8.8 \\
+    8 & 30 & 36.7\% & 5.0 & 100.0\% & 17.2 & 64.6\% & 8.1 \\
+    9 & 30 & 41.2\% & 5.0 & 99.8\% & 21.5 & 65.9\% & 9.2 \\
+    10 & 30 & 38.6\% & 5.0 & 100.0\% & 22.4 & 66.1\% & 9.4 \\ \cline{1-9}
+   	   & 32 & 41.8\% & 5.0 & 99.9\% & 20.1 & 68.7\% & 8.8 & \multicolumn{1}{c}{Average} \\ 
+\end{tabular}
+\end{center}
+\label{appendixmeasurementscache}
+\end{table}
+}
+
+
 
 
 \end{document}
