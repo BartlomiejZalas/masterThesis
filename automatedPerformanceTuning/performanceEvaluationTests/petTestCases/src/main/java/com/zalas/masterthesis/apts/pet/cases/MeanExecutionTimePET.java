@@ -9,11 +9,11 @@ import static com.zalas.masterthesis.apts.pet.framework.assertions.PetAssert.ass
 @Pet
 public class MeanExecutionTimePET {
 
-    private static final int MONITORING_INTERVAL = 20;
+    private static final int MONITORING_INTERVAL = 10;
     private ExecutionTimeInfluxDbClient executionTimeInfluxDbClient = new ExecutionTimeInfluxDbClient();
 
 
-    @PetCase(enabled = false, durationInSec = 60, monitorIntervalInSec = MONITORING_INTERVAL)
+    @PetCase(enabled = true, durationInSec = 180, delayInSec = 10, monitorIntervalInSec = MONITORING_INTERVAL)
     public void meanExecutionTime_shouldBeOnAcceptableLevel() throws Exception {
         double meanExecutionTime = getMeanExecutionTimeInMillis(MONITORING_INTERVAL);
 
@@ -21,7 +21,7 @@ public class MeanExecutionTimePET {
     }
 
     private double getMeanExecutionTimeInMillis(int monitoringInterval) {
-        return executionTimeInfluxDbClient.getMeanExecutionTime(3600)/1000000;
+        return executionTimeInfluxDbClient.getMeanExecutionTime(10)/1000000;
     }
 
 }

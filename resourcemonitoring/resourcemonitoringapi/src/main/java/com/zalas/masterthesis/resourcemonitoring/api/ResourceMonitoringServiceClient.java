@@ -11,7 +11,7 @@ import javax.ws.rs.core.Response;
 
 public class ResourceMonitoringServiceClient {
 
-    private static final String SERVICE_ENDPOINT_URL = "http://localhost:8889/resources";
+    private static final String SERVICE_ENDPOINT_URL = "http://192.168.56.30:8889/resources";
 
     public void start() throws ResourceMonitoringServiceClientException {
         executeRequest("/start");

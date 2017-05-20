@@ -81,7 +81,13 @@ public class WebController {
 
     @GetMapping("/task")
     public ResponseEntity cpuExhaustiveTask() {
-        cpuExhaustor.executeCpuExhaustingTask(1);
+        cpuExhaustor.executeCpuExhaustingTask();
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @GetMapping("/wait")
+    public ResponseEntity emptyWaitingTask(@RequestParam int sleepTime) throws InterruptedException {
+        Thread.sleep(sleepTime);
         return new ResponseEntity(HttpStatus.OK);
     }
 

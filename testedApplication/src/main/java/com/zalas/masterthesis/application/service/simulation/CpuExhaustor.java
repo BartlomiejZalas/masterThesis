@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class CpuExhaustor {
 
-    public void executeCpuExhaustingTask(int timeLimitInSeconds) {
+    public void executeCpuExhaustingTask() {
         fibonacci(40);
     }
 

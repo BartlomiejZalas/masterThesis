@@ -11,7 +11,7 @@ import static com.zalas.masterthesis.configurationserver.api.constants.Configura
 
 public class ConfigurationClient {
 
-    public static final String CONFIGURATION_ENDPOINT_URL = "http://localhost:8888/configuration";
+    public static final String CONFIGURATION_ENDPOINT_URL = "http://192.168.56.20:8888/configuration";
 
     public Value getConfiguration(ConfigurationConstants key) throws ConfigurationClientException {
         try {

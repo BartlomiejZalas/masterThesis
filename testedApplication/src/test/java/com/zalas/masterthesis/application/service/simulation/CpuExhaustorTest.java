@@ -15,7 +15,7 @@ public class CpuExhaustorTest {
         CpuExhaustor cpuExhaustor = new CpuExhaustor();
 
         DateTime start = new DateTime();
-        cpuExhaustor.executeCpuExhaustingTask(seconds);
+        cpuExhaustor.executeCpuExhaustingTask();
         DateTime end = new DateTime();
 
         int diffInSeconds = Seconds.secondsBetween(start, end).getSeconds();
