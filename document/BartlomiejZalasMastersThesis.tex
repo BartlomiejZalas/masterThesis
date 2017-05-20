@@ -732,7 +732,7 @@ The \textit{Aspect Oriented Application Monitoring} provides information about e
 The \textit{Tested Application} component represents the tested application described      wider in Chapter \ref{testedApplicaiotn}.
 
 
-\subsubsection{APTS Deployment}
+\subsubsection{APTS Deployment} \label{section:aptsdeploy}
 
 The system, as presented on Figure \ref{deploymentapts}, is deployed on \textit{Client Workstation}, \textit{Application Server} and \textit{Service Server}.
 
@@ -1147,19 +1147,30 @@ In this section the Automated Performance Tuning System will be evaluated. The e
 
 All experiments conducted in the section will be performed on environment with the following specification.
 
-\subsubsection{The Machine}
-All the experiment was performed on the following machine:
+\subsubsection{System Deployment}
 
+In order to evaluate the APTS environment introduced in the Chapter \ref{section:aptsdeploy} was created.
+The created system  is deployed on the following machine:
 \begin{itemize}
-\item Processor: Intel Core i3-3120M CPU @ 2.50GHz, 2500 Mhz, \\ 2 Cores, 4 Logical Processors
+\item Processor: Intel Core i3-3120M CPU @ 2.50GHz, 2500 Mhz, 2 Cores, 4 Logical Processors
 \item Physical Memory (RAM): 12,0 GB
 \item Operating System: Microsoft Windows 10 Education
 \item Java version: 1.8.0\_121
 \end{itemize}
 
-\subsubsection{System Deployment}
+Deployment of the system components with nodes properties is presented in the Figure \ref{figure:deployment:evaluation}. 
 
-diagram
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=1\textwidth]{ExperimentsEnvironemtDiagram}
+\caption{\textit{Deploymet diagram presenting the evaluation environemnt}} \label{figure:deployment:evaluation}
+\end{figure}
+
+The \textit{APTS Manager} and the \textit{Workload Generator} are run directly on the \textit{Client Workstation}. 
+
+In order to simulate \textit{Application Server} node and \textit{Service Server} node introduced in the Chapter \ref{section:aptsdeploy} two virtual machines was introduced - the \textit{Service Server Virtual Machine} and \textit{Application Server Virtual Machine}. This solution minimizes overhead introduced by the APTS on the tested application. A network interfaces on the virtual machines was configured to enable HTTP communication between the system nodes. 
+
+Because change of threads number in Tomcat Server requires restart of the server the Dispatcher component was introduced. The component is composed of the Dispatcher deployed on a Jetty Server and copies of the tested application deployed on different instances of Tomcat Server configured with different number of threads. The servers with the application instances are listening on different ports. The role of the Dispatcher is to dispatch all incoming requests into a right port according to current configuration on the provided by the Configuration Server.
 
 
 \subsubsection{The PET Cases Configuration}
@@ -1474,7 +1485,10 @@ The experiments performed on the example of the batch mechanism demonstrates imp
 
 
 \subsection{Threads Number Evaluation}
-\subsubsection{Traffic Simulation Scenario} 
+\subsubsection{Traffic Simulation Scenario}
+
+scenario
+ 
 \subsubsection{Control Sample} 
 \subsubsection{Evaluation Sample} 
 \subsubsection{The Experiment} 
