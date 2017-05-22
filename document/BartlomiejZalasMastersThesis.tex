@@ -853,7 +853,7 @@ public class SamplePETCase {
 
 In order to run tests cases the PET Framework provides runner (PetCaseRunner) which will run all tests cases marked with proper annotations from the give package. Because of the need of continuous monitoring of the reported performance issues, the runner is implemented as a thread and provides asynchronous API to retrieve new reported issues. The Listing \ref{petrunner} presents sample usage of the PetCaseRunner. 
 
-\begin{listing}[ht]\begin{minted}{java}
+\begin{listing}[ht]\begin{minted}[fontsize=\footnotesize]{java}
 PetCaseRunner runner = new PetCaseRunner("com.zalas.masterthesis.apts.pet.cases");
 runner.start();
 
@@ -1584,7 +1584,7 @@ The Dispatcher:
 17:37:29.055 (...) Used port: 8080\\
 (...)\\
 17:38:15.380 (...) Current threads configuration : T50\\
-17:38:15.382 (...) Used port: 8051\\
+17:38:15.382 (...) Used port: 8050\\
 (...)\\
 17:38:57.301 (...) Current threads configuration : T20\\
 17:38:57.314 (...) Used port: 8020
@@ -1713,12 +1713,88 @@ The experiments proves that threads management provided by the APTS is able to d
 The experiment performed in this chapter is an example of low level components optimization - in this case configuration of the threads number on the application server. There exist many other parameters offered by the application servers influencing performance - for example: pool size, heap size, garbage collector algorithm etc. All of them have influence on the performance but in order to provide the best possible performance they should be adjusted to the current state (traffic characteristic, available resources) of the environment. 
 
 
-\subsection{APTS (Combined) Evaluation }
+\subsection{APTS (Combined) Evaluation}
 \subsubsection{Traffic Simulation Scenario} 
 \subsubsection{Control Sample} 
 \subsubsection{Evaluation Sample} 
 \subsubsection{The Experiment} 
-\subsubsection{The Results} 
+
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=1\textwidth]{combinedCtrl}
+\caption{\textit{Control sample experiment run - Grafana screenshot}} \label{figure:combined:screen:control}
+\end{figure}
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=1\textwidth]{combinedEval}
+\caption{\textit{APTS adapted sample experiment run - Grafana screenshot}} \label{figure:combined:screen:adapted}
+\end{figure}
+
+\subsubsection{Results} 
+
+\begin{center}
+$Change = \frac{ControlSample - AptsAdaptation}{ControlSample}\cdot 100\%$
+\end{center}
+
+\begin{table}[ht]
+\begin{center}
+\caption{System evaluation measurements - combined solution measurements summary}
+\begin{tabular}{c|C{3cm}C{3cm}}
+    & Average execution time [ms] & Average CPU usage \\ \hline
+    Control	sample	  &3.27     & 47.26\% \\ 
+    Adapted sample	  &2.02	    & 49.22\% \\ \hline
+    Change		      &38.23\%	& -4.15\%
+\end{tabular}
+\end{center}
+\label{appendixmeasurementscombined}
+\end{table}
+
+\begin{figure}[!htb]
+\centering
+\begin{tikzpicture}
+        \begin{axis}[
+            symbolic x coords={Control, Adapted},
+            xtick=data,
+            bar width=1cm,
+            x=3cm,
+            ymin=0,
+            enlarge x limits={abs=2cm},
+            xlabel={Sample},
+            ymajorgrids = true,
+            ylabel={Execution time [s]}
+          ]
+            \addplot[ybar,style={ggreen,fill=ggreen,mark=none}] coordinates {
+                (Control, 3.27) (Adapted, 2.02)
+            };
+        \end{axis}
+\end{tikzpicture}
+\caption{\textit{Graph presenting comparison of mean execution time between control and adapted sample}} \label{figure:combined:results:executiontime}
+\end{figure}
+
+\begin{figure}[!htb]
+\centering
+\begin{tikzpicture}
+        \begin{axis}[
+            symbolic x coords={Control, Adapted},
+            xtick=data,
+            bar width=1cm,
+            x=3cm,
+            ymin=0,
+            enlarge x limits={abs=2cm},
+            xlabel={Sample},
+            ymajorgrids = true,
+            ylabel={Average CPU usage [\%]}
+          ]
+            \addplot[ybar,style={oorange,fill=oorange,mark=none}] coordinates {
+                (Control, 47.26) (Adapted, 49.22)
+            };
+        \end{axis}
+\end{tikzpicture}
+\caption{\textit{Graph presenting comparison of mean CPU usage between control and adapted sample}} \label{figure:combined:results:cpuusage}
+\end{figure}
+
+
 \subsubsection{Interpretation} 
 \subsubsection{Experiment Conclusions} 
 
@@ -2026,6 +2102,34 @@ Grafana - The open platform for beautiful analytics and monitoring \textit{https
 }
 
 \restoregeometry
+
+
+
+\pagebreak
+
+\subsection{System evaluation measurements - combined} \label{appendix:combinedevaluation}
+
+\begin{table}[ht]
+\begin{center}
+\caption{System evaluation measurements - combined solution measurements}
+\begin{tabular}{C{1.6cm}|C{2cm}C{2cm}|C{2cm}C{2cm}| c}
+    & \multicolumn{2}{c|}{Control sample} & \multicolumn{2}{c|}{Adapted sample}\\ 
+    Repetition \# & Average execution time [ms] & Average CPU usage & Average execution time [ms] & Average CPU usage \\  \cline{1-5}
+    1		  &3.59 & 44.30\% & 2.07 & 50.00\% \\ 
+    2		  &3.70	& 45.00\% & 1.44 & 47.20\% \\
+    3		  &3.24 & 48.20\% & 2.87 & 49.00\% \\
+    4		  &3.14	& 44.60\% & 1.74 & 48.00\% \\
+    5		  &3.41	& 44.10\% &	1.73 & 47.70\% \\
+    6		  &3.06 & 43.40\% & 2.42 & 51.40\% \\
+    7		  &3.40	& 62.70\% & 2.17 & 44.90\% \\
+    8		  &2.98	& 44.20\% & 1.84 & 56.50\% \\
+    9		  &3.13	& 48.20\% & 1.85 & 49.80\% \\
+    10		  &3.05	& 47.90\% & 2.12 & 47.70\% \\ \cline{1-6}
+        	  &3.27	& 47.26\% & 2.02 & 49.22\% & \multicolumn{1}{c}{Average} \\ 
+\end{tabular}
+\end{center}
+\label{appendixmeasurementscombined}
+\end{table}
 
 
 \end{document}
