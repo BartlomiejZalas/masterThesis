@@ -30,7 +30,8 @@
 \usepackage{setspace}
 \usepackage{multirow}
 \usepackage{mathtools}
-\usepackage[margin=25mm]{geometry}
+
+\usepackage[margin=40mm]{geometry}
 
 \graphicspath{ {images/} }
 
@@ -56,6 +57,7 @@
 \definecolor{oorange}{HTML}{FFC04D}
 
 
+\newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
 
 \author{Bartłomiej Zalas}
 \title{System Optimization Based on Performance Evaluation Tests}
@@ -449,7 +451,7 @@ The tested application REST API provides the following resources:
   \end{tabular} \vspace{2mm}
 }
 
-\noindent\textbf{Execute wait task} - starts task which will simulate waiting task without CPU consumption. Real life example of such task could process which sends request to an external service (for example by HTTP) and waits for a response. The task "wait" time is defined by the parameter \textit{sleepTime}. 
+\noindent\textbf{Execute wait task} - starts task which will simulate waiting task without CPU consumption. Real life example of such task could process which sends request to an external service (for example by HTTP) and waits for a response. The task "wait" time is defined by the parameter \textit{sleepTime} (in milliseconds). 
 
 {\renewcommand{\arraystretch}{1}
   \begin{tabular}{ll}
@@ -828,7 +830,7 @@ Attributes of the class are:
 Sample PET case written with usage of the PET Framework is presented on the Listing \ref{case}. Annotations \textit{@Pet} and \textit{@PetCase} are used to inform framework that this class is implementation of PET case. Method  \textit{meanExecutionTimeShouldBeOnAcceptableLevel} is interpreted as PET case implementation and is configured by annotation \textit{@PetCase} with definied two attributes - \textit{monitorIntervalInSec} with assigned value 60 and \textit{durationInSec} with assigned value 3600. This configuration means that PET case will be executed in every minute by the period of 1 hour. In the body of the method assertion \textit{assertKpiIsLessThan} is defined which simply checks if mean execution time was on acceptable level - below 1.2 second. For simplicity process of retrieving execution time measurement was represented as method  \textit{getExecutionTimeFromLastMinute()}.  
 
 
-\begin{listing}[ht]\begin{minted}{java}
+\begin{listing}[ht]\begin{minted}[fontsize=\footnotesize]{java}
 /*
  * imports
  */
@@ -906,7 +908,7 @@ Decision module is triggered by a reported performance issues in order to analyz
 
 Decision about which action will be performed is made using a rule based system. Implemented rule based system is consist of two parts: set of the rules and inference engine. The set of rules is created with the aim of performance tuning of the tested application. Each rule fulfill contract defined in the form of the \textit{Rule} interface presented on the Listing \ref{irule}.
 
-\begin{listing}[ht]\begin{minted}{java}
+\begin{listing}[ht]\begin{minted}[fontsize=\footnotesize]{java}
 public interface Rule {
     boolean isRuleApplicable(
     	IssueToHandle issueToHandle, 
@@ -1193,10 +1195,10 @@ The configuration of the all PET cases is presented in the Table \ref{evaluation
 
 \subsubsection{Initial Application Configuration}
 
-The initial configuration provided by the \textit{Configuration Service} during the experiments evaluating the APTS presented in the Table \ref{cacheinitconf}. As presented, by default cache and batch are disabled, the application server threads number is set to 20. 
+The initial configuration provided by the \textit{Configuration Service} during the experiments evaluating the APTS presented in the Table \ref{table:initconfiguration}. As presented, by default cache and batch are disabled, the application server threads number is set to 20. 
 
 \begin{table}[!htb]
-\caption{\textit{Initial configuration of the tested application during the experiments}} \label{cacheinitconf}
+\caption{\textit{Initial configuration of the tested application during the experiments}} \label{table:initconfiguration}
 \begin{tabularx}{\textwidth}{X|X}
 \textbf{Configuration Parameter} & \textbf{Value} \\ \hline
 CACHE & NO\_CACHE \\ \hline
@@ -1218,7 +1220,7 @@ The functionality provided by the tested application is based on database relate
 
 \subsection{Cache Management Evaluation} \label{section:cachemenagementevaluation}
 
-Below experiments are focused on Cache and No Cache redundant components. The APTS should manage mentioned components in a way which provide the optimal performance of the tested application.
+Below experiments are focused on Cache and No Cache redundant components. The APTS should manage mentioned components in a way which provides the optimal performance of the tested application.
 
 \subsubsection{Traffic simulation scenario} \label{trafficcachesim}
 
@@ -1245,7 +1247,7 @@ The most important concern during evaluation of the solution is traffic simulati
 \caption{\textit{Traffic simulation scenario for the cache management evaluation}} \label{trafficcache}
 \end{figure}
 
-The simulation takes 120 seconds and is divided to two phases. In the first 60 seconds alternating GET ("Find product category by ID") and UPDATE ("Update product category") requests are generated in order to simulate mutable state of the application. In the second phase only GET ("Find product category by ID") requests are generated what simulates immutable state of the application. In the first phase 60 GET and 60 UPDATE requests are generated with constant injection step 2 requests (1 GET and 1 UPDATE) per second. In the second phase 60 requests are generated with constant injection step 1 request per second. All requests are designated to the same product category (the same ID parameter). 
+The simulation takes 120 seconds and is divided into the two phases. In the first 60 seconds alternating GET ("Find product category by ID") and UPDATE ("Update product category") requests are generated in order to simulate mutable state of the application. In the second phase only GET ("Find product category by ID") requests are generated what simulates immutable state of the application. In the first phase 60 GET and 60 UPDATE requests are generated with constant injection step 2 requests (1 GET and 1 UPDATE) per second. In the second phase 60 requests are generated with constant injection step 1 request per second. All requests are designated to the same product category (the same ID parameter). 
 
 From the high level perspective in the first phase enable cache introduces only unnecessary overhead (all cached GET requests are immediately "cleared" from cache by UPDATE requests). In the second phase enabled cache provides benefit - only first request is executed and response for the rest is taken from cache.  
 
@@ -1294,9 +1296,9 @@ The tested application:
 }}}\vspace{1mm}
  
 
-\subsubsection{The Results} 
+\subsubsection{Results} 
 
-The summary of the execution time during experiments are presented in the Table \ref{cacheCompResutls}. The table presents average execution time of the requests for each sample during the experiments. The column \textit{Improvement} shows percentage improvement between control samples and \textit{Adapted} sample. In other words the column presents how the APTS decreased the execution time of requests. The value of the \textit{Improvement} column was computed using the formula: 
+The summary of the execution time during experiments are presented in the Table \ref{cacheCompResutls}. The table presents average execution time of the requests for each sample during the experiments. The row \textit{Improvement} shows percentage improvement between control samples and \textit{Adapted} sample. In other words the row presents how the APTS decreased the execution time of requests. The value of the \textit{Improvement} column was computed using the formula: 
 
 \begin{center}
 $Improvement = \frac{ControlSample - AdaptedSample}{ControlSample} \cdot 100\%$
@@ -1331,7 +1333,7 @@ Improvement &  3.38\% & 3.84\% & N/A\\
             };
         \end{axis}
 \end{tikzpicture}
-\caption{\textit{Grapth presenting average execution time of control and Adapted samples}} \label{cacheEvalResutlsGraph}
+\caption{\textit{Graph presenting average execution time of control and adapted samples}} \label{cacheEvalResutlsGraph}
 \end{figure}
 
 
@@ -1381,7 +1383,7 @@ For the experiment evaluation the batch management by the APTS the traffic simul
 \caption{\textit{Traffic simulation scenario for the batch management evaluation}} \label{trafficbatch}
 \end{figure}
 
-The simulation takes 120 seconds and is divided to two phases. In the first 60 seconds INSERT ("Add new product category") request are generated with the constant injection step 1 request per second. In the second 60 seconds injection step is increased to 10 requests per second. 
+The simulation takes 120 seconds and is divided into the two phases. In the first 60 seconds INSERT ("Add new product category") request are generated with the constant injection step 1 request per second. In the second 60 seconds injection step is increased to 10 requests per second. 
 
 In other words the simulation in the first phase makes usage of batch undesirable (records are inserted when batch is full, so with batch with size = 10 creates 10 seconds of delay what is not acceptable from user perspective). In the second phase because of high inserts rate usage of batch is desirable (with batch with size = 10 introduced delay is only 1 second what is acceptable solution).  
  
@@ -1401,7 +1403,7 @@ During the experiment the same simulation scenario is performed on both samples 
 
 The experiment was repeated 10 times for both control and evaluation samples what in total gives 20 repetition of the experiment. 
 
-In the Figure \ref{batchevaluationscreencontrol} and \ref{batchevaluationscreenevaluation} screenshot from Grafana platform with experiment run for both samples is presented. 
+In the Figure \ref{batchevaluationscreencontrol} and \ref{batchevaluationscreenevaluation} screenshots from Grafana platform with experiment run for both samples is presented. 
 
 \begin{figure}[!htb]
 \centering
@@ -1416,7 +1418,7 @@ In the Figure \ref{batchevaluationscreencontrol} and \ref{batchevaluationscreene
 
 In the graphs measured execution time during the experiment is presented. On the both graphs first phase of the experiment looks nearly the same - requests are generated with injection step 1 request per second. In the second phase (after 60 seconds) of the experiment increased number of request (measure points) can be observed. In that phase traffic generator switched injection step to 10 requests per second. In the Figure \ref{batchevaluationscreenevaluation} after 15 seconds from the start of the second phase regular picks can be observed. This pick marks the moment of the batch flushing - the batch was full and entities was inserted into the database in the one query. Thereby, the Figure \ref{batchevaluationscreenevaluation} proves that batch management developed by the APTS was performed correctly. 
 
-\subsubsection{The Results} \label{section:batchresults}
+\subsubsection{Results} \label{section:batchresults}
 
 The summary of the execution time during the experiments are presented in the Table \ref{batchCompResutls}. The table presents average execution time in particular phases and total time of the experiment. The last row presents difference between the experiments made on different samples. The value of difference is calculated using the formula: 
 
@@ -1485,16 +1487,230 @@ The experiments performed on the example of the batch mechanism demonstrates imp
 
 
 \subsection{Threads Number Evaluation}
+
+Below experiments are focused on threads management provided by the APTS. The system should manage threads number of the application server where the tested application is deployed in a way which provides the optimal performance of the tested application. 
+
 \subsubsection{Traffic Simulation Scenario}
 
-scenario
+For the experiments related to the threads management provided by the APTS the traffic simulation presented in the Figure \ref{figure:trafficthreads} was implemented. 
+
+\begin{figure}[!htb]
+\begin{center}
+\begin{tikzpicture}
+\draw[->] (0,0) -- (10,0);
+\foreach \x in {1,5,9}
+\draw(\x cm,3pt) -- (\x cm, -3pt);
+
+\draw (1,0) node[below=3pt] {$0$};
+\draw (3,0) node[below=3pt] {$30$};
+\draw (5,0) node[below=3pt] {$60$};
+\draw (9,0) node[below=3pt] {$120$};
+
+\draw[fill=bblue] (5,0) rectangle (9,1);
+\draw (7,0) node[above=6pt, align=center, white] {CPU consuming requests};
+
+\draw[fill=ggreen] (1,0) rectangle (3,1);
+\draw (2,0) node[above=6pt, align=center] {Wait requests};
+
+\draw (10.8,0) node {$time [s]$};
+\end{tikzpicture}
+\caption{\textit{Traffic simulation scenario for the threads management evaluation}} \label{figure:trafficthreads}
+\end{center}
+\end{figure}
+
+The simulation takes 120 seconds and is divided into the two phases. In the first 30 seconds 180 requests to resource "Execute wait task" are generated. The parameter \textit{sleepTime} for generated requests in this phase is set to 5000. Injection step of requests is constant (6 requests fer seconds). The second phase starts in 60th second of the simulation and takes 60 seconds. During this phase 60 requests to resource "Execute CPU consuming task" are generated with constant injection step (1 request per second). 
+
+From the high level perspective the particular request from the first phase of the simulation blocks the one thread of the application server to 5 seconds without CPU consumption. Threads with are blocked during simulation waits in the queue until threads will be available again. That is why during this phase number of threads should be configured to maximal value - low CPU usage allows to increase number of threads, high number of threads reduces number of requests waiting in the queue.   
+
  
-\subsubsection{Control Sample} 
-\subsubsection{Evaluation Sample} 
+\subsubsection{Evaluation Samples}
+
+The experiments related to number of threads management will be developed on the two samples:
+\begin{itemize}
+\item Control sample - in which performance tuning will be disabled and the tested application has default  configuration (see Table \ref{table:initconfiguration}).  
+\item Adapted sample - in which performance tuning by the APTS is enabled and the initial configuration is default (see Table \ref{table:initconfiguration}).
+\end{itemize}
+
+The goal of the control sample is to provide reference to which sample adapted by the APTS will be compared. On the all two samples the same traffic simulation will be performed.
+ 
 \subsubsection{The Experiment} 
-\subsubsection{The Results} 
+
+The experiment was repeated 10 times for both control and adapted samples what in total gives 20 repetition of the experiment. In the Figure \ref{figure:threads:screen:control} and \ref{figure:threads:screen:adapted} screenshots from Grafana platform with experiment run for both samples is presented.
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=1\textwidth]{threadsCtrl}
+\caption{\textit{Control sample experiment run - Grafana screenshot}} \label{figure:threads:screen:control}
+\end{figure}
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=1\textwidth]{threadsEval}
+\caption{\textit{APTS adapted sample experiment run - Grafana screenshot}} \label{figure:threads:screen:adapted}
+\end{figure}
+
+In the graphs CPU consumption and requests execution time are presented. On the first sight both phases are easy to recognize.
+
+The first phase is different on the both graphs. During experiment on the control sample first phase was longer (time between first and last request execution). Moreover, gaps indicating lack of free threads on the server are visible. Such gaps are also visible on the graph presenting adapted sample, but here there are visible only at the beginning of the experiment (where the same initial threads number configuration was used). In the rest of the first phase gaps disappear what means that number of threads was increased by the APTS. 
+
+The second phase on the both graphs starts with rapid increase of the CPU usage. Due to that, execution time of the following requests increases. In the middle of the second phase adapted sample was able to reduce execution time of the requests by decreasing number of threads for the application server.  
+
+The threads management provided by the APTS during the experiment is also visible in the components logs:
+
+The APTS Manager:
+
+\noindent\fbox{\parbox{\textwidth}{\setstretch{1.0} \texttt{\footnotesize 
+17:37:12.272 (...) Chosen rule: SwitchTo80ThreadsRule \\
+action: threads switched to 80 \\
+(...)\\
+17:38:12.184 (...) Chosen rule: SwitchTo50ThreadsRule \\
+action: threads switched to 50\\
+(...)\\
+17:38:22.379 (...) Chosen rule: SwitchTo20ThreadsRule\\
+action: threads switched to 20
+}}}\vspace{1mm}
+
+The Configuration Service:
+
+\vspace{1mm}\noindent\fbox{\parbox{\textwidth}{\texttt{\footnotesize
+2017-05-20 17:37:12.466  (...) Configuration of THREADS changed to value: T80\\
+2017-05-20 17:38:12.299  (...) Configuration of THREADS changed to value: T50\\
+2017-05-20 17:38:22.494  (...) Configuration of THREADS changed to value: T20
+}}}\vspace{1mm}
+
+The Dispatcher:
+
+\vspace{1mm}\noindent\fbox{\parbox{\textwidth}{\texttt{\footnotesize
+17:37:29.053 (...) Current threads configuration : T80\\
+17:37:29.055 (...) Used port: 8080\\
+(...)\\
+17:38:15.380 (...) Current threads configuration : T50\\
+17:38:15.382 (...) Used port: 8051\\
+(...)\\
+17:38:57.301 (...) Current threads configuration : T20\\
+17:38:57.314 (...) Used port: 8020
+}}}\vspace{1mm}
+
+\subsubsection{Results} 
+
+The summary of performed experiment is presented in the Table \ref{table:threads:summary}. The summary presents average values computed from the 10 repetitions of the experiment. The column "Dur." represents duration of the Phase I (time between execution of the first and the last request in the phase). Columns "CPU" and "Exec. time" represents average CPU usage and average execution time respectively. The row "Change" represents percentage difference between samples and is calculated using the formula:
+
+\begin{center}
+$Change = \frac{ControlSample - AptsAdaptation}{ControlSample}\cdot 100\%$
+\end{center}
+
+The data presented in the Table \ref{table:threads:summary} are visualized in the Figures \ref{figure:threads:results:duration} (first phase duration for the samples), \ref{figure:threads:results:executiontime} (average execution time for the samples in different phases) and \ref{figure:threads:results:cpu} (average CPU usage for the samples in different phases). All results from
+performed experiments are available in the Appendix \ref{appendix:table:threadscontrol} and \ref{appendix:table:threadeval}.
+
+\begin{table}[!htb]
+\caption{\textit{Summary of the experiment results comparing control and APTS adapted sample}} \label{table:threads:summary}
+\begin{tabularx}{\textwidth}{X|C{1cm}C{1cm}C{1cm}|C{1cm}C{1cm}|C{1cm}C{1.2cm}|}
+
+                 &  \multicolumn{3}{c|}{\textbf{Phase I}} & \multicolumn{2}{c|}{\textbf{Phase II}} & \multicolumn{2}{c|}{\textbf{Total}} \\
+                 &  \textbf{Dur. [s]} & \textbf{CPU} & \textbf{Exec. time [ms]}  &\textbf{CPU} & \textbf{Exec. time [ms]}  &\textbf{CPU} & \textbf{Exec. time [ms]}  \\ \hline
+Control sample      & 44 & 28.7\% & 5.0 & 100\% & 27.6 & 63.3\% & 10.6 \\
+Adapted sample & 32 & 41,8\% & 5.0 & 99.9\% & 20.1 & 68.7\% & 8.8\\ \hline
+Change 	            & 27.3\% & -45.6\% & 0.0\% &  0.1\% & 27.2\% & -8.5\% & 17.0\%
+\end{tabularx}
+\end{table}
+
+\begin{figure}[!htb]
+\centering
+\begin{tikzpicture}
+        \begin{axis}[
+            symbolic x coords={Control, Adapted},
+            xtick=data,
+            bar width=1cm,
+            x=3cm,
+            ymin=0,
+            enlarge x limits={abs=2cm},
+            xlabel={Sample},
+            ymajorgrids = true,
+            ylabel={Duration [s]}
+          ]
+            \addplot[ybar,style={bblue,fill=bblue,mark=none}] coordinates {
+                (Control, 44) (Adapted, 32)
+            };
+        \end{axis}
+\end{tikzpicture}
+\caption{\textit{Graph presenting duration of the first phase of the experiment for control and adapted sample}} \label{figure:threads:results:duration}
+\end{figure}
+
+\pgfplotstableread[row sep=\\,col sep=&]{
+    category  & control& adapted  \\
+    Phase I   & 5   & 5 \\
+    Phase II  & 27.6   & 20.1  \\
+    Total     & 10.6   & 8.8  \\
+    }\mydata
+\begin{figure}[!htb]
+\centering
+\begin{tikzpicture}
+    \begin{axis}[
+            ybar,
+            bar width=.6cm,
+            width=.8\textwidth,
+            height=.6\textwidth,
+            legend style={at={(0.5,-0.15)},
+                anchor=north,legend columns=-1},
+            symbolic x coords={Phase I,Phase II,Total},
+            xtick=data,
+            ymin=0,ymax=30,
+            ylabel={Average execution time [ms]},
+            enlarge x limits={abs=2cm},
+            ymajorgrids = true,
+        ]
+        \addplot[style={bblue,fill=bblue,mark=none}] table[x=category,y=control]{\mydata};
+        \addplot[style={ggreen,fill=ggreen,mark=none}] table[x=category,y=adapted]{\mydata};
+        \legend{Control sample, APTS adapted sample}
+    \end{axis}
+\end{tikzpicture}
+\caption{\textit{Average execution time in a particular phases during the experiment for control and APTS adapted sample}} \label{figure:threads:results:executiontime}
+\end{figure}
+
+\pgfplotstableread[row sep=\\,col sep=&]{
+    category  & control& adapted  \\
+    Phase I   & 28.7   & 41.8 \\
+    Phase II  & 100   & 99.9  \\
+    Total     & 63.3   & 68.7  \\
+    }\mydata
+\begin{figure}[!htb]
+\centering
+\begin{tikzpicture}
+    \begin{axis}[
+            ybar,
+            bar width=.6cm,
+            width=.8\textwidth,
+            height=.6\textwidth,
+            legend style={at={(0.5,-0.15)},
+                anchor=north,legend columns=-1},
+            symbolic x coords={Phase I,Phase II,Total},
+            xtick=data,
+            ymin=0,ymax=100,
+            ylabel={Average CPU usage [\%]},
+            enlarge x limits={abs=2cm},
+            ymajorgrids = true,
+        ]
+        \addplot[style={oorange,fill=oorange,mark=none}] table[x=category,y=control]{\mydata};
+        \addplot[style={rred,fill=rred,mark=none}] table[x=category,y=adapted]{\mydata};
+        \legend{Control sample, APTS adapted sample}
+    \end{axis}
+\end{tikzpicture}
+\caption{\textit{Average CPU usage in a particular phases during the experiment for control and APTS adapted sample}} \label{figure:threads:results:cpu}
+\end{figure}
+
+
 \subsubsection{Interpretation} 
+
+The results shows that duration of the first phase for the adapted sample was shorter by 27\%. Such improvement was achieved by the increase of the threads number performed by the APTS during the first phase of the experiment. Increased number of threads influenced increased CPU usage during the first phase. The character of the generated traffic caused that average execution time for this phase was equal for the both samples. 
+
+During the second phase of the experiment CPU consuming requests was generated. Due to that fact CPU usage for the both samples was equal to 100\%. The average execution time of requests during this phase was faster for the adapted solution by 27.2\%. 
+
+During the whole experiment adapted sample was able to achieve 17\% improvement of the average execution time of requests at the expense of increased (by 8.5\%) average CPU consumption. 
+
 \subsubsection{Experiment Conclusions} 
+
+The experiments proves that threads management provided by the APTS is able to decrease execution time of the incoming request into the tested application. The application under the APTS performance tuning was able to handle incoming requests in more optimal way during the first phase of the experiment. In case of the CPU consuming requests generated during the second phase the system optimized threads number in order to reduce execution time of requests. 
+
+The experiment performed in this chapter is an example of low level components optimization - in this case configuration of the threads number on the application server. There exist many other parameters offered by the application servers influencing performance - for example: pool size, heap size, garbage collector algorithm etc. All of them have influence on the performance but in order to provide the best possible performance they should be adjusted to the current state (traffic characteristic, available resources) of the environment. 
 
 
 \subsection{APTS (Combined) Evaluation }
@@ -1658,8 +1874,6 @@ Grafana - The open platform for beautiful analytics and monitoring \textit{https
 
 \subsection{System evaluation measurements - cache} \label{appendixcacheeval}
 
-\newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
-
 \begin{table}[ht]
 \begin{center}
 \caption{System evaluation measurements - cache related redundant components}
@@ -1762,6 +1976,8 @@ Grafana - The open platform for beautiful analytics and monitoring \textit{https
 
 
 \pagebreak
+\newgeometry{left=3cm,bottom=0.1cm}
+
 \subsection{System evaluation measurements - threads} \label{appendix:threadsevaluation}
 {\renewcommand{\arraystretch}{1.25}
 \begin{table}[ht]
@@ -1802,14 +2018,14 @@ Grafana - The open platform for beautiful analytics and monitoring \textit{https
     8 & 30 & 36.7\% & 5.0 & 100.0\% & 17.2 & 64.6\% & 8.1 \\
     9 & 30 & 41.2\% & 5.0 & 99.8\% & 21.5 & 65.9\% & 9.2 \\
     10 & 30 & 38.6\% & 5.0 & 100.0\% & 22.4 & 66.1\% & 9.4 \\ \cline{1-9}
-   	   & 32 & 41.8\% & 5.0 & 99.9\% & 20.1 & 68.7\% & 8.8 & \multicolumn{1}{c}{Average} \\ 
+   	   & 32 & 41.8\% & 5.0 & 100.0\% & 20.1 & 68.7\% & 8.8 & \multicolumn{1}{c}{Average} \\ 
 \end{tabular}
 \end{center}
 \label{appendixmeasurementscache}
 \end{table}
 }
 
-
+\restoregeometry
 
 
 \end{document}
