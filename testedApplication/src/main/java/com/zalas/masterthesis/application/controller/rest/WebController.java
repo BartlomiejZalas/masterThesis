@@ -28,8 +28,6 @@ public class WebController {
     private ProductCategoryCacheController productCategoryCacheController;
     @Autowired
     private ProductCategoryInsertController productCategoryInsertController;
-    @Autowired
-    private CpuExhaustor cpuExhaustor;
 
     @GetMapping("/find/{id}")
     public ResponseEntity<ProductCategory> findById(@PathVariable("id") int id) {
@@ -81,13 +79,13 @@ public class WebController {
 
     @GetMapping("/task")
     public ResponseEntity cpuExhaustiveTask() {
-        cpuExhaustor.executeCpuExhaustingTask();
+        productCategoryCacheController.getService().executeCpuExhaustingTask();
         return new ResponseEntity(HttpStatus.OK);
     }
 
     @GetMapping("/wait")
     public ResponseEntity emptyWaitingTask(@RequestParam int sleepTime) throws InterruptedException {
-        Thread.sleep(sleepTime);
+        productCategoryCacheController.getService().waitTask(sleepTime);
         return new ResponseEntity(HttpStatus.OK);
     }
 

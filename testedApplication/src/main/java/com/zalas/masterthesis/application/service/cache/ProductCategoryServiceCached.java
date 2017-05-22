@@ -16,6 +16,7 @@ public class ProductCategoryServiceCached implements ProductCategoryService {
     @Autowired
     private ProductCategoryServiceNoCache productCategoryServiceNoCache;
 
+
     @Cacheable("productCategory")
     @Override
     public ProductCategory findOne(int id) {
@@ -29,4 +30,18 @@ public class ProductCategoryServiceCached implements ProductCategoryService {
         LOGGER.info("update() cache cleared");
         return productCategoryServiceNoCache.update(id, newName);
     }
+
+    @Cacheable("wait")
+    @Override
+    public void waitTask(int sleepTime) throws InterruptedException {
+        productCategoryServiceNoCache.waitTask(sleepTime);
+    }
+
+    @Cacheable("task")
+    @Override
+    public void executeCpuExhaustingTask() {
+        productCategoryServiceNoCache.executeCpuExhaustingTask();
+    }
+
+
 }
