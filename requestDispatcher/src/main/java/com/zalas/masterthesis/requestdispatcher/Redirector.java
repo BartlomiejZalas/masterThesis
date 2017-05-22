@@ -9,6 +9,7 @@ import org.eclipse.jetty.server.handler.AbstractHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -53,11 +54,11 @@ class PortRedirector extends AbstractHandler {
                 case T80:
                     return 8080;
                 default:
-                    return 8050;
+                    return 8051;
             }
         } catch (ConfigurationClientException e) {
             LOGGER.error("Cannot read threads configuration, default value used (8050)",e);
-            return 8050;
+            return 8051;
         }
     }
 }

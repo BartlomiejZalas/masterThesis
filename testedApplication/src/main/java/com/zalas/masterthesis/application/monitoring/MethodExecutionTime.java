@@ -42,6 +42,10 @@ public class MethodExecutionTime {
     }
 
     private TrafficProfile getTrafficProfile(Method method) {
+        if (method.getName().equals("workaround")) {
+            return MUTABLE;
+        }
+
         Annotation annotation = method.getAnnotations()[0];
         String annotationName = annotation.annotationType().getSimpleName();
         return mapMethodToProfile(annotationName);

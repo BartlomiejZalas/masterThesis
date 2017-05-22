@@ -42,6 +42,11 @@ public class WebController {
         return new ResponseEntity<>(createdCategory, HttpStatus.OK);
     }
 
+    @GetMapping("/add")
+    public ResponseEntity<ProductCategory> workaround(@RequestParam("categoryName") String categoryName) {
+        return this.add(categoryName);
+    }
+
     @PostMapping("/update/{id}")
     public ResponseEntity<ProductCategory> updateById(@PathVariable("id") int id, @RequestParam("newName") String newName) {
         ProductCategory productCategory = productCategoryCacheController.getService().update(id, newName);

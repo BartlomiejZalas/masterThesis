@@ -16,7 +16,7 @@ public class ExecutionTimeInfluxDbClient {
     private static final String COUNT_TP_TEMP =
             "select count(*) from execution_time WHERE time > now() - %ds and trafficProfile='%s'";
     private static final String COUNT_INSERTS =
-            "select count(*) from execution_time WHERE time > now() - %ds and methodName='add'";
+            "select count(*) from execution_time WHERE time > now() - %ds and (methodName='add' or methodName='workaround')";
     private static final String MEAN_ET = "select mean(*) from execution_time WHERE time > now() - %ds";
 
 
