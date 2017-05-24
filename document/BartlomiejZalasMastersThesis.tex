@@ -30,6 +30,7 @@
 \usepackage{setspace}
 \usepackage{multirow}
 \usepackage{mathtools}
+\usepackage{nameref}
 
 \usepackage[margin=40mm]{geometry}
 
@@ -105,7 +106,7 @@
 
 %Content
 
-\section{Introduction}
+\section{Introduction} \label{section:introduction}
 
 \subsection{Motivation}
 
@@ -117,14 +118,40 @@ A software optimization and a performance evaluation tests are terms related to 
 
 Motivation for this work was fact that performance evaluation tests are able only to monitor performance of application. In case when application has a set of parameters influencing performance, people responsible for application performance must adjust such parameters manually or empirically. Solution able to adjust that parameters to optimize performance would be a great facilitation. 
 
-Main goal of this work is to develop a framework, which will be able to optimize web application by search of most optimal application parameters and adjust them automatically. The first research question that needs to be answered in this work is which and how system parameters influences performance? Next, how to evaluate performance of the system? Another goal is to analyze and provide answers for question: how performance evaluation tests can help in software optimization - in monitoring and application adjustment. Another question which is emerging here is what adjustment method is the best? 
+Main goal of this work is to develop a solution, which will be able to optimize web application by search of most optimal application parameters and adjust them automatically. The first research question that needs to be answered in this work is which and how system parameters influences performance? Next, how to evaluate performance of the system? Another goal is to analyze and provide answers for question: how performance evaluation tests can help in software optimization - in monitoring and application performance adjustment. Another question which is emerging here is: adjustment of which elements of an web application is the best? 
 
 In this work author will try to consider listed problems in domain of web application optimization on runtime level using performance evaluation tests. A software under optimization and performance evaluation will be a web application simulating product management system (developed as web service) implemented in Java programming language and Spring Framework deployed on Tomcat application server. 
 
+\pagebreak
 \subsection{Document Structure}
 
-//TODO
+The document is dividend into 7 sections - 
+\textit{\nameref{section:introduction}}, 
+\textit{\nameref{section:theoreticalbackground}}, 
+\textit{\nameref{section:existiontopics}}, 
+\textit{\nameref{section:proposedsolution}}, 
+\textit{\nameref{section:solutionevaluation}}, 
+\textit{\nameref{section:conclusions}}, 
+\textit{\nameref{section:references}} and 
+\textit{\nameref{section:appendices}}. 
 
+In the first section - \textit{\nameref{section:introduction}} - the motivation, structure of the document and used abbreviations and acronyms are introduced. 
+
+The second chapter \textit{\nameref{section:theoreticalbackground}} introduces theoretical concepts from the domain of this work. The elements considered in this chapter are: performance, key performance indicators, software testing from performance perspective and optimization of the software on different levels. The concepts are considered based on the exiting literature of domain. 
+  
+The third chapter \textit{\nameref{section:existiontopics}} describes existing consideration of the domain of this work. The section is focused on existing problem related to the software performance and existing attempts    dedicated to software optimization described in the literature of domain.
+
+In the section \textit{\nameref{section:proposedsolution}} analysis of possible solution related to performance issue is presented. Further part introduces the system which is an attempt of automated performance tuning of the web application.
+
+The section \textit{\nameref{section:solutionevaluation}} presents a set of experiments which was performed in order to evaluate introduced system from the section \textit{\nameref{section:proposedsolution}}. 
+
+The \textit{\nameref{section:conclusions}} sections summarizes the work. The questions introduced in the section \textit{\nameref{section:introduction}} are addressed and concluded. The section also points out possible directions of further work related to the domain of this document. 
+
+In the section \textit{\nameref{section:references}} the literature used to prepare this work is listed.
+
+The last section - \textit{\nameref{section:appendices}} - extends the work by detailed measurements performed during the experiments. 
+
+\pagebreak
 \subsection{Abbreviations and Acronyms}
 In this work numerous abbreviations and acronyms are used. All are presented and explained in below lising.
 
@@ -155,7 +182,7 @@ JAR & Java archive\\
 
 
 
-\section{Theoretical background}
+\section{Theoretical background} \label{section:theoreticalbackground}
 Before further considerations fundamental term for this work should be defined  - a performance. 
 
 In H. Sarojadevi's definition, performance relates to time and throughput used by application under certain workload and configuration \cite{petmethodsandtools}. In that definition workload and configuration play a role of input variables to a system/application, when time and throughput are measurable outputs from a system/application. This definition gives information about factors related to performance, but how to recognize good and bad performance?
@@ -243,7 +270,7 @@ The book "Architecting High Performing, Scalable and Available Enterprise Web Ap
 
 Above elements are related to client side and are responsible for data presentation and user experience. They should be taken into consideration during application development and deployment. Because are not configurable during application runtime and do not influence application core performance, which is responsible for serving data to client side are out of scope of this work. 
 
-\section{Existing Topics Related to Software Performance}
+\section{Existing Topics Related to Software Performance} \label{section:existiontopics}
 
 \subsection{Performance Related Problems} \label{PerformanceRelatedProblems}
 One of the most fundamental problem about applications performance is a nasty habit of turning up late in the application life cycle \cite{artperformance}. In article "Performance Anti-Patterns" \cite{lssrarticle} Bart Smaalders noticed that development teams overloaded by new features development and bug fixing left performance work as an afterthought. The first report from performance is received from developed software versions during beta testing.
@@ -330,7 +357,7 @@ The idea of redundant component gives possibility to develop solution which will
 
 Suitable performance related decisions impose on developers duty to awareness of performance influence of taken implementation decisions. Developers should be aware of system workload characteristic in production environment and perform performance optimization where possible. 
  
-\section{Proposed solution}
+\section{Proposed solution} \label{section:proposedsolution}
 
 \subsection{About This Chapter}
 On the base of previous chapters author of this work will try to provide solution which will be addressing most of listed problems from chapter \ref{PerformanceRelatedProblems}. Next subsections provide considerations about possible ways to obtain the best possible solutions with justification. Final goal is to implement system which will demonstrate and evaluate implemented solutions. 
@@ -485,7 +512,7 @@ On the base of above consideration following set of principles of the system can
 
 \begin{itemize}
 \item The system should perform live monitoring of application
-\item The system should be autonomous
+\item The system should be autonomic
 \item The system should be able to perform configuration change during application runtime
 \item The system should be able to work in production environment
 \item The system should have minimal impact on production environment
@@ -1141,7 +1168,7 @@ The APTS Manager is component which is responsible for initiating, run and coord
 
 When performance tuning is started the manager starts the \textit{Resource Monitoring Service}. Next, performance evaluation test cases are executed by the \textit{PetCaseRunner}. The manager monitors any reported Performance Issues in real time and delegates every new reported issue to the \textit{Decision Module} where decision about performance tuning is made. When all PET cases performed by the \textit{PetCaseRunner} are finished the manager stops the \textit{Resource Monitoring Service} and terminates. 
 
-\section{Solution evaluation} 
+\section{Solution evaluation}  \label{section:solutionevaluation}
 
 In this section the Automated Performance Tuning System will be evaluated. The evaluation of the system should confirm practical advantages of the proposed solution and reveal effectiveness under given circumstances. 
 
@@ -1149,7 +1176,7 @@ In this section the Automated Performance Tuning System will be evaluated. The e
 
 All experiments conducted in the section will be performed on environment with the following specification.
 
-\subsubsection{System Deployment}
+\subsubsection{System Deployment} \label{section:systemdeployment}
 
 In order to evaluate the APTS environment introduced in the Chapter \ref{section:aptsdeploy} was created.
 The created system  is deployed on the following machine:
@@ -1518,7 +1545,7 @@ For the experiments related to the threads management provided by the APTS the t
 \end{center}
 \end{figure}
 
-The simulation takes 120 seconds and is divided into the two phases. In the first 30 seconds 180 requests to resource "Execute wait task" are generated. The parameter \textit{sleepTime} for generated requests in this phase is set to 5000. Injection step of requests is constant (6 requests fer seconds). The second phase starts in 60th second of the simulation and takes 60 seconds. During this phase 60 requests to resource "Execute CPU consuming task" are generated with constant injection step (1 request per second). 
+The simulation takes 120 seconds and is divided into the two phases. In the first 30 seconds 180 requests to resource "Execute wait task" are generated. The parameter \textit{sleepTime} for generated requests in this phase is set to 5000 (5 seconds). Injection step of requests is constant (6 requests per seconds). The second phase starts in 60th second of the simulation and takes 60 seconds. During this phase 60 requests to resource "Execute CPU consuming task" are generated with constant injection step (1 request per second). 
 
 From the high level perspective the particular request from the first phase of the simulation blocks the one thread of the application server to 5 seconds without CPU consumption. Threads with are blocked during simulation waits in the queue until threads will be available again. That is why during this phase number of threads should be configured to maximal value - low CPU usage allows to increase number of threads, high number of threads reduces number of requests waiting in the queue.   
 
@@ -1714,11 +1741,53 @@ The experiment performed in this chapter is an example of low level components o
 
 
 \subsection{APTS (Combined) Evaluation}
+
+In the previous experiments the APTS was evaluated in isolation for particular tunable element. In this experiment all three tunable elements (cache, batch, threads) are combined in order to prove that system is able to optimize performance  of the tested application by management of different tunable elements.   
+
 \subsubsection{Traffic Simulation Scenario} 
-\subsubsection{Control Sample} 
-\subsubsection{Evaluation Sample} 
+
+For the combined APTS evaluation the tharric simulation presented in the Figure \ref{figure:trafficcombined} was implemented. 
+
+\begin{figure}[!htb]
+\begin{center}
+\begin{tikzpicture}
+\draw[->] (0,0) -- (10,0);
+\foreach \x in {1,5,9}
+\draw(\x cm,3pt) -- (\x cm, -3pt);
+
+\draw (1,0) node[below=3pt] {$0$};
+\draw (3,0) node[below=3pt] {$30$};
+\draw (5,0) node[below=3pt] {$60$};
+\draw (9,0) node[below=3pt] {$120$};
+
+\draw[fill=ggreen] (5,0) rectangle (9,1);
+\draw (7,0) node[above=6pt, align=center] {Wait requests};
+
+\draw[fill=rred] (1,0) rectangle (3,1);
+\draw (2,0) node[above=3pt, align=center, white] {Intensive \\ inserts};
+
+\draw (10.8,0) node {$time [s]$};
+\end{tikzpicture}
+\caption{\textit{Traffic simulation scenario for the combined evaluation}} \label{figure:trafficcombined}
+\end{center}
+\end{figure}
+
+The simulation takes 120 seconds and is divided into two phases. In the first phase "Intensive inserts" 300 insert requests are generated with constant injection step (10 requests per second). The requests in this phase are generated by 30 seconds. During the second phase ("Wait requests") which starts at 60th second of simulation 60 "Execute wait task" requests are generated with constant injection step (1 request per second). The \textit{sleepTime} parameter for the "Execute wait task" requests is set to 5000 (5 seconds).
+
+From the high level perspective during the first phase intensive inputs have three results - increased CPU usage, traffic is interpreted by the system as mutable and inserts level is recognized by the system as high.  High CPU usage should be handled by the APTS by switching threads number to lower level. Mutable traffic should result in disable cache during this phase. High inserts level should be handled by the system by enabling batch mechanism. During the second phase long tasks with low CPU usage changes character of the traffic to immutable and inserts level to low. Low CPU usage with simultaneous long execution time should by handled by the system by increasing threads number. Immutable traffic should lead the system to enabled cache. Because of low inserts level the system should disable batch mechanism. 
+
+\subsubsection{Evaluation Samples} 
+
+The combined experiment will be developed on the two samples:
+\begin{itemize}
+\item Control sample - in which performance tuning will be disabled and configuration of the tested application will be set to default (see Table \ref{table:initconfiguration}. 
+\item Adapted Sample - in which performance tuning by the APTS is enabled and the initial
+configuration is default (see Table 17). 
+\end{itemize}
+
 \subsubsection{The Experiment} 
 
+The experiment was repeated 10 times for both control and adapted samples what in total gives 20 repetition of the experiment. In the Figure \ref{figure:combined:screen:control} and \ref{figure:combined:screen:adapted} screenshots from Grafana platform with experiment run for both samples is presented.
 
 \begin{figure}[!htb]
 \centering
@@ -1731,15 +1800,42 @@ The experiment performed in this chapter is an example of low level components o
 \caption{\textit{APTS adapted sample experiment run - Grafana screenshot}} \label{figure:combined:screen:adapted}
 \end{figure}
 
+In the graphs CPU consumption and requests execution time is presented. The experiment run was significantly different for the both samples.
+
+At the beginning of the experiment execution time of the particular request increasing due to high CPU usage. After few requests execution time stabilizes on interval 1-5 seconds in case of control sample. In case of adapted sample execution time increases nearly to 10 seconds because of overhead connected with switching threads number. After few seconds execution time of requests decreases to nearly 1 second because of enabled batch. 
+
+During the second phase 5 seconds-long requests with small CPU usage are generated. During experiment performed on the control sample each requests was executed in nearly 5 seconds. In case of adapted sample the execution time for requests in this phase was minimized by enabling the cache mechanism. Moreover, number of threads was increased what results in increased CPU usage for this phase comparing it to the control sample.   
+
+The performance improvements chosen by the APTS during the experiment on the adapted sample are visible in the system logs: 
+
+\vspace{1mm}\noindent\fbox{\parbox{\textwidth}{\texttt{\footnotesize
+21:20:21.945 (...) Chosen rule: SwitchTo20ThreadsRule \\
+action: threads switched to 20 \\
+21:20:40.890 (...) Chosen rule: EnableBatchRule\\
+action: enable batch\\
+21:21:20.995 (...) Chosen rule: EnableCacheRule\\
+action: enable cache\\
+21:21:21.324 (...) Chosen rule: SwitchTo50ThreadsRule\\
+action: threads switched to 50\\
+21:21:21.845 (...) Chosen rule: DisableBatchRule\\
+action: disable batch\\
+21:21:30.560 (...) Chosen rule: SwitchTo80ThreadsRule\\
+action: threads switched to 80
+}}}\vspace{1mm}
+
 \subsubsection{Results} 
+
+The summary of performed experiment is presented in the Table \ref{table:combined:results:summary}. The summary presents average values computed from the 10 repetitions of the experiment. The row "Change" represents percentage difference between samples and is calculated using the formula:
 
 \begin{center}
 $Change = \frac{ControlSample - AptsAdaptation}{ControlSample}\cdot 100\%$
 \end{center}
 
+The data presented in the Table \ref{table:combined:results:summary} are visualized in the Figures \ref{figure:combined:results:executiontime} and \ref{figure:combined:results:cpuusage}. All results from performed experiments are available in the Appendix \ref{appendix:combinedevaluation}.
+
 \begin{table}[ht]
 \begin{center}
-\caption{System evaluation measurements - combined solution measurements summary}
+\caption{System evaluation measurements - combined solution measurements summary} \label{table:combined:results:summary}
 \begin{tabular}{c|C{3cm}C{3cm}}
     & Average execution time [ms] & Average CPU usage \\ \hline
     Control	sample	  &3.27     & 47.26\% \\ 
@@ -1747,7 +1843,6 @@ $Change = \frac{ControlSample - AptsAdaptation}{ControlSample}\cdot 100\%$
     Change		      &38.23\%	& -4.15\%
 \end{tabular}
 \end{center}
-\label{appendixmeasurementscombined}
 \end{table}
 
 \begin{figure}[!htb]
@@ -1796,14 +1891,64 @@ $Change = \frac{ControlSample - AptsAdaptation}{ControlSample}\cdot 100\%$
 
 
 \subsubsection{Interpretation} 
+
+The experiment results shows that the APTS was able to reduce mean execution time of requests by 38.23\%. The improvement was achieved at the expense of of relatively small increase of CPU usage. 
+
+The execution time was in the first phase was reduced by combined batch and threads number management provided by the APTS. During the seconds phase execution time was reduced by optimization based on cache and threads number. Increased CPU usage can be recognized during second phase of the experiment when more threads was introduced. The cost of increased threads number is always higher CPU usage and in case of this experiment was acceptable.  
+
 \subsubsection{Experiment Conclusions} 
 
+The main goal of this experiment was to prove that the Automated Performance Tuning System works as a whole. The system was able to optimize tested application configuration to increase performance. The performance issues was correctly recognized and actions performed by the implemented rules led to increased performance of the tested application. Finally, aggregated improvement introduced by all three tunable elements (cache, batch, threads) was equal to nearly 40\%.
 
-\subsection{Conclusions} 
+Apart from the achieved performance improvement, the experiment evaluated the APTS with all enabled features. The performed experiment is an example of combining different parts of performance optimization together.    
+
+\section{Conclusions} \label{section:conclusions}
+
+\subsection{Addressing formulated problem}
+
+This work is dedicated to subject of software optimization based on the performance evaluation tests. The work addresses the software optimization in the complex way - from theoretical literature overview for the domain of software performance and optimization through presentation of performance analysis of selected mechanisms to practical realization of software optimization in the form of proposed system - the Automatic Performance Tuning System. The concept of the performance evaluation tests is theoretically introduced. The goals, types, possible implementations and main features of the performance evaluation tests are presented. The practical usage of the performance evaluation tests is implemented in the APTS - the main part of the system is based on the implemented performance evaluation tests. The performance evaluation tests are used in the introduced system to provide performance monitoring and performance issues reporting.
+
+The main goal which was set starting work on this work was development of solution which will be able to optimize web application by searching most optimal application parameters and automatic adjustment.  The research question formulated at the initial phase of this work where:
+\begin{itemize}
+\item Which and how application parameters influences performance?
+\item How to evaluate performance of the system?
+\item How performance evaluation tests can help in software optimization - in monitoring and application performance adjustment
+\end{itemize} 
+
+The realization of the main goal of the work is implemented Automated Performance Tuning System which is based on performance evaluation tests. Main features listed in the goal was achieved - The system is able to monitor the environment on which a tested application is deployed and configuration adjustment is performed in order to optimize the monitored application form the performance perspective. The effectiveness of the implemented system was confirmed in the set of performed experiments. During the experiments ability to optimize particular aspects of the application in isolation as well as together was proven. 
+
+In order to answer the first research question - which and how application parameters influences performance - the analysis of the possible performance tuning aspects was performed. The analysis point out the following areas on which performance optimization can be performed: Java environment optimization, presentation layer optimization, application server configuration, redundant components switching at runtime, application algorithms  optimization (used mechanism provided by the Spring Framework). From the analyzed areas to further, experimental analysis 4 elements was formulated - batch, cache, paging (which touch areas of redundant components, application algorithms optimization) and threads number (from the area of application server configuration). The selection was based on expected performance improvement in the web environment and practical justification in the domain of the implemented solution. In the base of performed experiments and considerations, finally, three elements was selected as the most promising in context of performance optimization in the system domain - cache, batch and threads number. The selected elements was implemented into the tested application and server environment as a configurable parameters. The influence of the selected elements on the performance was confirmed and evaluated on the base of performed experiments. 
+
+The second question - how to evaluate performance of the system - was analyzed in the section with theoretical background. In the section the therm KPI was introduced and the set of possible indicators was listed. On the base of the theoretical background the practical realization of the selected KPIs was introduced in the APTS. In the system response time (execution time of request), utilization (CPU usage), workload profile (inserts level and traffic profile) was used to evaluate performance of the system.
+
+The last question - how performance evaluation tests can help in software optimization - in monitoring and application performance adjustment - is answered in this work by the practical example - the APTS implementation. In the system performance evaluation tests are responsible for monitoring. The monitoring is the source of further optimization decision made by the decision module of the system.  
+
+
+\subsection{About the Implemented System}
+
+At this point author of this work want to highlight that implemented system - the APTS is only proposed solution which enables automated performance optimization on the base of performed monitoring. The system realizes performance optimization on the selected set of implemented tunable elements which match to the implemented tested application domain (which has no high practical value). Also important is fact that selected tunable elements are not universal. The selection of the tunable elements under automatic optimization must be adjusted to the application which will be optimized (as we know there is no two the same applications in the world). Implemented solution should be considered as general form or framework for similar approach. 
+
+In the Chapter \ref{principles} general principles of the system was formulated. All of the principles was realized in the final implementation. The system performs live monitoring through  the implemented performance evaluation tests and the APTS manager. The system is autonomic - the software is able to realize goal of the performance optimization automatically and without human intervention on the base of rule based system defined in decision module. The system is able to perform configuration change during application runtime because of implemented architecture of the system which allows change of the configuration during the runtime. The feature is realized by the \textit{Decision Module} (performs change) and the \textit{Configuration Service} (delivers configuration for the tested application and provides API for configuration change). The solution is able to work in the production environment because is independent from the testing environment - the data traffic generator is provided as external component. The real traffic in production environment can be monitored in the same way without any modification or configuration of the APTS system. The system has minimal impact on the production environment because of introduced deployment approach. The all components responsible for performance monitoring and optimization are deployed outside the production environment. The only component which for obvious reasons must be deployed on the production environment is component responsible for resource monitoring.  
+
+\subsection{Problems and Issues}
+
+During the realization of this work the author encounter few problems which was not considered at the beginning of the work.
+
+One of the problem is related to the threads number configuration on the application server on which the tested application is deployed. Because tested application is implemented in on the base of Spring Boot project the application comes with embedded Tomcat Server which reduced deployment process to only one step - execution of JAR with the application. Unfortunately, the Tomcat server does not allow to change threads number during the runtime. The Spring Boot provides alternative configuration which allows Boot JARs to be deployed on different application servers. The try with the Glassfish server was made but without success (possible bug on the Glassfish side: GLASSFISH-21265).  Because of that the approach with request dispatcher on three instances of application with different number of threads was used (see Chapter \ref{section:systemdeployment}). 
+
+Another problem was related to deployment of the ready system in order to evaluate it. The evaluation experiments could not be performed on the single machine - overhead of testing environment may distort the results, moreover such solution would not fit to the proposed deployment diagram of the system. In order to solve that issue virtual machines for the tested application and helper server was introduced (see Chapter \ref{section:systemdeployment}. Due to that the tested application was isolated from the overhead introduced by the performed optimization by the APTS. 
+
+\subsection{Future works}
+
+The proposed solution realizes performance tuning decision on the base of decision module. In current implementation decisions are mad on the base of the rule based engine. Such solution has main disadvantage - the desirable optimal configuration must by implemented manually in the form of rules. As presented in this work even for 3 tunable elements effort and complexity of the rules is quite high. In the ideal world the system should be able to create such rules by itself. 
+
+One of the possible improvement to achieve that would be change in the decision module engine. Instead of the rule based engine some artificial intelligence (machine learning) solution could be used. A good AI candidate for such work is neural network which are able to recognize hidden patterns in the provided data. The current state of the tested environment (mean execution time of requests, resource usage) could be used as input to the network. As an output the optimal configuration would be returned. The drawback of the solution base on the machine learning is learning process. The teaching data (inputs and expected outputs) should be somehow prepared for the given environment. Because during learning the generated outputs could be highly inappropriate the teaching process could not be conducted on production environment.
+
+Another extension which could be considered is optimization of application server parameters. In this work due to the application domain and used solution (Tomcat server) only one optimization on the application server level was performed - the application server threads number. The more advanced application servers (like JBoss or IBM Websphere) provides many configurable parameters influencing performance which could be changed during a runtime. Implementation of automated performance tuning system dedicated for the given application server is a step into the more general solution - such system could be used in environment which uses given application server.  
 
 \pagebreak
 \clearpage
-\section{References}
+\section{References} \label{section:references}
 \renewcommand\refname{}
 \begin{thebibliography}{9}
 
@@ -1941,7 +2086,7 @@ Grafana - The open platform for beautiful analytics and monitoring \textit{https
 
 \pagebreak
 \clearpage
-\section{Appendices}
+\section{Appendices} \label{section:appendices}
 
 \appendix
 \setcounter{table}{0}
