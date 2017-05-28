@@ -42,7 +42,7 @@ public class MethodExecutionTime {
     }
 
     private TrafficProfile getTrafficProfile(Method method) {
-        if (method.getName().equals("workaround")) {
+        if (method.getName().equals("add2") || method.getName().equals("updateById2")) {
             return MUTABLE;
         }
 

@@ -43,7 +43,7 @@ public class WebController {
     }
 
     @GetMapping("/add")
-    public ResponseEntity<ProductCategory> workaround(@RequestParam("categoryName") String categoryName) {
+    public ResponseEntity<ProductCategory> add2(@RequestParam("categoryName") String categoryName) {
         return this.add(categoryName);
     }
 
@@ -52,6 +52,11 @@ public class WebController {
         ProductCategory productCategory = productCategoryCacheController.getService().update(id, newName);
         HttpStatus status = productCategory == null ? HttpStatus.NOT_FOUND : HttpStatus.OK;
         return new ResponseEntity<>(productCategory, status);
+    }
+
+    @GetMapping("/update/{id}")
+    public ResponseEntity<ProductCategory> updateById2(@PathVariable("id") int id, @RequestParam("newName") String newName) {
+        return this.updateById(id, newName);
     }
 
     @DeleteMapping("/remove/{id}")

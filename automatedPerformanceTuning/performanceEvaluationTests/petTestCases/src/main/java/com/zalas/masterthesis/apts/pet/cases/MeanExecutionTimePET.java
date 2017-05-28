@@ -13,7 +13,7 @@ public class MeanExecutionTimePET {
     private ExecutionTimeInfluxDbClient executionTimeInfluxDbClient = new ExecutionTimeInfluxDbClient();
 
 
-    @PetCase(enabled = true, durationInSec = 180, delayInSec = 10, monitorIntervalInSec = MONITORING_INTERVAL)
+    @PetCase(enabled = true, durationInSec = 1500, delayInSec = 10, monitorIntervalInSec = MONITORING_INTERVAL)
     public void meanExecutionTime_shouldBeOnAcceptableLevel() throws Exception {
         double meanExecutionTime = getMeanExecutionTimeInMillis(MONITORING_INTERVAL);
 
