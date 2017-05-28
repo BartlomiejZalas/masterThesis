@@ -1,4 +1,4 @@
-\documentclass[10pt,a4paper]{article}
+\documentclass[12pt,a4paper]{article}
 \usepackage[utf8]{inputenc}
 \usepackage{amsmath}
 \usepackage{amsfonts}
@@ -32,7 +32,7 @@
 \usepackage{mathtools}
 \usepackage{nameref}
 
-\usepackage[margin=40mm]{geometry}
+\usepackage[margin=25mm]{geometry}
 
 \graphicspath{ {images/} }
 
@@ -41,7 +41,7 @@
 \renewcommand\theadfont{\bfseries}
 \renewcommand\theadgape{\Gape[4pt]}
 \renewcommand\cellgape{\Gape[4pt]}
-\renewcommand{\baselinestretch}{1.5}
+\renewcommand{\baselinestretch}{1.1}
  
 \let\tempone\itemize
 \let\temptwo\enditemize
@@ -1740,7 +1740,7 @@ The experiments proves that threads management provided by the APTS is able to d
 The experiment performed in this chapter is an example of low level components optimization - in this case configuration of the threads number on the application server. There exist many other parameters offered by the application servers influencing performance - for example: pool size, heap size, garbage collector algorithm etc. All of them have influence on the performance but in order to provide the best possible performance they should be adjusted to the current state (traffic characteristic, available resources) of the environment. 
 
 
-\subsection{APTS (Combined) Evaluation}
+\subsection{APTS Combined Evaluation}
 
 In the previous experiments the APTS was evaluated in isolation for particular tunable element. In this experiment all three tunable elements (cache, batch, threads) are combined in order to prove that system is able to optimize performance  of the tested application by management of different tunable elements.   
 
@@ -1900,7 +1900,460 @@ The execution time was in the first phase was reduced by combined batch and thre
 
 The main goal of this experiment was to prove that the Automated Performance Tuning System works as a whole. The system was able to optimize tested application configuration to increase performance. The performance issues was correctly recognized and actions performed by the implemented rules led to increased performance of the tested application. Finally, aggregated improvement introduced by all three tunable elements (cache, batch, threads) was equal to nearly 40\%.
 
-Apart from the achieved performance improvement, the experiment evaluated the APTS with all enabled features. The performed experiment is an example of combining different parts of performance optimization together.    
+Apart from the achieved performance improvement, the experiment evaluated the APTS with all enabled features. The performed experiment is an example of combining different parts of performance optimization together. 
+
+
+\subsection{APTS Evaluation on Random Samples}
+
+\subsubsection{Traffic Simulation Scenario Random Generation}
+
+Find product category by ID (find)
+Update product	category (update)
+Add new product category (add)
+Execute CPU consuming task (cpuTask)
+Execute wait task (wait)
+
+\subsubsection{Evaluation Samples}
+
+\subsubsection{The Experiment Run - 1st Repetition}
+
+\begin{table}[ht]
+\begin{center}
+\begin{tabular}{c|C{2cm}|C{2cm}|C{2cm}|C{2cm}|C{2cm}}
+Request type & Rate 1 & Rate 2 & Start at second & End at second & Duration [s]\\\hline
+find	&1	&4	&582	&585	&3     \\ \hline
+update	&4	&4	&54	    &584	&530   \\ \hline
+insert	&3	&3	&471	&535	&64    \\ \hline
+wait	&2	&5	&300	&401	&101   \\ \hline
+cpuTask	&1	&1	&171	&374	&203   \\  
+\end{tabular}
+\end{center}
+\caption{\textit{First repetition of the experiment - generated traffic}} \label{table:random:traffic}
+\end{table}
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=1\textwidth]{1-ctrl}
+\caption{\textit{First repetition of the experiment - control sample}} \label{figure:random:screen:control}
+\end{figure}
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=1\textwidth]{1-adap}
+\caption{\textit{First repetition of the experiment - adapted sample}} \label{figure:random:screen:control}
+\end{figure}
+
+\begin{enumerate}
+\item 18:03:08.251 - Configuration of CACHE changed to value: CACHED
+\item 18:04:08.325 - Configuration of CACHE changed to value: NO\_CACHE
+\item 18:06:27.973 - Configuration of THREADS changed to value: T20
+\item 18:06:58.489 - Configuration of CACHE changed to value: CACHED
+\item 18:07:07.756 - Configuration of CACHE changed to value: NO\_CACHE
+\item 18:08:37.782 - Configuration of CACHE changed to value: CACHED
+\item 18:08:48.175 - Configuration of CACHE changed to value: NO\_CACHE
+\item 18:18:48.072 - Configuration of THREADS changed to value: T50
+\item 18:18:58.217 - Configuration of THREADS changed to value: T80
+\item 18:19:48.526 - Configuration of THREADS changed to value: T50
+\end{enumerate}
+
+
+
+
+
+
+\subsubsection{The Experiment Run - 2nd Repetition}
+
+\begin{table}[ht]
+\begin{center}
+\begin{tabular}{c|C{2cm}|C{2cm}|C{2cm}|C{2cm}|C{2cm}}
+Request type & Rate 1 & Rate 2 & Start at second & End at second & Duration [s]\\\hline
+find	&2	&3	&353	&417	&64\\ \hline
+update	&1	&3	&51	    &149	&98\\ \hline
+insert	&1	&5	&91	    &259	&168\\ \hline
+wait	&5	&5	&391	&484	&93\\ \hline
+cpuTask	&1	&1	&385	&413	&28
+\end{tabular}
+\end{center}
+\caption{\textit{Second repetition of the experiment - generated traffic}} \label{table:random:traffic}
+\end{table}
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=1\textwidth]{2-ctrl}
+\caption{\textit{Second repetition of the experiment - control sample}} \label{figure:random:screen:control}
+\end{figure}
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=1\textwidth]{2-adap}
+\caption{\textit{Second repetition of the experiment - adapted sample}} \label{figure:random:screen:control}
+\end{figure}
+
+\begin{enumerate}
+\item 18:47:54.562 - Configuration of CACHE changed to value: CACHED
+\item 18:48:44.512 - Configuration of CACHE changed to value: NO\_CACHE
+\item 18:50:14.498 - Configuration of THREADS changed to value: T20
+\item 18:52:24.394 - Configuration of CACHE changed to value: CACHED
+\end{enumerate}
+
+
+
+
+
+
+\subsubsection{The Experiment Run - 3rd Repetition}
+
+\begin{table}[ht]
+\begin{center}
+\begin{tabular}{c|C{2cm}|C{2cm}|C{2cm}|C{2cm}|C{2cm}}
+Request type & Rate 1 & Rate 2 & Start at second & End at second & Duration [s]\\\hline
+find	&5	&6	&181	&597	&416\\ \hline
+update	&5	&5	&26	    &100	&74\\ \hline
+insert	&5	&5	&490	&550	&60\\ \hline
+wait	&4	&5	&495	&505	&10\\ \hline
+cpuTask	&0	&0	&405	&442	&37
+
+\end{tabular}
+\end{center}
+\caption{\textit{Third repetition of the experiment - generated traffic}} \label{table:random:traffic}
+\end{table}
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=1\textwidth]{3-ctrl}
+\caption{\textit{Third repetition of the experiment - control sample}} \label{figure:random:screen:control}
+\end{figure}
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=1\textwidth]{3-adap}
+\caption{\textit{Third repetition of the experiment - adapted sample}} \label{figure:random:screen:control}
+\end{figure}
+
+\begin{enumerate}
+\item 21:03:32.846 - Configuration of CACHE changed to value: CACHED
+\item 21:04:02.562 - Configuration of CACHE changed to value: NO\_CACHE
+\item 21:05:52.467 - Configuration of CACHE changed to value: CACHED
+\item 21:11:42.637 - Configuration of CACHE changed to value: NO\_CACHE
+\item 21:11:52.860 - Configuration of THREADS changed to value: T20
+\item 21:14:32.410 - Configuration of CACHE changed to value: CACHED
+\end{enumerate}
+
+
+
+
+
+
+\subsubsection{The Experiment Run - 4th Repetition}
+
+\begin{table}[ht]
+\begin{center}
+\begin{tabular}{c|C{2cm}|C{2cm}|C{2cm}|C{2cm}|C{2cm}}
+Request type & Rate 1 & Rate 2 & Start at second & End at second & Duration [s]\\\hline
+find	&1	&2	&58	    &240	&182\\ \hline
+update	&1	&6	&272	&351	&79\\ \hline
+insert	&1	&4	&472	&472	&0\\ \hline
+wait	&0	&3	&165	&353	&188\\ \hline
+cpuTask	&1	&1	&19	    &529	&510
+\end{tabular}
+\end{center}
+\caption{\textit{Fourth repetition of the experiment - generated traffic}} \label{table:random:traffic}
+\end{table}
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=1\textwidth]{4-ctrl}
+\caption{\textit{Fourth repetition of the experiment - control sample}} \label{figure:random:screen:control}
+\end{figure}
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=1\textwidth]{4-adap}
+\caption{\textit{Fourth repetition of the experiment - adapted sample}} \label{figure:random:screen:control}
+\end{figure}
+
+\begin{enumerate}
+\item 21:44:23.035 - Configuration of CACHE changed to value: CACHED
+\item 21:44:42.660 - Configuration of THREADS changed to value: T80
+\item 21:44:53.154 - Configuration of THREADS changed to value: T50
+\item 21:45:12.940 - Configuration of THREADS changed to value: T80
+\item 21:48:52.571 - Configuration of CACHE changed to value: NO\_CACHE
+\item 21:49:02.861 - Configuration of THREADS changed to value: T50
+\item 21:49:13.074 - Configuration of THREADS changed to value: T20
+\item 21:53:32.624 - Configuration of CACHE changed to value: CACHED
+\end{enumerate}
+
+
+
+
+
+
+\subsubsection{The Experiment Run - 5th Repetition}
+
+\begin{table}[ht]
+\begin{center}
+\begin{tabular}{c|C{2cm}|C{2cm}|C{2cm}|C{2cm}|C{2cm}}
+Request type & Rate 1 & Rate 2 & Start at second & End at second & Duration [s]\\\hline
+find	&2	&3	&183	&421	&238\\ \hline
+update	&0	&3	&451	&480	&29\\ \hline
+insert	&2	&5	&62	    &333	&271\\ \hline
+wait	&5	&6	&257	&467	&210\\ \hline
+cpuTask	&1	&1	&234	&260	&26
+
+\end{tabular}
+\end{center}
+\caption{\textit{Fifth repetition of the experiment - generated traffic}} \label{table:random:traffic}
+\end{table}
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=1\textwidth]{5-ctrl}
+\caption{\textit{Fifth repetition of the experiment - control sample}} \label{figure:random:screen:control}
+\end{figure}
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=1\textwidth]{5-adap}
+\caption{\textit{Fifth repetition of the experiment - adapted sample}} \label{figure:random:screen:control}
+\end{figure}
+
+\begin{enumerate}
+\item 22:28:53.174 - Configuration of CACHE changed to value: CACHED
+\item 22:30:02.620 - Configuration of CACHE changed to value: NO\_CACHE
+\item 22:32:42.963 - Configuration of THREADS changed to value: T20
+\item 22:35:03.595 - Configuration of THREADS changed to value: T50
+\item 22:35:12.719 - Configuration of THREADS changed to value: T20
+\item 22:35:33.142 - Configuration of THREADS changed to value: T50
+\item 22:35:43.398 - Configuration of THREADS changed to value: T20
+\item 22:36:33.374 - Configuration of THREADS changed to value: T50
+\item 22:36:43.618 - Configuration of THREADS changed to value: T20
+\item 22:37:03.045 - Configuration of THREADS changed to value: T50
+\item 22:37:13.248 - Configuration of THREADS changed to value: T80
+\item 22:38:52.868 - Configuration of CACHE changed to value: CACHED
+\item 22:39:43.434 - Configuration of CACHE changed to value: NO\_CACHE
+\end{enumerate}
+
+
+
+
+
+
+\subsubsection{The Experiment Run - 6th Repetition}
+
+\begin{table}[ht]
+\begin{center}
+\begin{tabular}{c|C{2cm}|C{2cm}|C{2cm}|C{2cm}|C{2cm}}
+Request type & Rate 1 & Rate 2 & Start at second & End at second & Duration [s]\\\hline
+find	&0	&0	&37	    &193	&156 \\ \hline
+update	&6	&6	&565	&593	&28\\ \hline
+insert	&6	&6	&419	&427	&8\\ \hline
+wait	&5	&5	&448	&493	&45\\ \hline
+cpuTask	&0	&1	&167	&430	&263\\ \hline
+\end{tabular}
+\end{center}
+\caption{\textit{Sixth repetition of the experiment - generated traffic}} \label{table:random:traffic}
+\end{table}
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=1\textwidth]{6-ctrl}
+\caption{\textit{Sixth repetition of the experiment - control sample}} \label{figure:random:screen:control}
+\end{figure}
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=1\textwidth]{6-adap}
+\caption{\textit{Sixth repetition of the experiment - adapted sample}} \label{figure:random:screen:control}
+\end{figure}
+
+\begin{enumerate}
+\item 23:00:00.355 - Configuration of CACHE changed to value: CACHED
+\item 23:07:00.187 - Configuration of CACHE changed to value: NO\_CACHE
+\item 23:07:20.352 - Configuration of CACHE changed to value: CACHED
+\item 23:07:20.519 - Configuration of THREADS changed to value: T20
+\item 23:07:30.689 - Configuration of THREADS changed to value: T50
+\item 23:07:40.805 - Configuration of THREADS changed to value: T80
+\item 23:09:29.889 - Configuration of CACHE changed to value: NO\_CACHE
+\item 23:09:40.059 - Configuration of THREADS changed to value: T50
+\end{enumerate}
+
+
+
+
+
+
+\subsubsection{The Experiment Run - 7th Repetition}
+
+\begin{table}[ht]
+\begin{center}
+\begin{tabular}{c|C{2cm}|C{2cm}|C{2cm}|C{2cm}|C{2cm}}
+Request type & Rate 1 & Rate 2 & Start at second & End at second & Duration [s]\\\hline
+find	&5	&6	&93	    &437	&344\\\hline
+update	&2	&3	&457	&478	&21\\\hline
+insert	&0	&6	&277	&314	&37\\\hline
+wait	&4	&5	&36	    &304	&268\\\hline
+cpuTask	&0	&0	&292	&552	&260\\\hline
+\end{tabular}
+\end{center}
+\caption{\textit{Seventh repetition of the experiment - generated traffic}} \label{table:random:traffic}
+\end{table}
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=1\textwidth]{7-ctrl}
+\caption{\textit{Seventh repetition of the experiment - control sample}} \label{figure:random:screen:control}
+\end{figure}
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=1\textwidth]{7-adap}
+\caption{\textit{Seventh repetition of the experiment - adapted sample}} \label{figure:random:screen:control}
+\end{figure}
+
+\begin{enumerate}
+\item 23:37:12.884 - Configuration of CACHE changed to value: CACHED
+\item 23:41:52.336 - Configuration of CACHE changed to value: NO\_CACHE
+\item 23:42:02.591 - Configuration of THREADS changed to value: T20
+\item 23:42:33.177 - Configuration of THREADS changed to value: T50
+\item 23:42:42.418 - Configuration of THREADS changed to value: T20
+\item 23:43:33.098 - Configuration of CACHE changed to value: CACHED
+\item 23:44:53.033 - Configuration of CACHE changed to value: NO\_CACHE
+\end{enumerate}
+
+
+
+
+
+
+
+\subsubsection{The Experiment Run - 8th Repetition}
+
+\begin{table}[ht]
+\begin{center}
+\begin{tabular}{c|C{2cm}|C{2cm}|C{2cm}|C{2cm}|C{2cm}}
+Request type & Rate 1 & Rate 2 & Start at second & End at second & Duration [s]\\\hline
+find	&5	&6	&207	&467	&260\\\hline
+update	&2	&2	&549	&549	&0\\\hline
+insert	&6	&6	&598	&598	&0\\\hline
+wait	&6	&6	&43	    &296	&253\\\hline
+cpuTask	&1	&1	&510	&545	&35
+\end{tabular}
+\end{center}
+\caption{\textit{Eighth repetition of the experiment - generated traffic}} \label{table:random:traffic}
+\end{table}
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=1\textwidth]{8-ctrl}
+\caption{\textit{Eighth repetition of the experiment - control sample}} \label{figure:random:screen:control}
+\end{figure}
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=1\textwidth]{8-adap}
+\caption{\textit{Eighth repetition of the experiment - adapted sample}} \label{figure:random:screen:control}
+\end{figure}
+
+\begin{enumerate}
+\item 00:05:35.937 - Configuration of CACHE changed to value: CACHED
+\item 00:09:26.191 - Configuration of THREADS changed to value: T20
+\end{enumerate}
+
+
+
+
+
+
+\subsubsection{The Experiment Run - 9th Repetition}
+
+\begin{table}[ht]
+\begin{center}
+\begin{tabular}{c|C{2cm}|C{2cm}|C{2cm}|C{2cm}|C{2cm}}
+Request type & Rate 1 & Rate 2 & Start at second & End at second & Duration [s]\\\hline
+find	&3	&4	&420	&465	&45\\\hline
+update	&3	&4	&294	&413	&119\\\hline
+insert	&4	&6	&349	&519	&170\\\hline
+wait	&4	&5	&73  	&593	&520\\\hline
+cpuTask	&0	&1	&150	&346	&196
+\end{tabular}
+\end{center}
+\caption{\textit{Nineth repetition of the experiment - generated traffic}} \label{table:random:traffic}
+\end{table}
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=1\textwidth]{9-ctrl}
+\caption{\textit{Nineth repetition of the experiment - control sample}} \label{figure:random:screen:control}
+\end{figure}
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=1\textwidth]{9-adap}
+\caption{\textit{Nineth repetition of the experiment - adapted sample}} \label{figure:random:screen:control}
+\end{figure}
+
+\begin{enumerate}
+\item 11:37:28.648 - Configuration of CACHE changed to value: CACHED
+\item 11:42:28.943 - Configuration of CACHE changed to value: NO\_CACHE
+\item 11:42:38.261 - Configuration of THREADS changed to value: T20
+\item 11:46:18.651 - Configuration of THREADS changed to value: T50
+\item 11:46:28.919 - Configuration of THREADS changed to value: T20
+\item 11:47:19.035 - Configuration of THREADS changed to value: T50
+\item 11:47:28.138 - Configuration of THREADS changed to value: T80
+\item 11:53:28.517 - Configuration of CACHE changed to value: CACHED
+\end{enumerate}
+
+
+
+
+
+\subsubsection{The Experiment Run - 10th Repetition}
+
+\begin{table}[ht]
+\begin{center}
+\begin{tabular}{c|C{2cm}|C{2cm}|C{2cm}|C{2cm}|C{2cm}}
+Request type & Rate 1 & Rate 2 & Start at second & End at second & Duration [s]\\\hline
+find	&5	&6	&156	&405	&249\\\hline
+update	&4	&6	&60	    &597	&537\\\hline
+insert	&5	&5	&83	    &583	&500\\\hline
+wait	&2	&5	&3	    &308	&305\\\hline
+cpuTask	&0	&1	&184	&264	&80
+\end{tabular}
+\end{center}
+\caption{\textit{Tenth repetition of the experiment - generated traffic}} \label{table:random:traffic}
+\end{table}
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=1\textwidth]{10-ctrl}
+\caption{\textit{Tenth repetition of the experiment - control sample}} \label{figure:random:screen:control}
+\end{figure}
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=1\textwidth]{10-adap}
+\caption{\textit{Tenth repetition of the experiment - adapted sample}} \label{figure:random:screen:control}
+\end{figure}
+
+\begin{enumerate}
+\item 12:28:15.072 - Configuration of CACHE changed to value: CACHED
+\item 12:30:19.252 - Configuration of CACHE changed to value: NO\_CACHE
+\item 12:30:28.498 - Configuration of THREADS changed to value: T20
+\item 12:44:08.624 - Configuration of THREADS changed to value: T50
+\item 12:44:28.964 - Configuration of THREADS changed to value: T20
+\item 12:45:48.357 - Configuration of THREADS changed to value: T50
+\item 12:45:58.598 - Configuration of THREADS changed to value: T20
+\end{enumerate}
+
+\subsubsection{Results} 
+
+\subsubsection{Interpretation}
+
+
+
+
+
+\subsubsection{Experiment Conclusions}
 
 \section{Conclusions} \label{section:conclusions}
 
