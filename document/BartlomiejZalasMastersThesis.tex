@@ -1905,17 +1905,65 @@ Apart from the achieved performance improvement, the experiment evaluated the AP
 
 \subsection{APTS Evaluation on Random Samples}
 
-\subsubsection{Traffic Simulation Scenario Random Generation}
+\subsubsection{Motivation}
+In the previous experiments presented in this chapter, the traffic simulation scenarios was created for the need of check if the system behaves properly under given circumstances. Due to that fact the simulation scenario may be considered as artificial and too sterile. Because of that the system should be also tested in under more real life scenario. 
 
-Find product category by ID (find)
-Update product	category (update)
-Add new product category (add)
-Execute CPU consuming task (cpuTask)
-Execute wait task (wait)
+The best possible option would be to ask real users to use the tested application. Unfortunately, limited practical applications of the tested application and lack of graphical user interface makes this idea hard to realize. 
+
+Another idea is to generate traffic scenario on the base of a real traffic statistics of an existing web application related to similar domain. Unfortunately, author of this work does not have access to such application where such statistics could be gathered. A publicly available statistics from a web sites does not contain information about HTTP method type (which is necessary to evaluate the system) and are too high level oriented (provides information about number of visitors on given page or users characteristics - browsers, devices etc.).  
+
+The last idea in order to create more natural traffic simulation scenario is to generate random data. In this solution randomly generation of traffic can create traffic which will be close to real one. For the need of this experiment ten traffic simulation scenario will be randomly generated. In the Chapter \ref{section:randomgeneration} details about generated simulations are introduced. 
+
+\subsubsection{Traffic Simulation Scenario Random Generation} \label{section:randomgeneration}
+
+In order to evaluate the system in long time perspective generated traffic scenarios are 10 minutes long. 
+During the each simulation five different types of request are be used:
+\begin{itemize}
+\item Find product category by ID (find)
+\item Update product	category (update)
+\item Add new product category (add)
+\item Execute CPU consuming task (cpuTask)
+\item Execute wait task (wait)
+\end{itemize}
+
+The random traffic for each request type is generated on the base of Gatling injection profile - \textit{rampUsersPerSec}. The \textit{rampUsersPerSec} injects random number of requests per second in a scenario over a given duration. The injection profile is defined by the following function signature:  
+\begin{center}
+\textit{rampUsersPerSec(Rate 1) to (Rate 2) during (Duration)}
+\end{center}
+where:
+\begin{itemize}
+\item[\textit{Rate 1}] - lower bound (inclusive) of interval from which random number of user per second is generated
+\item[\textit{Rate 2}] - upper bound (inclusive) of interval from which random number of user per second is generated
+\item[\textit{Duration}] - time in which users are generated
+\end{itemize}
+
+For example:
+
+\begin{center}
+\textit{rampUsersPerSec(10) to (20) during (10 seconds)}
+\end{center}
+
+generates random number of requests during 10 seconds. The number of generated requests is random in every second. The possible value of generated random number is integer and is taken from interval $[10,20]$. 
+
+Because of limited resources of the evaluation environment the following limits for random values of the \textit{Rate 1} and \textit{Rate 2} are introduced during generation.  For each request type, except \textit{Execute CPU consuming task}, the limits are set to interval $[0,6]$. Because of high CPU consumption by the \textit{Execute CPU consuming task} request type the limits for this request type are set to the interval $[0,1]$. 
+the generated traffic for each request type in in different time intervals tha parameters \textit{Duration} and \textit{Start At} are used. The \textit{Duration} parameter is used in \textit{rampUsersPerSec} function to define time in which requests are generated. The \textit{Start At} parameter defines starting point in which generation starts. 
+
+To sum up - generation of traffic simulation scenarios is based on 4 randomly chosen values: \textit{Rate 1}, \textit{Rate 2}, \textit{Duration} and \textit{Start At}. The random traffic scenario is generated for each of 10 repetition - this gives 10 randomly generated traffic simulation scenarios. The generated scenario for the particular repetition is presented in the section designated to the corresponding experiment repetition (\textit{The Experiment Run}). 
 
 \subsubsection{Evaluation Samples}
 
+For each generated traffic scenario simulation 2 experiments are run  - one for control sample and second for adapted sample. The used  samples are described as follows:
+\begin{itemize}
+\item Control sample - sample in which performance tuning will be disabled and configuration of the tested application will be set to default (see Table \ref{table:initconfiguration}. 
+\item Adapted Sample - sample in which performance tuning by the APTS is enabled and the initial configuration is default (see Table 17). 
+\end{itemize}
+
+
+
+
 \subsubsection{The Experiment Run - 1st Repetition}
+
+This section presents first repetition of the experiment using randomly generated traffic simulation scenario. The generated parameters (described in the Chapter \ref{section:randomgeneration}) used in the created scenario are presented in the Table \ref{table:random:traffic:1}. 
 
 \begin{table}[ht]
 \begin{center}
@@ -1928,21 +1976,24 @@ wait	&2	&5	&300	&401	&101   \\ \hline
 cpuTask	&1	&1	&171	&374	&203   \\  
 \end{tabular}
 \end{center}
-\caption{\textit{First repetition of the experiment - generated traffic}} \label{table:random:traffic}
+\caption{\textit{First repetition of the experiment - generated traffic}} \label{table:random:traffic:1}
 \end{table}
+
+The Grafana screens presenting the experiment run for the control sample and adapted sample are presented in the Figure \ref{figure:random:screen:control:1} and \ref{figure:random:screen:adapted:1} respectively. 
 
 \begin{figure}[!htb]
 \centering
 \includegraphics[width=1\textwidth]{1-ctrl}
-\caption{\textit{First repetition of the experiment - control sample}} \label{figure:random:screen:control}
+\caption{\textit{First repetition of the experiment - control sample}} \label{figure:random:screen:control:1}
 \end{figure}
 
 \begin{figure}[!htb]
 \centering
 \includegraphics[width=1\textwidth]{1-adap}
-\caption{\textit{First repetition of the experiment - adapted sample}} \label{figure:random:screen:control}
+\caption{\textit{First repetition of the experiment - adapted sample}} \label{figure:random:screen:adapted:1}
 \end{figure}
 
+Additionally, in the Figure \ref{figure:random:screen:adapted:1} configuration changes made by the APTS during the experiment made on adapted sample are marked as red numbers at the top of the graph. The configuration change assigned to each number is explained in below listing: 
 \begin{enumerate}
 \item 18:03:08.251 - Configuration of CACHE changed to value: CACHED
 \item 18:04:08.325 - Configuration of CACHE changed to value: NO\_CACHE
@@ -1961,7 +2012,10 @@ cpuTask	&1	&1	&171	&374	&203   \\
 
 
 
+
 \subsubsection{The Experiment Run - 2nd Repetition}
+
+This section presents first repetition of the experiment using randomly generated traffic simulation scenario. The generated parameters (described in the Chapter \ref{section:randomgeneration}) used in the created scenario are presented in the Table \ref{table:random:traffic:2}. 
 
 \begin{table}[ht]
 \begin{center}
@@ -1974,20 +2028,25 @@ wait	&5	&5	&391	&484	&93\\ \hline
 cpuTask	&1	&1	&385	&413	&28
 \end{tabular}
 \end{center}
-\caption{\textit{Second repetition of the experiment - generated traffic}} \label{table:random:traffic}
+\caption{\textit{Second repetition of the experiment - generated traffic}} \label{table:random:traffic:2}
 \end{table}
+
+The Grafana screens presenting the experiment run for the control sample and adapted sample are presented in the Figure \ref{figure:random:screen:control:2} and \ref{figure:random:screen:adapted:2} respectively. 
+
 
 \begin{figure}[!htb]
 \centering
 \includegraphics[width=1\textwidth]{2-ctrl}
-\caption{\textit{Second repetition of the experiment - control sample}} \label{figure:random:screen:control}
+\caption{\textit{Second repetition of the experiment - control sample}} \label{figure:random:screen:control:2}
 \end{figure}
 
 \begin{figure}[!htb]
 \centering
 \includegraphics[width=1\textwidth]{2-adap}
-\caption{\textit{Second repetition of the experiment - adapted sample}} \label{figure:random:screen:control}
+\caption{\textit{Second repetition of the experiment - adapted sample}} \label{figure:random:screen:adapted:2}
 \end{figure}
+
+Additionally, in the Figure \ref{figure:random:screen:adapted:2} configuration changes made by the APTS during the experiment made on adapted sample are marked as red numbers at the top of the graph. The configuration change assigned to each number is explained in below listing: 
 
 \begin{enumerate}
 \item 18:47:54.562 - Configuration of CACHE changed to value: CACHED
@@ -2003,6 +2062,8 @@ cpuTask	&1	&1	&385	&413	&28
 
 \subsubsection{The Experiment Run - 3rd Repetition}
 
+This section presents first repetition of the experiment using randomly generated traffic simulation scenario. The generated parameters (described in the Chapter \ref{section:randomgeneration}) used in the created scenario are presented in the Table \ref{table:random:traffic:3}. 
+
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{c|C{2cm}|C{2cm}|C{2cm}|C{2cm}|C{2cm}}
@@ -2012,23 +2073,26 @@ update	&5	&5	&26	    &100	&74\\ \hline
 insert	&5	&5	&490	&550	&60\\ \hline
 wait	&4	&5	&495	&505	&10\\ \hline
 cpuTask	&0	&0	&405	&442	&37
-
 \end{tabular}
 \end{center}
-\caption{\textit{Third repetition of the experiment - generated traffic}} \label{table:random:traffic}
+\caption{\textit{Third repetition of the experiment - generated traffic}} \label{table:random:traffic:3}
 \end{table}
+
+The Grafana screens presenting the experiment run for the control sample and adapted sample are presented in the Figure \ref{figure:random:screen:control:3} and \ref{figure:random:screen:adapted:3} respectively. 
 
 \begin{figure}[!htb]
 \centering
 \includegraphics[width=1\textwidth]{3-ctrl}
-\caption{\textit{Third repetition of the experiment - control sample}} \label{figure:random:screen:control}
+\caption{\textit{Third repetition of the experiment - control sample}} \label{figure:random:screen:control:3}
 \end{figure}
 
 \begin{figure}[!htb]
 \centering
 \includegraphics[width=1\textwidth]{3-adap}
-\caption{\textit{Third repetition of the experiment - adapted sample}} \label{figure:random:screen:control}
+\caption{\textit{Third repetition of the experiment - adapted sample}} \label{figure:random:screen:adapted:3}
 \end{figure}
+
+Additionally, in the Figure \ref{figure:random:screen:adapted:3} configuration changes made by the APTS during the experiment made on adapted sample are marked as red numbers at the top of the graph. The configuration change assigned to each number is explained in below listing: 
 
 \begin{enumerate}
 \item 21:03:32.846 - Configuration of CACHE changed to value: CACHED
@@ -2046,6 +2110,8 @@ cpuTask	&0	&0	&405	&442	&37
 
 \subsubsection{The Experiment Run - 4th Repetition}
 
+This section presents first repetition of the experiment using randomly generated traffic simulation scenario. The generated parameters (described in the Chapter \ref{section:randomgeneration}) used in the created scenario are presented in the Table \ref{table:random:traffic:4}. 
+
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{c|C{2cm}|C{2cm}|C{2cm}|C{2cm}|C{2cm}}
@@ -2057,20 +2123,24 @@ wait	&0	&3	&165	&353	&188\\ \hline
 cpuTask	&1	&1	&19	    &529	&510
 \end{tabular}
 \end{center}
-\caption{\textit{Fourth repetition of the experiment - generated traffic}} \label{table:random:traffic}
+\caption{\textit{Fourth repetition of the experiment - generated traffic}} \label{table:random:traffic:4}
 \end{table}
+
+The Grafana screens presenting the experiment run for the control sample and adapted sample are presented in the Figure \ref{figure:random:screen:control:3} and \ref{figure:random:screen:adapted:4} respectively. 
 
 \begin{figure}[!htb]
 \centering
 \includegraphics[width=1\textwidth]{4-ctrl}
-\caption{\textit{Fourth repetition of the experiment - control sample}} \label{figure:random:screen:control}
+\caption{\textit{Fourth repetition of the experiment - control sample}} \label{figure:random:screen:control:4}
 \end{figure}
 
 \begin{figure}[!htb]
 \centering
 \includegraphics[width=1\textwidth]{4-adap}
-\caption{\textit{Fourth repetition of the experiment - adapted sample}} \label{figure:random:screen:control}
+\caption{\textit{Fourth repetition of the experiment - adapted sample}} \label{figure:random:screen:adapted:4}
 \end{figure}
+
+Additionally, in the Figure \ref{figure:random:screen:adapted:4} configuration changes made by the APTS during the experiment made on adapted sample are marked as red numbers at the top of the graph. The configuration change assigned to each number is explained in below listing: 
 
 \begin{enumerate}
 \item 21:44:23.035 - Configuration of CACHE changed to value: CACHED
@@ -2090,6 +2160,8 @@ cpuTask	&1	&1	&19	    &529	&510
 
 \subsubsection{The Experiment Run - 5th Repetition}
 
+This section presents first repetition of the experiment using randomly generated traffic simulation scenario. The generated parameters (described in the Chapter \ref{section:randomgeneration}) used in the created scenario are presented in the Table \ref{table:random:traffic:5}. 
+
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{c|C{2cm}|C{2cm}|C{2cm}|C{2cm}|C{2cm}}
@@ -2099,23 +2171,26 @@ update	&0	&3	&451	&480	&29\\ \hline
 insert	&2	&5	&62	    &333	&271\\ \hline
 wait	&5	&6	&257	&467	&210\\ \hline
 cpuTask	&1	&1	&234	&260	&26
-
 \end{tabular}
 \end{center}
-\caption{\textit{Fifth repetition of the experiment - generated traffic}} \label{table:random:traffic}
+\caption{\textit{Fifth repetition of the experiment - generated traffic}} \label{table:random:traffic:5}
 \end{table}
+
+The Grafana screens presenting the experiment run for the control sample and adapted sample are presented in the Figure \ref{figure:random:screen:control:5} and \ref{figure:random:screen:adapted:5} respectively. 
 
 \begin{figure}[!htb]
 \centering
 \includegraphics[width=1\textwidth]{5-ctrl}
-\caption{\textit{Fifth repetition of the experiment - control sample}} \label{figure:random:screen:control}
+\caption{\textit{Fifth repetition of the experiment - control sample}} \label{figure:random:screen:control:5}
 \end{figure}
 
 \begin{figure}[!htb]
 \centering
 \includegraphics[width=1\textwidth]{5-adap}
-\caption{\textit{Fifth repetition of the experiment - adapted sample}} \label{figure:random:screen:control}
+\caption{\textit{Fifth repetition of the experiment - adapted sample}} \label{figure:random:screen:adapted:5}
 \end{figure}
+
+Additionally, in the Figure \ref{figure:random:screen:adapted:5} configuration changes made by the APTS during the experiment made on adapted sample are marked as red numbers at the top of the graph. The configuration change assigned to each number is explained in below listing: 
 
 \begin{enumerate}
 \item 22:28:53.174 - Configuration of CACHE changed to value: CACHED
@@ -2140,6 +2215,8 @@ cpuTask	&1	&1	&234	&260	&26
 
 \subsubsection{The Experiment Run - 6th Repetition}
 
+This section presents first repetition of the experiment using randomly generated traffic simulation scenario. The generated parameters (described in the Chapter \ref{section:randomgeneration}) used in the created scenario are presented in the Table \ref{table:random:traffic:6}. 
+
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{c|C{2cm}|C{2cm}|C{2cm}|C{2cm}|C{2cm}}
@@ -2151,20 +2228,24 @@ wait	&5	&5	&448	&493	&45\\ \hline
 cpuTask	&0	&1	&167	&430	&263\\ \hline
 \end{tabular}
 \end{center}
-\caption{\textit{Sixth repetition of the experiment - generated traffic}} \label{table:random:traffic}
+\caption{\textit{Sixth repetition of the experiment - generated traffic}} \label{table:random:traffic:6}
 \end{table}
+
+The Grafana screens presenting the experiment run for the control sample and adapted sample are presented in the Figure \ref{figure:random:screen:control:6} and \ref{figure:random:screen:adapted:6} respectively. 
 
 \begin{figure}[!htb]
 \centering
 \includegraphics[width=1\textwidth]{6-ctrl}
-\caption{\textit{Sixth repetition of the experiment - control sample}} \label{figure:random:screen:control}
+\caption{\textit{Sixth repetition of the experiment - control sample}} \label{figure:random:screen:control:6}
 \end{figure}
 
 \begin{figure}[!htb]
 \centering
 \includegraphics[width=1\textwidth]{6-adap}
-\caption{\textit{Sixth repetition of the experiment - adapted sample}} \label{figure:random:screen:control}
+\caption{\textit{Sixth repetition of the experiment - adapted sample}} \label{figure:random:screen:adapted:6}
 \end{figure}
+
+Additionally, in the Figure \ref{figure:random:screen:adapted:6} configuration changes made by the APTS during the experiment made on adapted sample are marked as red numbers at the top of the graph. The configuration change assigned to each number is explained in below listing: 
 
 \begin{enumerate}
 \item 23:00:00.355 - Configuration of CACHE changed to value: CACHED
@@ -2184,6 +2265,8 @@ cpuTask	&0	&1	&167	&430	&263\\ \hline
 
 \subsubsection{The Experiment Run - 7th Repetition}
 
+This section presents first repetition of the experiment using randomly generated traffic simulation scenario. The generated parameters (described in the Chapter \ref{section:randomgeneration}) used in the created scenario are presented in the Table \ref{table:random:traffic:7}.
+
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{c|C{2cm}|C{2cm}|C{2cm}|C{2cm}|C{2cm}}
@@ -2195,20 +2278,25 @@ wait	&4	&5	&36	    &304	&268\\\hline
 cpuTask	&0	&0	&292	&552	&260\\\hline
 \end{tabular}
 \end{center}
-\caption{\textit{Seventh repetition of the experiment - generated traffic}} \label{table:random:traffic}
+\caption{\textit{Seventh repetition of the experiment - generated traffic}} \label{table:random:traffic:7}
 \end{table}
+
+The Grafana screens presenting the experiment run for the control sample and adapted sample are presented in the Figure \ref{figure:random:screen:control:7} and \ref{figure:random:screen:adapted:7} respectively. 
 
 \begin{figure}[!htb]
 \centering
 \includegraphics[width=1\textwidth]{7-ctrl}
-\caption{\textit{Seventh repetition of the experiment - control sample}} \label{figure:random:screen:control}
+\caption{\textit{Seventh repetition of the experiment - control sample}} \label{figure:random:screen:control:7}
 \end{figure}
 
 \begin{figure}[!htb]
 \centering
 \includegraphics[width=1\textwidth]{7-adap}
-\caption{\textit{Seventh repetition of the experiment - adapted sample}} \label{figure:random:screen:control}
+\caption{\textit{Seventh repetition of the experiment - adapted sample}} \label{figure:random:screen:adapted:7}
 \end{figure}
+
+
+Additionally, in the Figure \ref{figure:random:screen:adapted:7} configuration changes made by the APTS during the experiment made on adapted sample are marked as red numbers at the top of the graph. The configuration change assigned to each number is explained in below listing: 
 
 \begin{enumerate}
 \item 23:37:12.884 - Configuration of CACHE changed to value: CACHED
@@ -2228,6 +2316,8 @@ cpuTask	&0	&0	&292	&552	&260\\\hline
 
 \subsubsection{The Experiment Run - 8th Repetition}
 
+This section presents first repetition of the experiment using randomly generated traffic simulation scenario. The generated parameters (described in the Chapter \ref{section:randomgeneration}) used in the created scenario are presented in the Table \ref{table:random:traffic:8}.
+
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{c|C{2cm}|C{2cm}|C{2cm}|C{2cm}|C{2cm}}
@@ -2239,20 +2329,24 @@ wait	&6	&6	&43	    &296	&253\\\hline
 cpuTask	&1	&1	&510	&545	&35
 \end{tabular}
 \end{center}
-\caption{\textit{Eighth repetition of the experiment - generated traffic}} \label{table:random:traffic}
+\caption{\textit{Eighth repetition of the experiment - generated traffic}} \label{table:random:traffic:8}
 \end{table}
+
+The Grafana screens presenting the experiment run for the control sample and adapted sample are presented in the Figure \ref{figure:random:screen:control:8} and \ref{figure:random:screen:adapted:8} respectively. 
 
 \begin{figure}[!htb]
 \centering
 \includegraphics[width=1\textwidth]{8-ctrl}
-\caption{\textit{Eighth repetition of the experiment - control sample}} \label{figure:random:screen:control}
+\caption{\textit{Eighth repetition of the experiment - control sample}} \label{figure:random:screen:control:8}
 \end{figure}
 
 \begin{figure}[!htb]
 \centering
 \includegraphics[width=1\textwidth]{8-adap}
-\caption{\textit{Eighth repetition of the experiment - adapted sample}} \label{figure:random:screen:control}
+\caption{\textit{Eighth repetition of the experiment - adapted sample}} \label{figure:random:screen:adapted:8}
 \end{figure}
+
+Additionally, in the Figure \ref{figure:random:screen:adapted:8} configuration changes made by the APTS during the experiment made on adapted sample are marked as red numbers at the top of the graph. The configuration change assigned to each number is explained in below listing: 
 
 \begin{enumerate}
 \item 00:05:35.937 - Configuration of CACHE changed to value: CACHED
@@ -2266,6 +2360,8 @@ cpuTask	&1	&1	&510	&545	&35
 
 \subsubsection{The Experiment Run - 9th Repetition}
 
+This section presents first repetition of the experiment using randomly generated traffic simulation scenario. The generated parameters (described in the Chapter \ref{section:randomgeneration}) used in the created scenario are presented in the Table \ref{table:random:traffic:9}.
+
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{c|C{2cm}|C{2cm}|C{2cm}|C{2cm}|C{2cm}}
@@ -2277,20 +2373,25 @@ wait	&4	&5	&73  	&593	&520\\\hline
 cpuTask	&0	&1	&150	&346	&196
 \end{tabular}
 \end{center}
-\caption{\textit{Nineth repetition of the experiment - generated traffic}} \label{table:random:traffic}
+\caption{\textit{Nineth repetition of the experiment - generated traffic}} \label{table:random:traffic:9}
 \end{table}
+
+
+The Grafana screens presenting the experiment run for the control sample and adapted sample are presented in the Figure \ref{figure:random:screen:control:9} and \ref{figure:random:screen:adapted:9} respectively. 
 
 \begin{figure}[!htb]
 \centering
 \includegraphics[width=1\textwidth]{9-ctrl}
-\caption{\textit{Nineth repetition of the experiment - control sample}} \label{figure:random:screen:control}
+\caption{\textit{Nineth repetition of the experiment - control sample}} \label{figure:random:screen:control:9}
 \end{figure}
 
 \begin{figure}[!htb]
 \centering
 \includegraphics[width=1\textwidth]{9-adap}
-\caption{\textit{Nineth repetition of the experiment - adapted sample}} \label{figure:random:screen:control}
+\caption{\textit{Nineth repetition of the experiment - adapted sample}} \label{figure:random:screen:adapted:9}
 \end{figure}
+
+Additionally, in the Figure \ref{figure:random:screen:adapted:9} configuration changes made by the APTS during the experiment made on adapted sample are marked as red numbers at the top of the graph. The configuration change assigned to each number is explained in below listing: 
 
 \begin{enumerate}
 \item 11:37:28.648 - Configuration of CACHE changed to value: CACHED
@@ -2309,6 +2410,8 @@ cpuTask	&0	&1	&150	&346	&196
 
 \subsubsection{The Experiment Run - 10th Repetition}
 
+This section presents first repetition of the experiment using randomly generated traffic simulation scenario. The generated parameters (described in the Chapter \ref{section:randomgeneration}) used in the created scenario are presented in the Table \ref{table:random:traffic:10}.
+
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{c|C{2cm}|C{2cm}|C{2cm}|C{2cm}|C{2cm}}
@@ -2320,20 +2423,24 @@ wait	&2	&5	&3	    &308	&305\\\hline
 cpuTask	&0	&1	&184	&264	&80
 \end{tabular}
 \end{center}
-\caption{\textit{Tenth repetition of the experiment - generated traffic}} \label{table:random:traffic}
+\caption{\textit{Tenth repetition of the experiment - generated traffic}} \label{table:random:traffic:10}
 \end{table}
+
+The Grafana screens presenting the experiment run for the control sample and adapted sample are presented in the Figure \ref{figure:random:screen:control:10} and \ref{figure:random:screen:adapted:10} respectively. 
 
 \begin{figure}[!htb]
 \centering
 \includegraphics[width=1\textwidth]{10-ctrl}
-\caption{\textit{Tenth repetition of the experiment - control sample}} \label{figure:random:screen:control}
+\caption{\textit{Tenth repetition of the experiment - control sample}} \label{figure:random:screen:control:10}
 \end{figure}
 
 \begin{figure}[!htb]
 \centering
 \includegraphics[width=1\textwidth]{10-adap}
-\caption{\textit{Tenth repetition of the experiment - adapted sample}} \label{figure:random:screen:control}
+\caption{\textit{Tenth repetition of the experiment - adapted sample}} \label{figure:random:screen:adapted:10}
 \end{figure}
+
+Additionally, in the Figure \ref{figure:random:screen:adapted:10} configuration changes made by the APTS during the experiment made on adapted sample are marked as red numbers at the top of the graph. The configuration change assigned to each number is explained in below listing: 
 
 \begin{enumerate}
 \item 12:28:15.072 - Configuration of CACHE changed to value: CACHED
@@ -2346,6 +2453,41 @@ cpuTask	&0	&1	&184	&264	&80
 \end{enumerate}
 
 \subsubsection{Results} 
+
+{\renewcommand{\arraystretch}{1.4}
+\begin{table}[ht]
+\begin{center}
+\begin{tabular}{c c | c | c | c}
+                 \textbf{\#} & \textbf{Sample} &  \textbf{Total Execution Time [s]} & \textbf{Average CPU Usage} & \textbf{Execution Time Change} \\ \hline 
+ \multirow{2}{*}{1} & Control&     4.00          &     92\%   & \multirow{2}{*}{14.29\%} \\ 	  
+                    & Adapted&     3.50          &     93\%   & \\ \hline
+ \multirow{2}{*}{2} & Control&     2.80          &     43\%   & \multirow{2}{*}{428.30\%}\\ 	  
+                    & Adapted&     0.53          &     45\%   & \\ \hline 
+ \multirow{2}{*}{3} & Control&     0.45          &     88\%   & \multirow{2}{*}{-15.09\%}\\ 	  
+                    & Adapted&     0.53          &     69\%   & \\ \hline 
+ \multirow{2}{*}{4} & Control&     16.00         &     96\%   & \multirow{2}{*}{370.59\%}\\ 	  
+                    & Adapted&     3.40          &     76\%   & \\ \hline 
+ \multirow{2}{*}{5} & Control&     3.40          &     67\%   & \multirow{2}{*}{78.95\%}\\ 	  
+                    & Adapted&     1.90          &     68\%   & \\ \hline
+ \multirow{2}{*}{6} & Control&     6.60          &     50\%   & \multirow{2}{*}{650.00\%}\\ 	  
+                    & Adapted&     0.88          &     19\%   & \\ \hline
+ \multirow{2}{*}{7} & Control&     2.20          &     86\%   & \multirow{2}{*}{348,98\%}\\	  
+                    & Adapted&     0.49          &     69\%   & \\ \hline 
+ \multirow{2}{*}{8} & Control&     3.22          &     75\%   & \multirow{2}{*}{820\%}\\  
+                    & Adapted&     0.35          &     54\%   & \\ \hline 
+ \multirow{2}{*}{9} & Control&     4.20          &     72\%   & \multirow{2}{*}{110.00\%}\\  
+                    & Adapted&     2.00          &     57\%   & \\ \hline 
+ \multirow{2}{*}{10}& Control&     2.30          &     96\%   & \multirow{2}{*}{64.29\%}\\ 	  
+                    & Adapted&     1.40          &     95\%   \\         
+\end{tabular}
+\end{center}
+\caption{Evaluation on randomly generated traffic scenarios - results summary}
+\label{table:random:resultssummary}
+\end{table}
+}
+
+
+
 
 \subsubsection{Interpretation}
 
@@ -2650,10 +2792,10 @@ Grafana - The open platform for beautiful analytics and monitoring \textit{https
 
 
 \pagebreak
-\newgeometry{left=3cm,bottom=0.1cm}
+
 
 \subsection{System evaluation measurements - threads} \label{appendix:threadsevaluation}
-{\renewcommand{\arraystretch}{1.25}
+{\renewcommand{\arraystretch}{0.91}
 \begin{table}[ht]
 \begin{center}
 \caption{System evaluation measurements - control sample} \label{appendix:table:threadscontrol}
@@ -2699,8 +2841,6 @@ Grafana - The open platform for beautiful analytics and monitoring \textit{https
 \end{table}
 }
 
-\restoregeometry
-
 
 
 \pagebreak
@@ -2728,6 +2868,43 @@ Grafana - The open platform for beautiful analytics and monitoring \textit{https
 \end{center}
 \label{appendixmeasurementscombined}
 \end{table}
+
+
+\pagebreak
+
+\subsection{System evaluation measurements - random traffic} \label{appendix:random}
+{\renewcommand{\arraystretch}{1.4}
+\begin{table}[ht]
+\begin{center}
+\caption{System evaluation measurements - results of experiments performed on randomly generated traffic scenarios}
+\begin{tabular}{c C{1.5cm} | C{1.4cm} C{1.4cm} C{1.4cm} C{1.5cm} C{1.5cm} C{1.4cm} | C{1.4cm} }
+    & & \multicolumn{6}{c|}{Average Request Execution Time [ms]} & \multirow{2}{1.4cm}{Average CPU Usage} \\
+                 \# & Sample & find & update & insert & wait & cpuTask & total &  \\ \hline 
+ \multirow{2}{*}{1} & Control& 0.11 & 0.43   & 0.35   & 5.40 & 41.70   &     4.00          &     92\%   \\ 	  
+                    & Adapted& 0.37 & 0.57   & 0.69   & 5.30 & 33.00   &     3.50          &     93\%   \\ \hline
+ \multirow{2}{*}{2} & Control& 0.43 & 0.33   & 0.21   & 5.30 & 36.30   &     2.80          &     43\%   \\ 	  
+                    & Adapted& 0.39 & 0.59   & 0.33   & 0.43 & 5.88    &     0.53          &     45\%   \\ \hline 
+ \multirow{2}{*}{3} & Control& 0.36 & 0.27   & 0.59   & 5.35 & -       &     0.45          &     88\%   \\ 	  
+                    & Adapted& 0.29 & 0.44   & 1.52   & 7.23 & -       &     0.53          &     69\%   \\ \hline 
+ \multirow{2}{*}{4} & Control& 0.96 & 0.73   & -      & 5.80 & 38.10   &     16.00         &     96\%   \\ 	  
+                    & Adapted& 0.14 & 0.69   & -      & 4.00 & 6.30    &     3.40          &     76\%   \\ \hline 
+ \multirow{2}{*}{5} & Control& 0.81 & 1.60   & 0.94   & 5.50 & 60.10   &     3.40          &     67\%   \\ 	  
+                    & Adapted& 0.63 & 0.40   & 0.49   & 3.10 & 32.80   &     1.90          &     68\%   \\ \hline 
+ \multirow{2}{*}{6} & Control& -    & 0.27   & 1.10   & 5.20 & 18.90   &     6.60          &     50\%   \\ 	  
+                    & Adapted& -    & 1.44   & 0.37   & 0.48 & 1.05    &     0.88          &     19\%   \\ \hline
+ \multirow{2}{*}{7} & Control& 0.35 & 0.09   & 0.39   & 5.41 & -       &     2.20          &     86\%   \\ 	  
+                    & Adapted& 0.41 & 0.05   & 1.10   & 0.59 & -       &     0.49          &     69\%   \\ \hline 
+ \multirow{2}{*}{8} & Control& 0.29 & -      & -      & 5.54 & 26.15   &     3.22          &     75\%   \\ 	  
+                    & Adapted& 0.32 & -      & -      & 0.38 & 0.05    &     0.35          &     54\%   \\ \hline 
+ \multirow{2}{*}{9} & Control& 0.31 & 0.72   & 0.43   & 5.40 & 28.90   &     4.20          &     72\%   \\ 	  
+                    & Adapted& 0.07 & 0.56   & 0.16   & 2.60 & 13.90   &     2.00          &     57\%   \\ \hline 
+ \multirow{2}{*}{10}& Control& 0.91 & 0.88   & 1.20   & 6.20 & 69.19   &     2.30          &     96\%   \\ 	  
+                    & Adapted& 0.35 & 0.46   & 0.63   & 4.80 & 11.30   &     1.40          &     95\%   \\         
+\end{tabular}
+\end{center}
+\label{appendixmeasurementscombined}
+\end{table}
+}
 
 
 \end{document}
