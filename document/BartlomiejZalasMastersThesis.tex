@@ -31,6 +31,15 @@
 \usepackage{multirow}
 \usepackage{mathtools}
 \usepackage{nameref}
+\usepackage{color} 
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks,
+    citecolor=black,
+    filecolor=black,
+    linkcolor=black,
+    urlcolor=black
+}
 
 \usepackage[margin=25mm]{geometry}
 
@@ -101,7 +110,16 @@
 
 \pagebreak
 
+{\renewcommand{\abstractname}{Streszczenie}
+\begin{abstract}
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam vestibulum nunc quis posuere commodo. Integer tincidunt eu nibh euismod porta. Nulla pulvinar sagittis risus rutrum pharetra. Nunc rhoncus sem mauris, at consectetur ante maximus ut. Nulla arcu neque, scelerisque hendrerit dignissim quis, auctor porttitor ex. Morbi molestie a ante sed imperdiet. Quisque porttitor turpis ac metus tincidunt elementum.
+\end{abstract}}
 
+
+\begin{abstract}
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam vestibulum nunc quis posuere commodo. Integer tincidunt eu nibh euismod porta. Nulla pulvinar sagittis risus rutrum pharetra. Nunc rhoncus sem mauris, at consectetur ante maximus ut. Nulla arcu neque, scelerisque hendrerit dignissim quis, auctor porttitor ex. Morbi molestie a ante sed imperdiet. Quisque porttitor turpis ac metus tincidunt elementum.
+\end{abstract}
+\pagebreak
 
 
 %Content
@@ -1926,29 +1944,47 @@ During the each simulation five different types of request are be used:
 \item Execute wait task (wait)
 \end{itemize}
 
-The random traffic for each request type is generated on the base of Gatling injection profile - \textit{rampUsersPerSec}. The \textit{rampUsersPerSec} injects random number of requests per second in a scenario over a given duration. The injection profile is defined by the following function signature:  
-\begin{center}
-\textit{rampUsersPerSec(Rate 1) to (Rate 2) during (Duration)}
-\end{center}
-where:
+The random traffic for each request type is generated on the base of 4 parameters:
 \begin{itemize}
-\item[\textit{Rate 1}] - lower bound (inclusive) of interval from which random number of user per second is generated
-\item[\textit{Rate 2}] - upper bound (inclusive) of interval from which random number of user per second is generated
-\item[\textit{Duration}] - time in which users are generated
+\item[\textit{Rate1}] - lower bound (inclusive) of interval from which random number of user per second is generated
+\item[\textit{Rate2}] - upper bound (inclusive) of interval from which random number of user per second is generated  (must be greater than Rate 1)
+\item[\textit{StartAt}] - second of the experiment in which traffic starts to be generated
+\item[\textit{Duration}] - number of seconds defining how log the traffic will be generated (the \textit{Duration} summed with \textit{Starts At} must be not greater than 10 minutes - the duration of whole experiment)
 \end{itemize}
 
-For example:
+For example, the following values of parameters:
 
 \begin{center}
-\textit{rampUsersPerSec(10) to (20) during (10 seconds)}
+\begin{itemize}
+\item[\textit{Rate1}] = 10
+\item[\textit{Rate2}] = 20
+\item[\textit{StartAt}] = 60
+\item[\textit{Duration}] = 300
+\end{itemize}
 \end{center}
 
-generates random number of requests during 10 seconds. The number of generated requests is random in every second. The possible value of generated random number is integer and is taken from interval $[10,20]$. 
+means that traffic will be generated from the first minute of the experiment. After 5 minutes (300 seconds), that is at sixth minute of the experiment, the traffic generation finishes. During the generation the number of generated requests is random in every second. The possible value of generated requests in given second is not less that 10 and not greater than 20 requests. 
 
-Because of limited resources of the evaluation environment the following limits for random values of the \textit{Rate 1} and \textit{Rate 2} are introduced during generation.  For each request type, except \textit{Execute CPU consuming task}, the limits are set to interval $[0,6]$. Because of high CPU consumption by the \textit{Execute CPU consuming task} request type the limits for this request type are set to the interval $[0,1]$. 
-the generated traffic for each request type in in different time intervals tha parameters \textit{Duration} and \textit{Start At} are used. The \textit{Duration} parameter is used in \textit{rampUsersPerSec} function to define time in which requests are generated. The \textit{Start At} parameter defines starting point in which generation starts. 
+Because of limited resources of the evaluation environment the following limits for random values of the \textit{Rate 1} and \textit{Rate 2} are introduced during generation.  For each request type, except \textit{Execute CPU consuming task}, the limits are set to the interval $[0,6]$. Because of high CPU consumption by the \textit{Execute CPU consuming task} requests, the limit for that requests type is set to the interval $[0,1]$. 
 
-To sum up - generation of traffic simulation scenarios is based on 4 randomly chosen values: \textit{Rate 1}, \textit{Rate 2}, \textit{Duration} and \textit{Start At}. The random traffic scenario is generated for each of 10 repetition - this gives 10 randomly generated traffic simulation scenarios. The generated scenario for the particular repetition is presented in the section designated to the corresponding experiment repetition (\textit{The Experiment Run}). 
+The Table \ref{table:random:traffic:possiblevalues} is concluding above information. The table show possible interval of parameters values for the given request type. For more readability additional column - \textit{EndAt} - is introduced (the column informs at which second of the experiment the traffic generation will stop). 
+
+\newcommand{\twodots}{\mathinner {\ldotp \ldotp}}
+
+\begin{table}[ht]
+\begin{center}
+\begin{tabular}{c|c|c|c|c|c}
+        & Rate1 & Rate2 & StartAt & EndAt & Duration \\\hline
+find	&$[0 \twodots 6]$    &$[\textit{Rate1} \twodots 6]$    &\multirow{5}{*}{$[0 \twodots 600]$}&\multirow{5}{*}{$[\textit{StartAt} \twodots 600]$}&\multirow{5}{*}{$[0 \twodots 600 -\textit{StartAt}]$}\\ \cline{1-3}
+update	&$[0 \twodots 6]$    &$[\textit{Rate1} \twodots 6]$	  &	                     & 	                    \\ \cline{1-3}
+insert	&$[0 \twodots 6]$    &$[\textit{Rate1} \twodots 6]$	  &	                     &                      \\ \cline{1-3}
+wait	&$[0 \twodots 6]$    &$[\textit{Rate1} \twodots 6]$	  &	                     &                      \\ \cline{1-3}
+cpuTask	&$[0 \twodots 1]$     &$[\textit{Rate1} \twodots 1]$     &	                     & 	                    \\  
+\end{tabular}
+\end{center}
+\caption{\textit{Possible values of randomly generated traffic parameters}} \label{table:random:traffic:possiblevalues}
+\end{table}
+
 
 \subsubsection{Evaluation Samples}
 
@@ -2454,6 +2490,12 @@ Additionally, in the Figure \ref{figure:random:screen:adapted:10} configuration 
 
 \subsubsection{Results} 
 
+The result summary of the performed experiments on 10 randomly generated scenarios is presented in the Table \ref{table:random:resultssummary}. The summary presents average request execution time and average CPU usage during whole experiment performed on particular generated scenario. The column "Execution Time Change" represents percentage difference in average request execution time between control and adapted sample and is calculated using the formula:
+
+\begin{center}
+$Execution Time Change=\frac{controlExecutionTime-adaptedExecutionTime}{controlExecutionTime} \cdot 100\%$
+\end{center}
+
 {\renewcommand{\arraystretch}{1.4}
 \begin{table}[ht]
 \begin{center}
@@ -2486,16 +2528,23 @@ Additionally, in the Figure \ref{figure:random:screen:adapted:10} configuration 
 \end{table}
 }
 
-
-
+More detailed data about performed experiments on randomly generated traffic scenarios is available in the Appendix \ref{appendix:random}.
 
 \subsubsection{Interpretation}
 
+Analysis of the experiment results from the Table \ref{table:random:resultssummary} shows that the APTS was able to improve performance of the tested application in most cases (9/10).  The only case finished with failure was repetition number 3. 
 
+The reasons of the failure can be found in the experiment execution. Comparison of both - the control and the adapted - executions clearly shows that sample adapted by the APTS has greater requests execution time during "wait" and "add" requests execution time. The reason of the increased execution time for this two request types is changed threads number configuration - from 20 to 10 threads. During such change new requests are forwarder to server instance configured with 10 threads. At the same time "old" requests have to be finished at the server instance configured with 20 threads. Because of that CPU is even more loaded at the short moment after the configuration switch. Loaded CPU results in increased execution time of the requests. During the experiment the APTS was not able to compensate this slowdown in further phase because requests of type "wait" and "add" was generated at the relatively short period of time. 
 
+In some cases adapted solution decrease requests execution time to the detriment of increased CPU usage. This can be interpreted also as optimization because the same amount of work was done in shorter time increasing CPU usage. The reason of situations in which both - execution time and CPU usage - was decreased by the APTS is usage if cache - instead of computing response the application returned it from the memory. 
+
+The percentage difference between control and adapted sample presented in the column "Execution Time Change" in the Table \ref{table:random:resultssummary} represents wide range of values - from -15.09\% (no improvement) to 820\%. Such variance implicates the statement that effectiveness of the APTS depends on the character of incoming traffic.  
 
 
 \subsubsection{Experiment Conclusions}
+
+The main goal of this experiment was to check how the APTS will behave under more "real" web traffic. To simulate such traffic method consisting of random traffic generation was used. The duration of the simulated scenario was extended to 10 minutes. The results of the experiment shows that the system was able to improve performance of the executed requests in the 9 of 10 executed cases. The level of the obtained improvement is varied and depends of the traffic against which optimization is performed.
+
 
 \section{Conclusions} \label{section:conclusions}
 
@@ -2510,36 +2559,36 @@ The main goal which was set starting work on this work was development of soluti
 \item How performance evaluation tests can help in software optimization - in monitoring and application performance adjustment
 \end{itemize} 
 
-The realization of the main goal of the work is implemented Automated Performance Tuning System which is based on performance evaluation tests. Main features listed in the goal was achieved - The system is able to monitor the environment on which a tested application is deployed and configuration adjustment is performed in order to optimize the monitored application form the performance perspective. The effectiveness of the implemented system was confirmed in the set of performed experiments. During the experiments ability to optimize particular aspects of the application in isolation as well as together was proven. 
+The realization of the main goal of the work is implemented Automated Performance Tuning System which is based on performance evaluation tests. Main features listed in the goal was achieved - The system is able to monitor the environment on which a tested application is deployed and configuration adjustment is performed in order to optimize the monitored application form the performance perspective. The effectiveness of the implemented system was confirmed in the set of performed experiments. During the experiments ability to optimize particular aspects of the application in isolation as well as together was proven. The experiments performed on randomly generated traffic scenarios confirms that the system is able to optimize performance of the tested application in different traffic characteristic.
 
-In order to answer the first research question - which and how application parameters influences performance - the analysis of the possible performance tuning aspects was performed. The analysis point out the following areas on which performance optimization can be performed: Java environment optimization, presentation layer optimization, application server configuration, redundant components switching at runtime, application algorithms  optimization (used mechanism provided by the Spring Framework). From the analyzed areas to further, experimental analysis 4 elements was formulated - batch, cache, paging (which touch areas of redundant components, application algorithms optimization) and threads number (from the area of application server configuration). The selection was based on expected performance improvement in the web environment and practical justification in the domain of the implemented solution. In the base of performed experiments and considerations, finally, three elements was selected as the most promising in context of performance optimization in the system domain - cache, batch and threads number. The selected elements was implemented into the tested application and server environment as a configurable parameters. The influence of the selected elements on the performance was confirmed and evaluated on the base of performed experiments. 
+In order to answer the first research question - which and how application parameters influences performance - the analysis of the possible performance tuning aspects was performed. The analysis point out the following areas on which performance optimization can be performed: Java environment optimization, presentation layer optimization, application server configuration, redundant components switching at runtime, application algorithms  optimization (used mechanism provided by the Spring Framework). From the analyzed areas to further, experimental analysis 4 elements was formulated - batch, cache, paging (which touch areas of redundant components, application algorithms optimization) and threads number (from the area of application server configuration). The selection was based on expected performance improvement in the web environment and practical justification in the domain of the implemented solution. On the base of performed experiments and considerations, finally, three elements was selected as the most promising in context of performance optimization in the system domain - cache, batch and threads number. The selected elements was implemented into the tested application and server environment as a configurable parameters. The influence of the selected elements on the performance was confirmed and evaluated on the base of performed experiments. 
 
 The second question - how to evaluate performance of the system - was analyzed in the section with theoretical background. In the section the therm KPI was introduced and the set of possible indicators was listed. On the base of the theoretical background the practical realization of the selected KPIs was introduced in the APTS. In the system response time (execution time of request), utilization (CPU usage), workload profile (inserts level and traffic profile) was used to evaluate performance of the system.
 
-The last question - how performance evaluation tests can help in software optimization - in monitoring and application performance adjustment - is answered in this work by the practical example - the APTS implementation. In the system performance evaluation tests are responsible for monitoring. The monitoring is the source of further optimization decision made by the decision module of the system.  
+The last question - how performance evaluation tests can help in software optimization - in monitoring and application performance adjustment - is answered in this work by the practical example - the APTS implementation. In the system, performance evaluation tests are responsible for monitoring. The monitoring is the source of further optimization decision made by the decision module of the system.  
 
 
 \subsection{About the Implemented System}
 
-At this point author of this work want to highlight that implemented system - the APTS is only proposed solution which enables automated performance optimization on the base of performed monitoring. The system realizes performance optimization on the selected set of implemented tunable elements which match to the implemented tested application domain (which has no high practical value). Also important is fact that selected tunable elements are not universal. The selection of the tunable elements under automatic optimization must be adjusted to the application which will be optimized (as we know there is no two the same applications in the world). Implemented solution should be considered as general form or framework for similar approach. 
+At this point author of this work want to highlight that implemented system - the APTS is only proposed solution which enables automated performance optimization on the base of performed monitoring. The system realizes performance optimization on the selected set of implemented tunable elements which match to the implemented tested application domain (which has no high practical value). Also important is fact that selected tunable elements are not universal. The selection of the tunable elements under automatic optimization must be adjusted to the application which will be optimized (is well known - there is no two the same applications in the world). Implemented solution should be considered as general form or framework for similar approach. 
 
-In the Chapter \ref{principles} general principles of the system was formulated. All of the principles was realized in the final implementation. The system performs live monitoring through  the implemented performance evaluation tests and the APTS manager. The system is autonomic - the software is able to realize goal of the performance optimization automatically and without human intervention on the base of rule based system defined in decision module. The system is able to perform configuration change during application runtime because of implemented architecture of the system which allows change of the configuration during the runtime. The feature is realized by the \textit{Decision Module} (performs change) and the \textit{Configuration Service} (delivers configuration for the tested application and provides API for configuration change). The solution is able to work in the production environment because is independent from the testing environment - the data traffic generator is provided as external component. The real traffic in production environment can be monitored in the same way without any modification or configuration of the APTS system. The system has minimal impact on the production environment because of introduced deployment approach. The all components responsible for performance monitoring and optimization are deployed outside the production environment. The only component which for obvious reasons must be deployed on the production environment is component responsible for resource monitoring.  
+In the Chapter \ref{principles} general principles of the system was formulated. All of the principles was realized in the final implementation. The system performs live monitoring through the implemented performance evaluation tests and the APTS manager. The system is autonomic - the implemented system is able to realize goal of the performance optimization automatically and without human intervention on the base of rule based system defined in decision module. The system is able to perform configuration change during application runtime because of implemented architecture of the system which allows change of the configuration during the runtime. The feature is realized by the \textit{Decision Module} (performs change) and the \textit{Configuration Service} (delivers configuration for the tested application and provides API for configuration change). The solution is able to work in the production environment because it is independent from the testing environment - the data traffic generator is provided as external component. The real traffic in production environment can be monitored in the same way without any modification or configuration of the APTS system. The system has minimal impact on the production environment because of introduced deployment approach. The all components responsible for performance monitoring and optimization are deployed outside the production environment. The only component which for obvious reasons must be deployed on the production environment is component responsible for resource monitoring.  
 
 \subsection{Problems and Issues}
 
 During the realization of this work the author encounter few problems which was not considered at the beginning of the work.
 
-One of the problem is related to the threads number configuration on the application server on which the tested application is deployed. Because tested application is implemented in on the base of Spring Boot project the application comes with embedded Tomcat Server which reduced deployment process to only one step - execution of JAR with the application. Unfortunately, the Tomcat server does not allow to change threads number during the runtime. The Spring Boot provides alternative configuration which allows Boot JARs to be deployed on different application servers. The try with the Glassfish server was made but without success (possible bug on the Glassfish side: GLASSFISH-21265).  Because of that the approach with request dispatcher on three instances of application with different number of threads was used (see Chapter \ref{section:systemdeployment}). 
+One of the problem is related to the threads number configuration on the application server on which the tested application is deployed. Because tested application is implemented in on the base of Spring Boot project the application comes with embedded Tomcat Server which reduced deployment process to only one step - execution of JAR with the application. Unfortunately, the Tomcat server does not allow to change threads number during the runtime. The Spring Boot provides alternative configuration which allows Boot JARs to be deployed on different application servers. The try with the Glassfish server was made but without success (possible bug on the Glassfish side: GLASSFISH-21265).  Because of that the approach with request dispatcher and three instances of application with different number of threads was used (see Chapter \ref{section:systemdeployment}). 
 
-Another problem was related to deployment of the ready system in order to evaluate it. The evaluation experiments could not be performed on the single machine - overhead of testing environment may distort the results, moreover such solution would not fit to the proposed deployment diagram of the system. In order to solve that issue virtual machines for the tested application and helper server was introduced (see Chapter \ref{section:systemdeployment}. Due to that the tested application was isolated from the overhead introduced by the performed optimization by the APTS. 
+Another problem was related to deployment of the ready system in order to evaluate it. The evaluation experiments could not be performed on the single machine - overhead of testing environment may distort the results, moreover such solution would not fit to the proposed deployment diagram of the system. In order to solve that issue virtual machines for the tested application and helper server was introduced (see Chapter \ref{section:systemdeployment}. Due to that the tested application was isolated from the overhead introduced by the performance optimization by the APTS. 
 
 \subsection{Future works}
 
-The proposed solution realizes performance tuning decision on the base of decision module. In current implementation decisions are mad on the base of the rule based engine. Such solution has main disadvantage - the desirable optimal configuration must by implemented manually in the form of rules. As presented in this work even for 3 tunable elements effort and complexity of the rules is quite high. In the ideal world the system should be able to create such rules by itself. 
+The proposed solution realizes performance tuning decision on the base of decision module. In current implementation decisions are made on the base of the rule based engine. Such solution has main disadvantage - the desirable optimal configuration must by implemented manually in the form of rules. As presented in this work, even for 3 tunable elements effort and complexity of the rules is quite high. In the ideal world the system should be able to create such rules by itself in "learning" process. 
 
-One of the possible improvement to achieve that would be change in the decision module engine. Instead of the rule based engine some artificial intelligence (machine learning) solution could be used. A good AI candidate for such work is neural network which are able to recognize hidden patterns in the provided data. The current state of the tested environment (mean execution time of requests, resource usage) could be used as input to the network. As an output the optimal configuration would be returned. The drawback of the solution base on the machine learning is learning process. The teaching data (inputs and expected outputs) should be somehow prepared for the given environment. Because during learning the generated outputs could be highly inappropriate the teaching process could not be conducted on production environment.
+One of the possible improvement to achieve that would be change in the decision module engine. Instead of the rule based engine some artificial intelligence (machine learning) solution could be used. A good AI candidate for such work is neural network which is able to recognize hidden patterns in the provided data. The current state of the tested environment (mean execution time of requests, resource usage) could be used as input to the network. As an output the optimal configuration would be returned. The drawback of the solution based on the machine learning is learning process. The teaching data (inputs and expected outputs) should be somehow prepared for the given environment. Because during learning the generated outputs could be highly inappropriate, the teaching process could not be conducted on production environment.
 
-Another extension which could be considered is optimization of application server parameters. In this work due to the application domain and used solution (Tomcat server) only one optimization on the application server level was performed - the application server threads number. The more advanced application servers (like JBoss or IBM Websphere) provides many configurable parameters influencing performance which could be changed during a runtime. Implementation of automated performance tuning system dedicated for the given application server is a step into the more general solution - such system could be used in environment which uses given application server.  
+Another extension which could be considered is optimization of application server parameters. In this work due to the application domain and used solution (Tomcat server) only one optimization on the application server level was performed - the application server threads number. The more advanced application servers (like JBoss or IBM Websphere) provides many configurable parameters influencing performance which could be changed during a runtime. Implementation of automated performance tuning system dedicated for the given application server is a step into the more general solution - such system could be used in every environment which uses given application server.  
 
 \pagebreak
 \clearpage
