@@ -700,7 +700,7 @@ Number of threads has key meaning in handling incoming requests into an applicat
     \begin{axis}[
             ybar,
             bar width=.6cm,
-            width=\textwidth,
+            width=0.8\textwidth,
             height=.6\textwidth,
             legend style={at={(0.5,-0.15)},
                 anchor=north,legend columns=-1},
@@ -710,6 +710,7 @@ Number of threads has key meaning in handling incoming requests into an applicat
             ylabel={Execution time [ms]},
             enlarge x limits={abs=2cm},
             ymajorgrids = true,
+            legend image code/.code={\draw[#1, draw=none] (0cm,-0.15cm) rectangle (0.5cm,0.2cm);},
         ]
         \addplot[style={bblue,fill=bblue,mark=none}] table[x=category,y=t1]{\mydata};
         \addplot[style={rred,fill=rred,mark=none}] table[x=category,y=t10]{\mydata};
@@ -933,13 +934,22 @@ MonitorTrafficProfilePET & trafficProfile & MUTABLE, IMMUTABLE \\
 \end{tabularx}
 \end{table}
 
+The below listing presents definitions of the reasons of performance issues implemented in the performance evaluation test cases:
+\begin{itemize}
+\item[EXCEEDED (executionTime)] - mean execution time of requests from the last 10 seconds was greater than 1.2 second. 
+\item[LOW (insertsLevel)] - the number of insert requests per second in the last 10 seconds was  less than 10. 
+\item[HIGH (insertsLevel)] - the number of insert requests per second in the last 10 seconds was not less than 10.
+\item[MUTABLE (trafficProfile)] - in the last 10 seconds at least one mutable request was executed.
+\item[IMMUTABLE (trafficProfile)] - in the last 10 seconds none mutable request was executed.
+\end{itemize}
+
 \subsubsection{Decision Module} \label{dm}
 
 The role of the \textit{Decision Module} is to perform performance tuning actions on the base of reported performance issues, current configuration of the tested application and current resource consumption on the node where the tested application is deployed (see the Figure \ref{decisionmodule}). 
 
 \begin{figure}[!htb]
 \centering
-\includegraphics[width=0.9\textwidth]{DecisionModuleDiagram}
+\includegraphics[width=0.8\textwidth]{APTSFlow}
 \caption{\textit{Performing Tuning Action by Decision Module}} \label{decisionmodule}
 \end{figure}
 
@@ -970,7 +980,7 @@ The interface enforce on rules to define the following methods:
 \begin{itemize}
 \item isApplicable - method evaluates boolean condition in order to decide if current rule is applicable for the reported performance issue.   
 \item executeAction - action to perform when given rule is typed by the system as the best rule.   
-\item getPriority - method returns priority of a given rule - the higher number - the higher priority.  
+\item getPriority - method returns priority of a given rule - the higher number - the higher priority. The priority allows to prioritize rules in case when more than one rule was qualified by the system as applicable. In such case rule with the highest priority is chosen as the best one. 
 \end{itemize}
 
 In order to perform automated tuning of the tested application based on elements defined in the Chapter \ref{realization} the following rules are implemented: \textit{Enable Batch Rule}, \textit{Disable Batch Rule}, \textit{Enable Cache Rule}, \textit{Disable Cache Rule}, \textit{Switch To 10 Threads Rule}, \textit{Switch To 20 Threads Rule}, \textit{Switch To 30 Threads Rule}. Below, all implemented rules are presented in details.  
@@ -1095,7 +1105,7 @@ The rule represents the lowest possible threads number available in the APTS imp
 \vspace{5mm}
 %-------------SWITCH TO 20 THREADS RULE START-----------------
 \noindent\textbf{Switch to 20 Threads Rule} \\
-The rule represents the middle possible value of threads number available in the APTS implementation. The rule switches configuration responsible for the number of threads used by application server on which the tested application is deployed to 20 threads. Conditions of applicability of rule are as following: mean execution time defined in MeanExecutionTimePET test case is exceeded and CPU usage is high or low for respectively low or high threads number. Switching to the higher threads number should help reduce execution time of requests which are waiting in the queue to be handled by the application. Switching to the lower threads number should help reduce CPU usage and hence reduce total execution time of the requests. In order to perform threads number switching by one level the rule has set higher priority in comparison to other threads related rules (in example: when current thread number is 10, and rules "Switch to 20 Threads Rule" and "Switch to 30 Threads Rule" are evaluated as applicable - rule "Switch to 20 Threads Rule" will be choose because of the higher priority). Details of the rule are presented in the Table \ref{rules20}.
+The rule represents the middle possible value of threads number available in the APTS implementation. The rule switches configuration responsible for the number of threads used by application server on which the tested application is deployed to 20 threads. Conditions of applicability of rule are as following: mean execution time defined in MeanExecutionTimePET test case is exceeded and CPU usage is high or low for respectively low or high threads number. Switching to the higher threads number should help reduce execution time of requests which are waiting in the queue to be handled by the application. Switching to the lower threads number should help reduce CPU usage and hence reduce total execution time of the requests. In order to perform threads number switching by one level the rule has set higher priority in comparison to other threads related rules (in example: when current thread number is 10, and rules "Switch to 20 Threads Rule" and "Switch to 30 Threads Rule" are evaluated as applicable - rule "Switch to 20 Threads Rule" will be chosen because of the higher priority). Details of the rule are presented in the Table \ref{rules20}.
 
 \begin{table}[!htb]
 \def\arraystretch{1.5}
@@ -1163,7 +1173,7 @@ The rule is returned by the implemented rule based system when there is no appli
 \pagebreak
 
 
-Second part of the implemented rule based system is inference engine. The role of the engine is to choose the best rule from the set of provided rules and perform action related to chosen rule. In order to achieve this the algorithm presented in the Figure \ref{dmalgorithm} is used. 
+The second part of the implemented rule based system is inference engine. The role of the engine is to choose the best rule from the set of provided rules and perform action related to chosen rule. In order to achieve this the algorithm presented in the Figure \ref{dmalgorithm} is used. 
 
 \begin{figure}[!htb]
 \centering
@@ -1197,7 +1207,7 @@ All experiments conducted in the section will be performed on environment with t
 \subsubsection{System Deployment} \label{section:systemdeployment}
 
 In order to evaluate the APTS environment introduced in the Chapter \ref{section:aptsdeploy} was created.
-The created system  is deployed on the following machine:
+The created system is deployed on a machine with the following specification:
 \begin{itemize}
 \item Processor: Intel Core i3-3120M CPU @ 2.50GHz, 2500 Mhz, 2 Cores, 4 Logical Processors
 \item Physical Memory (RAM): 12,0 GB
@@ -1215,14 +1225,14 @@ Deployment of the system components with nodes properties is presented in the Fi
 
 The \textit{APTS Manager} and the \textit{Workload Generator} are run directly on the \textit{Client Workstation}. 
 
-In order to simulate \textit{Application Server} node and \textit{Service Server} node introduced in the Chapter \ref{section:aptsdeploy} two virtual machines was introduced - the \textit{Service Server Virtual Machine} and \textit{Application Server Virtual Machine}. This solution minimizes overhead introduced by the APTS on the tested application. A network interfaces on the virtual machines was configured to enable HTTP communication between the system nodes. 
+In order to simulate \textit{Application Server} node and \textit{Service Server} node introduced in the Chapter \ref{section:aptsdeploy} two virtual machines where introduced - the \textit{Service Server Virtual Machine} and \textit{Application Server Virtual Machine}. This solution minimizes overhead introduced by the APTS on the tested application. A network interfaces on the virtual machines where configured to enable HTTP communication between the system nodes. 
 
-Because change of threads number in Tomcat Server requires restart of the server the Dispatcher component was introduced. The component is composed of the Dispatcher deployed on a Jetty Server and copies of the tested application deployed on different instances of Tomcat Server configured with different number of threads. The servers with the application instances are listening on different ports. The role of the Dispatcher is to dispatch all incoming requests into a right port according to current configuration on the provided by the Configuration Server.
+Because change of threads number in Tomcat Server requires restart of the server the Dispatcher component was introduced. The component is composed of the Dispatcher deployed on a Jetty Server and three copies of the tested application deployed on different instances of Tomcat Server configured with different number of threads. The servers with the application instances are listening on different ports. The role of the Dispatcher is to dispatch all incoming requests into a right port according to current configuration on the provided by the Configuration Server.
 
 
 \subsubsection{The PET Cases Configuration}
 
-During the experiments dedicated to evaluate given mechanism (cache, batch, threads) only PET case related to given mechanism is enabled (MonitorTrafficProfilePET, MonitorInsertsLevelPET, MeanExecutionTimePET respectively) in order to prevent distortions. 
+During the experiments dedicated to evaluate given mechanism (cache, batch, threads) only PET case related to given mechanism is enabled (i.e. MonitorTrafficProfilePET, MonitorInsertsLevelPET, MeanExecutionTimePET respectively) in order to prevent distortions. 
 
 The configuration of the all PET cases is presented in the Table \ref{evaluationtestconf}. The duration is adapted to 2 minutes test scenario. The additional time and delay is introduced due to practical reasons - traffic simulation engine needs few seconds to be initiated before it starts to generate requests. The monitoring interval provides adequate time between individual test run.
 
@@ -1233,14 +1243,14 @@ The configuration of the all PET cases is presented in the Table \ref{evaluation
 
 \textbf{durationInSec} & 180 \\ \hline
 \textbf{monitorIntervalInSec} & 10 \\ \hline
-\textbf{delayInSec:} & 10\\
+\textbf{delayInSec} & 10\\
 \end{tabularx}
 \end{table}
 
 
 \subsubsection{Initial Application Configuration}
 
-The initial configuration provided by the \textit{Configuration Service} during the experiments evaluating the APTS presented in the Table \ref{table:initconfiguration}. As presented, by default cache and batch are disabled, the application server threads number is set to 20. 
+The initial configuration provided by the \textit{Configuration Service} during the experiments evaluating the APTS is presented in the Table \ref{table:initconfiguration}. As presented, by default cache and batch are disabled, the application server threads number is set to middle value, i.e. 20 threads. 
 
 \begin{table}[!htb]
 \caption{\textit{Initial configuration of the tested application during the experiments}} \label{table:initconfiguration}
@@ -1254,18 +1264,56 @@ THREADS & T20\\
 
 \subsubsection{The Database}
 
-The functionality provided by the tested application is based on database related operations, so state of the database has influence on the performance of the tested application. For the need of the experiments the database was filled with the dummy entities in the following amount:
+The functionality provided by the tested application is based on database related operations. In order to verify how number of records stored in the database influences execution time of requests experiment which result is presented in the Appendix \ref{appendix:influencedb} was performed. 
+
+For the experiment three types of requests was chosen - \textit{Find product category by ID} (find), \textit{Update product category} (update) and \textit{Add new product category} (add). Each of this three requests is used during the system evaluation and uses database during execution. The requests was executed on the database with different number of product categories - 1 and 10000. The obtained results shows that the difference between this two cases was less than 1\%. Moreover, in case of update requests the execution time was faster on the database with 10000 records. That result is explain by the fact that the Postgres uses cache to avoid disk I/O operation which are time consuming. The Postgres cache causes that the database content has minimal influence on the performed experiments until it is stored in the Postgres cache. 
+
+In order to simulate production environment for the need of the experiments the database was filled with the dummy entities in the following amount: 
 
 \begin{itemize}
-\item Product category: 10000 entities
-\item Product: 22269 entities
-\item Product opinion: 49406 entities
+\item Product category: about 10000 entities
+\item Product: about 20000 entities
+\item Product opinion: about 50000 entities
 \end{itemize}
 
+\subsubsection{The Grafana}
+
+The Grafana is open source software for time series analysis. During the experiments it is used to enable live monitoring of the performance metrics stored in the InfluxDB database. 
+
+For the need of experiments 2 types of graphs was configured in the Grafana environment - Execution Time and CPU usage. 
+
+The Execution Time graph presents the duration of each request in time. To obtain that information from InfluxDB the metrics presented in the Figure \ref{figure:grafanametricsexecution}. 
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=1\textwidth]{grafanametricsexecution}
+\caption{\textit{Execution Time graph - configured metrics}} \label{figure:grafanametricsexecution}
+\end{figure}
+
+In the queries the following names was used: 
+\begin{itemize}
+\item[duration] - a field responsible for storing execution time of request
+\item[execution\_time] - is name of measurement
+\item[\$timeFilter] - Grafana parameter allowing to narrow statistics to visible area
+\item[methodName] - a field responsible for storing information about request type
+\end{itemize} 
+
+The query marked as "F" is used to retrieve information about all requests. 
+In order to provide more information about particular type of executed request during the experiments based on the randomly generated scenarios, the matrices  "A", "B", "C", "D" and "E" was added to the graph. 
+
+The CPU Usage graph presents percentage CPU usage in time. To obtain that information from InfluxDB the metrics presented in the Figure \ref{figure:grafanametricscpu}. 
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=1\textwidth]{grafanametricscpu}
+\caption{\textit{CPU Usage graph - configured metrics}} \label{figure:grafanametricscpu}
+\end{figure}
+
+The metric is configured by simple query which retrieves CPU usage from the field "cpu" from the "resources" measurement.  
 
 \subsection{Cache Management Evaluation} \label{section:cachemenagementevaluation}
 
-Below experiments are focused on Cache and No Cache redundant components. The APTS should manage mentioned components in a way which provides the optimal performance of the tested application.
+The experiments presented below are focused on Cache and No Cache redundant components. The APTS should manage mentioned components in a way which provides the optimal performance of the tested application.
 
 \subsubsection{Traffic simulation scenario} \label{trafficcachesim}
 
@@ -1294,14 +1342,14 @@ The most important concern during evaluation of the solution is traffic simulati
 
 The simulation takes 120 seconds and is divided into the two phases. In the first 60 seconds alternating GET ("Find product category by ID") and UPDATE ("Update product category") requests are generated in order to simulate mutable state of the application. In the second phase only GET ("Find product category by ID") requests are generated what simulates immutable state of the application. In the first phase 60 GET and 60 UPDATE requests are generated with constant injection step 2 requests (1 GET and 1 UPDATE) per second. In the second phase 60 requests are generated with constant injection step 1 request per second. All requests are designated to the same product category (the same ID parameter). 
 
-From the high level perspective in the first phase enable cache introduces only unnecessary overhead (all cached GET requests are immediately "cleared" from cache by UPDATE requests). In the second phase enabled cache provides benefit - only first request is executed and response for the rest is taken from cache.  
+From the high level perspective in the first phase enabled cache introduces only unnecessary overhead (all cached GET requests are immediately "cleared" from cache by UPDATE requests). In the second phase enabled cache provides benefit - only first request is executed and response for the rest is taken from cache.  
 
 \subsubsection{Evaluation Samples} \label{evaluationsamplescache}
 
 In order to evaluate the optimization of the performance offered by the APTS three  samples must be introduced: 
 \begin{itemize}
 \item Cache - control sample in which cache is enable in the tested application
-\item No Cache - control sample in which cache is disable in the tested application
+\item No Cache - control sample in which cache is disabled in the tested application
 \item Adapted - system evaluation sample in which cache is manged by the APTS
 \end{itemize}
 
@@ -1360,28 +1408,6 @@ Improvement &  3.38\% & 3.84\% & N/A\\
 \end{tabularx}
 \end{table}
 
-\begin{figure}[!htb]
-\centering
-\begin{tikzpicture}
-        \begin{axis}[
-            symbolic x coords={Cache, No Cache, Adapted},
-            xtick=data,
-            bar width=1cm,
-            x=2cm,
-            enlarge x limits={abs=1cm},
-            xlabel={Sample},
-            ymajorgrids = true,
-            ylabel={Average execution time [ms]}
-          ]
-            \addplot[ybar,style={bblue,fill=bblue,mark=none}] coordinates {
-                (Cache, 19.75) (No Cache, 19.84) (Adapted, 19.08)
-            };
-        \end{axis}
-\end{tikzpicture}
-\caption{\textit{Graph presenting average execution time of control and adapted samples}} \label{cacheEvalResutlsGraph}
-\end{figure}
-
-
 \subsubsection{Interpretation} 
 
 The results shows that usage of the APTS gives slight improvement in execution time in comparison to samples where Cache or No Cache samples where used. The obtained improvement in both cases is around 3.5\%. The value is not impressive because of the two facts: small cache overhead and relatively small cache improvement. 
@@ -1393,19 +1419,19 @@ Relatively small cache improvement in the implemented scenario is caused by smal
 \subsubsection{Experiment Conclusions} 
 
 
-Performed experiments proves that performance optimization provided by the APTS has positive effect on the execution time of the requests. The improvement obtained during the experiments is equal to 3.38\% (comparing to enabled cache) and 3.84\% (comparing to disable cache). The value of the improvement is relatively small but taking into account that a web applications must handle thousands of the requests even such small improvement matters in higher perspective.  
+Performed experiments proves that performance optimization provided by the APTS has positive effect on the execution time of the requests. The improvement obtained during the experiments is equal to 3.38\% (comparing to enabled cache) and 3.84\% (comparing to disabled cache). The value of the improvement is relatively small but taking into account that a web applications must handle thousands of the requests - even such small improvement matters in longer perspective.  
 
-What is also important, the experiment legitimate implementations of the redundant components with different performance characteristic in a software. In the experiment cache mechanism was used, but there there exist many other possible implementations - for example: stateless and statefull EJB beans, different data storage mechanism (database, in-memory, file system) or different sorting algorithms. Common thing for all mentioned examples is fact, that for a given component there exist alternative which in some circumstances provides better performance.     
+What is also important, the experiment legitimate implementations of the redundant components with different performance characteristic in a software. In the experiment cache mechanism was used, but there exist many other possible implementations - for example: stateless and statefull EJB beans, different data storage mechanism (database, in-memory, file system) or different sorting algorithms. Common thing for all mentioned examples is fact, that for a given component there exist alternative which in some circumstances provides better performance.     
 
  
 
 \subsection{Batch Management Evaluation}
 
-Below experiments  are focused on Batched and Direct redundant components. The APTS should ensure proper management for the both components in order to provide optimal performance of the tested application with the highest possible level of user satisfaction.  
+The experiments presented below are focused on Batched and Direct redundant components. The APTS should ensure proper management for the both components in order to provide optimal performance of the tested application with the highest possible level of user satisfaction.  
 
 \subsubsection{Traffic Simulation Scenario} \label{batchsimulationscenario}
 
-For the experiment evaluation the batch management by the APTS the traffic simulation presented in the Figure \ref{trafficbatch} was implemented.
+For the experiment evaluating the batch management provided by the APTS, the traffic simulation presented in the Figure \ref{trafficbatch} was implemented.
 
 \begin{figure}[!htb]
 \begin{tikzpicture}
@@ -1428,7 +1454,7 @@ For the experiment evaluation the batch management by the APTS the traffic simul
 \caption{\textit{Traffic simulation scenario for the batch management evaluation}} \label{trafficbatch}
 \end{figure}
 
-The simulation takes 120 seconds and is divided into the two phases. In the first 60 seconds INSERT ("Add new product category") request are generated with the constant injection step 1 request per second. In the second 60 seconds injection step is increased to 10 requests per second. 
+The simulation takes 120 seconds and is divided into the two phases. In the first 60 seconds INSERT ("Add new product category") request are generated with the constant injection step 1 request per second. In the 60th second injection step is increased to 10 requests per second. 
 
 In other words the simulation in the first phase makes usage of batch undesirable (records are inserted when batch is full, so with batch with size = 10 creates 10 seconds of delay what is not acceptable from user perspective). In the second phase because of high inserts rate usage of batch is desirable (with batch with size = 10 introduced delay is only 1 second what is acceptable solution).  
  
@@ -1438,9 +1464,9 @@ During the experiments batch with size equal to 10 will be used.
 
 \subsubsection{Evaluation Samples} 
 
-In order to measure how the APTS influences performance of the tested application reference the control sample must be introduced. The control sample checks performance of the application with disabled APTS performance tuning. 
+In order to measure how the APTS influences performance of the tested application the control sample must be introduced. The control sample checks performance of the application with disabled APTS performance tuning. 
 
-For the need of batch measurement experiments only control sample with disabled batch introduced. As mentioned in the Chapter \ref{batchsimulationscenario} implemented traffic scenario with enabled batch introduces not acceptable delay between request execution and actual data persistence in the first phase of simulation. 
+For the need of batch measurement experiments only control sample with disabled batch is introduced. As mentioned in the Chapter \ref{batchsimulationscenario} implemented traffic scenario with enabled batch introduces not acceptable delay between request execution and actual data persistence in the first phase of simulation. 
 
 During the experiment the same simulation scenario is performed on both samples - control and evaluation (sample with the APTS performance tuning enabled) sample.
 
@@ -1474,14 +1500,15 @@ $Difference = \frac{|ControlSample - AptsAdaptation|}{ControlSample}\cdot 100\%$
 
 \begin{table}[!htb]
 \caption{\textit{Comparison between control and adapted by APTS sample}} \label{batchCompResutls}
-\begin{tabularx}{\textwidth}{p{4cm}|XXX|}
-
-                 &  \multicolumn{3}{c|}{\textbf{Execution time [ms]}} \\
+\begin{center}
+\begin{tabular}{r|ccc}
+                 &  \multicolumn{3}{c}{\textbf{Execution time [ms]}} \\
                  &  \textbf{Phase I } & \textbf{Phase II} & \textbf{Total} \\ \hline
 Control sample   &  30.0 & 31.5 & 31.4 \\ 
 APTS adaptation  &  30.9 & 22.5 & 23.2 \\ \hline
 Difference       &  3\% & 28.6\% & 26.1\% \\ 
-\end{tabularx}
+\end{tabular}
+\end{center}
 \end{table}
 
 The data presented in the Table \ref{batchCompResutls} are visualized in the Figure \ref{batchEvalResutlsGraph}.  All results from performed experiments are available in the Appendix \ref{appendixbatchevaluation}. 
@@ -1499,8 +1526,8 @@ The data presented in the Table \ref{batchCompResutls} are visualized in the Fig
     \begin{axis}[
             ybar,
             bar width=.6cm,
-            width=\textwidth,
-            height=.6\textwidth,
+            width=0.8\textwidth,
+            height=.5\textwidth,
             legend style={at={(0.5,-0.15)},
                 anchor=north,legend columns=-1},
             symbolic x coords={Phase I,Phase II,Total},
@@ -1509,6 +1536,7 @@ The data presented in the Table \ref{batchCompResutls} are visualized in the Fig
             ylabel={Average execution time [ms]},
             enlarge x limits={abs=2cm},
             ymajorgrids = true,
+            legend image code/.code={\draw[#1, draw=none] (0cm,-0.15cm) rectangle (0.5cm,0.2cm);},
         ]
         \addplot[style={bblue,fill=bblue,mark=none}] table[x=category,y=control]{\mydata};
         \addplot[style={ggreen,fill=ggreen,mark=none}] table[x=category,y=apts]{\mydata};
@@ -1520,9 +1548,9 @@ The data presented in the Table \ref{batchCompResutls} are visualized in the Fig
 
 \subsubsection{Interpretation} 
 
-The results presented in the Chapter \ref{section:batchresults} demonstrates performance improvement delivered by the APTS solution. During the first phase execution time for both samples are nearly the same because in both cases batch was disabled. The crucial part of the experiment was second phase where number of inserts was increased and batch was enabled by the APTS. The obtained improvement in this phase was equal to 28.6\%. The improvement in the second phase influences reduction of the total time of the experiment by 26.1\%. 
+The results presented in the Chapter \ref{section:batchresults} demonstrates performance improvement delivered by the APTS solution. During the first phase execution time for both samples are nearly the same because in both cases batch was disabled. The crucial part of the experiment was the second phase where number of inserts was increased and batch was enabled by the APTS. The obtained improvement in this phase was equal to 28.6\%. The improvement in the second phase influences reduction of the total time of the experiment by 26.1\%. 
 
-Such good improvement obtained during the second phase of the experiment was possible because of the implemented batch mechanism provided by Batch redundant component. In this mechanism number of time consuming inserts into the database is reduced. Assuming that batch size is equal to S - only S-th request generates query into the database. For the rest of the requests entity is stored into the batch and immediate response is returned by the tested application. 
+Such good improvement obtained during the second phase of the experiment was possible because of the implemented batch mechanism provided by Batch redundant component. In this mechanism the number of time consuming inserts into the database is reduced. Assuming that batch size is equal to S - only S-th request generates query into the database. For the rest of the requests entity is stored into the batch and immediate response is returned by the tested application. 
 
 \subsubsection{Experiment Conclusions} 
 
@@ -1563,9 +1591,9 @@ For the experiments related to the threads management provided by the APTS the t
 \end{center}
 \end{figure}
 
-The simulation takes 120 seconds and is divided into the two phases. In the first 30 seconds 180 requests to resource "Execute wait task" are generated. The parameter \textit{sleepTime} for generated requests in this phase is set to 5000 (5 seconds). Injection step of requests is constant (6 requests per seconds). The second phase starts in 60th second of the simulation and takes 60 seconds. During this phase 60 requests to resource "Execute CPU consuming task" are generated with constant injection step (1 request per second). 
+The simulation takes 120 seconds and is divided into the two phases. In the first 30 seconds 180 requests to resource "Execute wait task" are generated. The parameter \textit{sleepTime} for generated requests in this phase is set to 5000 (5 seconds). Injection step of requests is constant (6 requests per seconds was used in order to generate more requests than the application is able to handle using the default configuration). The gap between the first and the second phase is introduced due to fact that the first phase may vary in execution time between the both samples. The gap gives necessary time to finish the first phase before the second phase will be started. The second phase starts in 60th second of the simulation and takes 60 seconds. During this phase 60 requests to resource "Execute CPU consuming task" are generated with constant injection step (1 request per second). 
 
-From the high level perspective the particular request from the first phase of the simulation blocks the one thread of the application server to 5 seconds without CPU consumption. Threads with are blocked during simulation waits in the queue until threads will be available again. That is why during this phase number of threads should be configured to maximal value - low CPU usage allows to increase number of threads, high number of threads reduces number of requests waiting in the queue.   
+From the high level perspective the particular request from the first phase of the simulation blocks the one thread of the application server to 5 seconds without CPU consumption. Threads which are blocked during simulation waits in the queue until threads will be available again. That is why during this phase number of threads should be configured to maximal value - low CPU usage allows to increase number of threads, high number of threads reduces number of requests waiting in the queue. During the second phase generated requests cause high CPU usage. In order to optimize execution time of requests during this phase, number of threads should be reduced.    
 
  
 \subsubsection{Evaluation Samples}
@@ -1604,35 +1632,35 @@ The threads management provided by the APTS during the experiment is also visibl
 The APTS Manager:
 
 \noindent\fbox{\parbox{\textwidth}{\setstretch{1.0} \texttt{\footnotesize 
-17:37:12.272 (...) Chosen rule: SwitchTo80ThreadsRule \\
-action: threads switched to 80 \\
+17:37:12.272 (...) Chosen rule: SwitchTo30ThreadsRule \\
+action: threads switched to 30 \\
 (...)\\
-17:38:12.184 (...) Chosen rule: SwitchTo50ThreadsRule \\
-action: threads switched to 50\\
+17:38:12.184 (...) Chosen rule: SwitchTo20ThreadsRule \\
+action: threads switched to 20\\
 (...)\\
-17:38:22.379 (...) Chosen rule: SwitchTo20ThreadsRule\\
-action: threads switched to 20
+17:38:22.379 (...) Chosen rule: SwitchTo10ThreadsRule\\
+action: threads switched to 10
 }}}\vspace{1mm}
 
 The Configuration Service:
 
 \vspace{1mm}\noindent\fbox{\parbox{\textwidth}{\texttt{\footnotesize
-2017-05-20 17:37:12.466  (...) Configuration of THREADS changed to value: T80\\
-2017-05-20 17:38:12.299  (...) Configuration of THREADS changed to value: T50\\
-2017-05-20 17:38:22.494  (...) Configuration of THREADS changed to value: T20
+2017-05-20 17:37:12.466  (...) Configuration of THREADS changed to value: T30\\
+2017-05-20 17:38:12.299  (...) Configuration of THREADS changed to value: T20\\
+2017-05-20 17:38:22.494  (...) Configuration of THREADS changed to value: T10
 }}}\vspace{1mm}
 
 The Dispatcher:
 
 \vspace{1mm}\noindent\fbox{\parbox{\textwidth}{\texttt{\footnotesize
-17:37:29.053 (...) Current threads configuration : T80\\
-17:37:29.055 (...) Used port: 8080\\
+17:37:29.053 (...) Current threads configuration : T30\\
+17:37:29.055 (...) Used port: 8030\\
 (...)\\
-17:38:15.380 (...) Current threads configuration : T50\\
-17:38:15.382 (...) Used port: 8050\\
+17:38:15.380 (...) Current threads configuration : T20\\
+17:38:15.382 (...) Used port: 8020\\
 (...)\\
-17:38:57.301 (...) Current threads configuration : T20\\
-17:38:57.314 (...) Used port: 8020
+17:38:57.301 (...) Current threads configuration : T10\\
+17:38:57.314 (...) Used port: 8010
 }}}\vspace{1mm}
 
 \subsubsection{Results} 
@@ -1702,6 +1730,7 @@ Change 	            & 27.3\% & -45.6\% & 0.0\% &  0.1\% & 27.2\% & -8.5\% & 17.0
             ylabel={Average execution time [ms]},
             enlarge x limits={abs=2cm},
             ymajorgrids = true,
+            legend image code/.code={\draw[#1, draw=none] (0cm,-0.15cm) rectangle (0.5cm,0.2cm);},
         ]
         \addplot[style={bblue,fill=bblue,mark=none}] table[x=category,y=control]{\mydata};
         \addplot[style={ggreen,fill=ggreen,mark=none}] table[x=category,y=adapted]{\mydata};
@@ -1725,14 +1754,14 @@ Change 	            & 27.3\% & -45.6\% & 0.0\% &  0.1\% & 27.2\% & -8.5\% & 17.0
             bar width=.6cm,
             width=.8\textwidth,
             height=.6\textwidth,
-            legend style={at={(0.5,-0.15)},
-                anchor=north,legend columns=-1},
+            legend style={at={(0.5,-0.15)}, anchor=north,legend columns=-1},
             symbolic x coords={Phase I,Phase II,Total},
             xtick=data,
             ymin=0,ymax=100,
             ylabel={Average CPU usage [\%]},
             enlarge x limits={abs=2cm},
             ymajorgrids = true,
+            legend image code/.code={\draw[#1, draw=none] (0cm,-0.15cm) rectangle (0.5cm,0.2cm);}, 
         ]
         \addplot[style={oorange,fill=oorange,mark=none}] table[x=category,y=control]{\mydata};
         \addplot[style={rred,fill=rred,mark=none}] table[x=category,y=adapted]{\mydata};
@@ -1764,7 +1793,7 @@ In the previous experiments the APTS was evaluated in isolation for particular t
 
 \subsubsection{Traffic Simulation Scenario} 
 
-For the combined APTS evaluation the tharric simulation presented in the Figure \ref{figure:trafficcombined} was implemented. 
+For the combined APTS evaluation the traffic simulation presented in the Figure \ref{figure:trafficcombined} was implemented. 
 
 \begin{figure}[!htb]
 \begin{center}
@@ -1798,7 +1827,7 @@ From the high level perspective during the first phase intensive inputs have thr
 
 The combined experiment will be developed on the two samples:
 \begin{itemize}
-\item Control sample - in which performance tuning will be disabled and configuration of the tested application will be set to default (see Table \ref{table:initconfiguration}. 
+\item Control sample - in which performance tuning will be disabled and configuration of the tested application will be set to default (see Table \ref{table:initconfiguration}). 
 \item Adapted Sample - in which performance tuning by the APTS is enabled and the initial
 configuration is default (see Table 17). 
 \end{itemize}
@@ -1827,18 +1856,18 @@ During the second phase 5 seconds-long requests with small CPU usage are generat
 The performance improvements chosen by the APTS during the experiment on the adapted sample are visible in the system logs: 
 
 \vspace{1mm}\noindent\fbox{\parbox{\textwidth}{\texttt{\footnotesize
-21:20:21.945 (...) Chosen rule: SwitchTo20ThreadsRule \\
-action: threads switched to 20 \\
+21:20:21.945 (...) Chosen rule: SwitchTo10ThreadsRule \\
+action: threads switched to 10 \\
 21:20:40.890 (...) Chosen rule: EnableBatchRule\\
 action: enable batch\\
 21:21:20.995 (...) Chosen rule: EnableCacheRule\\
 action: enable cache\\
-21:21:21.324 (...) Chosen rule: SwitchTo50ThreadsRule\\
-action: threads switched to 50\\
+21:21:21.324 (...) Chosen rule: SwitchTo20ThreadsRule\\
+action: threads switched to 20\\
 21:21:21.845 (...) Chosen rule: DisableBatchRule\\
 action: disable batch\\
-21:21:30.560 (...) Chosen rule: SwitchTo80ThreadsRule\\
-action: threads switched to 80
+21:21:30.560 (...) Chosen rule: SwitchTo30ThreadsRule\\
+action: threads switched to 30
 }}}\vspace{1mm}
 
 \subsubsection{Results} 
@@ -1875,7 +1904,7 @@ The data presented in the Table \ref{table:combined:results:summary} are visuali
             enlarge x limits={abs=2cm},
             xlabel={Sample},
             ymajorgrids = true,
-            ylabel={Execution time [s]}
+            ylabel={Execution time [s]},
           ]
             \addplot[ybar,style={ggreen,fill=ggreen,mark=none}] coordinates {
                 (Control, 3.27) (Adapted, 2.02)
@@ -2038,9 +2067,9 @@ Additionally, in the Figure \ref{figure:random:screen:adapted:1} configuration c
 \item 18:07:07.756 - Configuration of CACHE changed to value: NO\_CACHE
 \item 18:08:37.782 - Configuration of CACHE changed to value: CACHED
 \item 18:08:48.175 - Configuration of CACHE changed to value: NO\_CACHE
-\item 18:18:48.072 - Configuration of THREADS changed to value: T50
-\item 18:18:58.217 - Configuration of THREADS changed to value: T80
-\item 18:19:48.526 - Configuration of THREADS changed to value: T50
+\item 18:18:48.072 - Configuration of THREADS changed to value: T20
+\item 18:18:58.217 - Configuration of THREADS changed to value: T30
+\item 18:19:48.526 - Configuration of THREADS changed to value: T20
 \end{enumerate}
 
 
@@ -2087,7 +2116,7 @@ Additionally, in the Figure \ref{figure:random:screen:adapted:2} configuration c
 \begin{enumerate}
 \item 18:47:54.562 - Configuration of CACHE changed to value: CACHED
 \item 18:48:44.512 - Configuration of CACHE changed to value: NO\_CACHE
-\item 18:50:14.498 - Configuration of THREADS changed to value: T20
+\item 18:50:14.498 - Configuration of THREADS changed to value: T10
 \item 18:52:24.394 - Configuration of CACHE changed to value: CACHED
 \end{enumerate}
 
@@ -2135,7 +2164,7 @@ Additionally, in the Figure \ref{figure:random:screen:adapted:3} configuration c
 \item 21:04:02.562 - Configuration of CACHE changed to value: NO\_CACHE
 \item 21:05:52.467 - Configuration of CACHE changed to value: CACHED
 \item 21:11:42.637 - Configuration of CACHE changed to value: NO\_CACHE
-\item 21:11:52.860 - Configuration of THREADS changed to value: T20
+\item 21:11:52.860 - Configuration of THREADS changed to value: T10
 \item 21:14:32.410 - Configuration of CACHE changed to value: CACHED
 \end{enumerate}
 
@@ -2180,12 +2209,12 @@ Additionally, in the Figure \ref{figure:random:screen:adapted:4} configuration c
 
 \begin{enumerate}
 \item 21:44:23.035 - Configuration of CACHE changed to value: CACHED
-\item 21:44:42.660 - Configuration of THREADS changed to value: T80
-\item 21:44:53.154 - Configuration of THREADS changed to value: T50
-\item 21:45:12.940 - Configuration of THREADS changed to value: T80
+\item 21:44:42.660 - Configuration of THREADS changed to value: T30
+\item 21:44:53.154 - Configuration of THREADS changed to value: T20
+\item 21:45:12.940 - Configuration of THREADS changed to value: T30
 \item 21:48:52.571 - Configuration of CACHE changed to value: NO\_CACHE
-\item 21:49:02.861 - Configuration of THREADS changed to value: T50
-\item 21:49:13.074 - Configuration of THREADS changed to value: T20
+\item 21:49:02.861 - Configuration of THREADS changed to value: T20
+\item 21:49:13.074 - Configuration of THREADS changed to value: T10
 \item 21:53:32.624 - Configuration of CACHE changed to value: CACHED
 \end{enumerate}
 
@@ -2231,15 +2260,15 @@ Additionally, in the Figure \ref{figure:random:screen:adapted:5} configuration c
 \begin{enumerate}
 \item 22:28:53.174 - Configuration of CACHE changed to value: CACHED
 \item 22:30:02.620 - Configuration of CACHE changed to value: NO\_CACHE
-\item 22:32:42.963 - Configuration of THREADS changed to value: T20
-\item 22:35:03.595 - Configuration of THREADS changed to value: T50
-\item 22:35:12.719 - Configuration of THREADS changed to value: T20
-\item 22:35:33.142 - Configuration of THREADS changed to value: T50
-\item 22:35:43.398 - Configuration of THREADS changed to value: T20
-\item 22:36:33.374 - Configuration of THREADS changed to value: T50
-\item 22:36:43.618 - Configuration of THREADS changed to value: T20
-\item 22:37:03.045 - Configuration of THREADS changed to value: T50
-\item 22:37:13.248 - Configuration of THREADS changed to value: T80
+\item 22:32:42.963 - Configuration of THREADS changed to value: T10
+\item 22:35:03.595 - Configuration of THREADS changed to value: T20
+\item 22:35:12.719 - Configuration of THREADS changed to value: T10
+\item 22:35:33.142 - Configuration of THREADS changed to value: T20
+\item 22:35:43.398 - Configuration of THREADS changed to value: T10
+\item 22:36:33.374 - Configuration of THREADS changed to value: T20
+\item 22:36:43.618 - Configuration of THREADS changed to value: T10
+\item 22:37:03.045 - Configuration of THREADS changed to value: T20
+\item 22:37:13.248 - Configuration of THREADS changed to value: T30
 \item 22:38:52.868 - Configuration of CACHE changed to value: CACHED
 \item 22:39:43.434 - Configuration of CACHE changed to value: NO\_CACHE
 \end{enumerate}
@@ -2287,11 +2316,11 @@ Additionally, in the Figure \ref{figure:random:screen:adapted:6} configuration c
 \item 23:00:00.355 - Configuration of CACHE changed to value: CACHED
 \item 23:07:00.187 - Configuration of CACHE changed to value: NO\_CACHE
 \item 23:07:20.352 - Configuration of CACHE changed to value: CACHED
-\item 23:07:20.519 - Configuration of THREADS changed to value: T20
-\item 23:07:30.689 - Configuration of THREADS changed to value: T50
-\item 23:07:40.805 - Configuration of THREADS changed to value: T80
+\item 23:07:20.519 - Configuration of THREADS changed to value: T10
+\item 23:07:30.689 - Configuration of THREADS changed to value: T20
+\item 23:07:40.805 - Configuration of THREADS changed to value: T30
 \item 23:09:29.889 - Configuration of CACHE changed to value: NO\_CACHE
-\item 23:09:40.059 - Configuration of THREADS changed to value: T50
+\item 23:09:40.059 - Configuration of THREADS changed to value: T20
 \end{enumerate}
 
 
@@ -2337,9 +2366,9 @@ Additionally, in the Figure \ref{figure:random:screen:adapted:7} configuration c
 \begin{enumerate}
 \item 23:37:12.884 - Configuration of CACHE changed to value: CACHED
 \item 23:41:52.336 - Configuration of CACHE changed to value: NO\_CACHE
-\item 23:42:02.591 - Configuration of THREADS changed to value: T20
-\item 23:42:33.177 - Configuration of THREADS changed to value: T50
-\item 23:42:42.418 - Configuration of THREADS changed to value: T20
+\item 23:42:02.591 - Configuration of THREADS changed to value: T10
+\item 23:42:33.177 - Configuration of THREADS changed to value: T20
+\item 23:42:42.418 - Configuration of THREADS changed to value: T10
 \item 23:43:33.098 - Configuration of CACHE changed to value: CACHED
 \item 23:44:53.033 - Configuration of CACHE changed to value: NO\_CACHE
 \end{enumerate}
@@ -2386,7 +2415,7 @@ Additionally, in the Figure \ref{figure:random:screen:adapted:8} configuration c
 
 \begin{enumerate}
 \item 00:05:35.937 - Configuration of CACHE changed to value: CACHED
-\item 00:09:26.191 - Configuration of THREADS changed to value: T20
+\item 00:09:26.191 - Configuration of THREADS changed to value: T10
 \end{enumerate}
 
 
@@ -2432,11 +2461,11 @@ Additionally, in the Figure \ref{figure:random:screen:adapted:9} configuration c
 \begin{enumerate}
 \item 11:37:28.648 - Configuration of CACHE changed to value: CACHED
 \item 11:42:28.943 - Configuration of CACHE changed to value: NO\_CACHE
-\item 11:42:38.261 - Configuration of THREADS changed to value: T20
-\item 11:46:18.651 - Configuration of THREADS changed to value: T50
-\item 11:46:28.919 - Configuration of THREADS changed to value: T20
-\item 11:47:19.035 - Configuration of THREADS changed to value: T50
-\item 11:47:28.138 - Configuration of THREADS changed to value: T80
+\item 11:42:38.261 - Configuration of THREADS changed to value: T10
+\item 11:46:18.651 - Configuration of THREADS changed to value: T20
+\item 11:46:28.919 - Configuration of THREADS changed to value: T10
+\item 11:47:19.035 - Configuration of THREADS changed to value: T20
+\item 11:47:28.138 - Configuration of THREADS changed to value: T30
 \item 11:53:28.517 - Configuration of CACHE changed to value: CACHED
 \end{enumerate}
 
@@ -2481,11 +2510,11 @@ Additionally, in the Figure \ref{figure:random:screen:adapted:10} configuration 
 \begin{enumerate}
 \item 12:28:15.072 - Configuration of CACHE changed to value: CACHED
 \item 12:30:19.252 - Configuration of CACHE changed to value: NO\_CACHE
-\item 12:30:28.498 - Configuration of THREADS changed to value: T20
-\item 12:44:08.624 - Configuration of THREADS changed to value: T50
-\item 12:44:28.964 - Configuration of THREADS changed to value: T20
-\item 12:45:48.357 - Configuration of THREADS changed to value: T50
-\item 12:45:58.598 - Configuration of THREADS changed to value: T20
+\item 12:30:28.498 - Configuration of THREADS changed to value: T10
+\item 12:44:08.624 - Configuration of THREADS changed to value: T20
+\item 12:44:28.964 - Configuration of THREADS changed to value: T10
+\item 12:45:48.357 - Configuration of THREADS changed to value: T20
+\item 12:45:58.598 - Configuration of THREADS changed to value: T10
 \end{enumerate}
 
 \subsubsection{Results} 
@@ -2552,7 +2581,7 @@ The main goal of this experiment was to check how the APTS will behave under mor
 
 This work is dedicated to subject of software optimization based on the performance evaluation tests. The work addresses the software optimization in the complex way - from theoretical literature overview for the domain of software performance and optimization through presentation of performance analysis of selected mechanisms to practical realization of software optimization in the form of proposed system - the Automatic Performance Tuning System. The concept of the performance evaluation tests is theoretically introduced. The goals, types, possible implementations and main features of the performance evaluation tests are presented. The practical usage of the performance evaluation tests is implemented in the APTS - the main part of the system is based on the implemented performance evaluation tests. The performance evaluation tests are used in the introduced system to provide performance monitoring and performance issues reporting.
 
-The main goal which was set starting work on this work was development of solution which will be able to optimize web application by searching most optimal application parameters and automatic adjustment.  The research question formulated at the initial phase of this work where:
+The main goal which was set starting this work was development of a solution which will be able to optimize web application by searching most optimal application parameters and automatic adjustment.  The research question formulated at the initial phase of this work where:
 \begin{itemize}
 \item Which and how application parameters influences performance?
 \item How to evaluate performance of the system?
@@ -2570,9 +2599,17 @@ The last question - how performance evaluation tests can help in software optimi
 
 \subsection{About the Implemented System}
 
-At this point author of this work want to highlight that implemented system - the APTS is only proposed solution which enables automated performance optimization on the base of performed monitoring. The system realizes performance optimization on the selected set of implemented tunable elements which match to the implemented tested application domain (which has no high practical value). Also important is fact that selected tunable elements are not universal. The selection of the tunable elements under automatic optimization must be adjusted to the application which will be optimized (is well known - there is no two the same applications in the world). Implemented solution should be considered as general form or framework for similar approach. 
+At this point author of this work want to highlight that implemented system - the APTS - is only a proof of concept of the solution which enables automated performance optimization on the base of performed monitoring. The system realizes performance optimization on the selected set of implemented tunable elements which match to the implemented tested application domain (which has no high practical value). Also important is fact that selected tunable elements are not universal. The selection of the tunable elements under automatic optimization must be adjusted to the application which will be optimized (as it is well known - there is no two the same applications in the world). Implemented solution should be considered as general form or framework for similar approach. 
 
-In the Chapter \ref{principles} general principles of the system was formulated. All of the principles was realized in the final implementation. The system performs live monitoring through the implemented performance evaluation tests and the APTS manager. The system is autonomic - the implemented system is able to realize goal of the performance optimization automatically and without human intervention on the base of rule based system defined in decision module. The system is able to perform configuration change during application runtime because of implemented architecture of the system which allows change of the configuration during the runtime. The feature is realized by the \textit{Decision Module} (performs change) and the \textit{Configuration Service} (delivers configuration for the tested application and provides API for configuration change). The solution is able to work in the production environment because it is independent from the testing environment - the data traffic generator is provided as external component. The real traffic in production environment can be monitored in the same way without any modification or configuration of the APTS system. The system has minimal impact on the production environment because of introduced deployment approach. The all components responsible for performance monitoring and optimization are deployed outside the production environment. The only component which for obvious reasons must be deployed on the production environment is component responsible for resource monitoring.  
+In the Chapter \ref{principles} general principles of the system was formulated. All of the principles was realized in the final implementation. The system performs live monitoring through the implemented performance evaluation tests and the APTS manager. The system is autonomic - the implemented system is able to realize goal of the performance optimization automatically and without human intervention on the base of rule based system defined in decision module. The system is able to perform configuration change during application runtime because of implemented architecture of the system which allows change of the configuration during the runtime. This feature is realized by the \textit{Decision Module} (performs change) and the \textit{Configuration Service} (delivers configuration for the tested application and provides API for configuration change). The solution is able to work in the production environment because it is independent from the testing environment - the data traffic generator is developed as external, separated  component. The real traffic in production environment can be monitored in the same way without any modification or configuration of the APTS system. The system has minimal impact on the production environment because of introduced deployment approach. The all components responsible for performance monitoring and optimization are deployed outside the production environment. The only component which for obvious reasons must be deployed on the production environment is component responsible for resource monitoring.  
+
+Another fact to consider is dependency between the APTS and the tested application. In the implemented solution the APTS intervenes into the application in the two areas - configuration change and monitoring. 
+
+In order to perform performance optimization, the tested application provides service - the \textit{Configuration Service} - which stores information about currently used configuration and allow the APTS to modify configuration at runtime of the application. Due to that fact the \textit{Configuration Service} may be considered as additional overhead which must be implemented on the application side in order to enable optimization by the APTS. However, in most of well designed and implemented applications the configuration is hold in one place - a class, a external file or a service. In case of a external file as well as service the configuration may be also modified during the runtime of an application. The equivalent of such solution is just the \textit{Configuration Service} - provides one place to store a configuration and provides easy way to configure it a the runtime.  
+
+The second area which has to be implemented on the tested application side in order to allow performance adaptation by the APTS is execution time and resource consumption monitoring. Both features are implemented in the form of components which are not interfere directly into the tested application, but still, they are deployed on the application side and generates additional overhead. However, in some applications (especially in a big, enterprise solutions) such components are implemented as a "core" part of an application in order to provide administrators current state of an application. In such case, assuming that the APTS would use data provided by an application, the overhead does not exist. 
+
+
 
 \subsection{Problems and Issues}
 
@@ -2584,7 +2621,7 @@ Another problem was related to deployment of the ready system in order to evalua
 
 \subsection{Future works}
 
-The proposed solution realizes performance tuning decision on the base of decision module. In current implementation decisions are made on the base of the rule based engine. Such solution has main disadvantage - the desirable optimal configuration must by implemented manually in the form of rules. As presented in this work, even for 3 tunable elements effort and complexity of the rules is quite high. In the ideal world the system should be able to create such rules by itself in "learning" process. 
+The proposed solution realizes performance tuning decision on the base of decision module. In current implemented decisions are made on the base of the rule based engine. Such solution has main disadvantage - the desirable optimal configuration must by implemented manually in the form of rules. As presented in this work, even for 3 tunable elements effort and complexity of the rules is quite high. In the ideal world the system should be able to create such rules by itself in "learning" process. 
 
 One of the possible improvement to achieve that would be change in the decision module engine. Instead of the rule based engine some artificial intelligence (machine learning) solution could be used. A good AI candidate for such work is neural network which is able to recognize hidden patterns in the provided data. The current state of the tested environment (mean execution time of requests, resource usage) could be used as input to the network. As an output the optimal configuration would be returned. The drawback of the solution based on the machine learning is learning process. The teaching data (inputs and expected outputs) should be somehow prepared for the given environment. Because during learning the generated outputs could be highly inappropriate, the teaching process could not be conducted on production environment.
 
@@ -2737,6 +2774,33 @@ Grafana - The open platform for beautiful analytics and monitoring \textit{https
 \renewcommand{\thesubsection}{\Alph{subsection}}
 \renewcommand{\thetable}{\Alph{subsection}.\numberwithin{table}{subsection}}
 
+\subsection{Influence of database content on the experiments} \label{appendix:influencedb}
+
+\begin{table}[ht]
+\begin{center}
+\begin{tabular}{c| C{1.5cm}  C{1.5cm}  C{1.5cm} | C{1.5cm} C{1.5cm} C{1.5cm} |c}
+                  & \multicolumn{6}{c|}{Execution time [ms]} \\
+                  & \multicolumn{3}{c|}{1 row} & \multicolumn{3}{c|}{10000 rows} \\ 
+    Repetition \# & find & update & add & find & update & add\\ \cline{1-7}
+    1		  &1140& 618  & 659 & 1107& 558 & 994 &\\ 
+    2		  &511 & 325  &	679 & 457 & 361 & 538 &\\ 
+    3		  &365 & 423  &	781 & 389 & 405 & 618 &\\ 
+    4		  &487 & 362  & 649 & 559 & 457 & 606 &\\ 
+    5		  &481 & 434  &	693 & 476 & 496 & 717 &\\
+    6		  &379 & 441  &	730 & 326 & 391 & 695 &\\ 
+    7		  &454 & 412  & 682 & 387 & 387 & 697 &\\
+    8		  &584 & 450  & 659 & 623 & 454 & 710 &\\
+    9		  &423 & 435  &	612 & 544 & 354 & 693 &\\ 
+    10		  &329 & 382  &	623 & 301 & 390 & 544 &\\ \cline{1-8}
+        	  &515 & 428  & 677 & 517 & 425 & 681 & \multicolumn{1}{c}{Average} \\ 
+\end{tabular}
+\end{center}
+\caption{Request execution time measurements performed on different database content}
+\label{appendix:table:influencedb}
+\end{table}
+
+
+\pagebreak
 \subsection{System evaluation measurements - cache} \label{appendixcacheeval}
 
 \begin{table}[ht]
