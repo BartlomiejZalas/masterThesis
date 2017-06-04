@@ -169,8 +169,9 @@ The last section - \textit{\nameref{section:appendices}} - extends the work by d
 
 \pagebreak
 \subsection{Abbreviations and Acronyms}
-In this work numerous abbreviations and acronyms are used. All are presented and explained in below lising.
+In this work numerous abbreviations and acronyms are used. All are presented and explained in below listing.
 
+\vspace{0.3cm}
 
 \def\arraystretch{1.5}
 \begin{tabularx}{\textwidth}{p{1.5cm}X}
@@ -196,7 +197,7 @@ HTTP & Hypertext Transfer Protocol\\
 JAR & Java archive\\
 \end{tabularx}
 
-
+\pagebreak
 
 \section{Theoretical background} \label{section:theoreticalbackground}
 Before further considerations fundamental term for this work should be defined  - a performance. 
@@ -296,9 +297,8 @@ To solve and avoid above problem, performance evaluation tests should be repeata
 Another problem with web applications served in enterprise environment is multiplicity of manual configuration of parameters needed to create optimal environment for application. Table \ref{glassfishparams} presents common parameters influencing performance of Java application server \cite{glassfishdoc} \cite{deployerproblem}.  
 
 \begin{table}[!htb]
-\caption{\textit{Common Java application server parameters influencing performance.}}
-\def\arraystretch{1.5}
-\begin{tabularx}{\textwidth}{l|X}
+\begin{center}
+\begin{tabularx}{\textwidth}{p{3cm}|X}
   \textbf{Parameter} & \textbf{Performance Influence} \\
 \hline
 Max Thread Pool Size & Increasing this value will reduce HTTP response latency times but may also overload CPU.\\
@@ -313,6 +313,8 @@ JVM Heap Size & Increasing heap size can improve performance, but too high memor
 JVM GC Algorithm & Available algorithms have different influence on pause 
 times, throughput and CPU usage.
 \end{tabularx}
+\end{center}
+\caption{\textit{Common Java application server parameters influencing performance}}
 \label{glassfishparams}
 \end{table}
 
@@ -338,7 +340,7 @@ General idea of self-optimization systems was proposed in the article "The Visio
 A framework for automatic performance tuning is presented in article "Automatic Performance Management in Component Based Software Systems" \cite{autoframework}. The framework consist of two main modules: monitoring and diagnostic module and application adaptation module. The monitoring and diagnostic part gathers data about performance of application and environment with minimal overhead. Informations about probes (performance data related to method execution and lifecycle
 events of EJB) are analyzed and in case of performance problems alert is raised. When it happens, application module should overcome performance problems by selecting software component which will provide the best possible performance at given run-time context. 
 
-Such concept is called component redundancy and is described deeper in the article "A framework for using component redundancy for self-adapting and self-optimising component-based enterprise systems" \cite{redundancycomponent}. In the article author describes Component Redundancy as presence, at runtime, of multiple  component  variants  providing  identical or equivalent services but with different implementation strategies. Only one of the redundant components providing a service is assigned, at any moment in time, for handling a certain client request for that  service.  Implementation strategies can be added or deleted during runtime. Depending from context (workload, available resources) suitable component is selected. Selection is based on component description - set of attributes which defines in what conditions component usage is the most optimal. These descriptions are then updated at runtime with accurate monitoring information for the actual execution contexts. 
+Such concept is called component redundancy and is described deeper in the article "A~framework for using component redundancy for self-adapting and self-optimising component based enterprise systems" \cite{redundancycomponent}. In the article author describes Component Redundancy as presence, at runtime, of multiple  component  variants  providing  identical or equivalent services but with different implementation strategies. Only one of the redundant components providing a service is assigned, at any moment in time, for handling a certain client request for that  service.  Implementation strategies can be added or deleted during runtime. Depending from context (workload, available resources) suitable component is selected. Selection is based on component description - set of attributes which defines in what conditions component usage is the most optimal. These descriptions are then updated at runtime with accurate monitoring information for the actual execution contexts. 
 
 The practical approach of software performance optimization from implementation level is described in book "Pro Spring 2.5" in chapter "Spring Performance Tuning" \cite{springperformance}. In this chapter authors present most typical performance related problems and explain how to analyze performance and how to find bottlenecks of application written in Spring Framework. Key indicator in presented process is execution time of a method. Major part of text is focused on improving the data access tier by following improvements:  
 \begin{itemize}
@@ -387,8 +389,8 @@ Figure \ref{erd} presents ERD diagram of data model implemented in the tested ap
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.6\textwidth]{erd}
-\caption{\textit{ERD diagram of tested application model}}
+\includegraphics[width=0.8\textwidth]{ERD}
+\caption{\textit{ERD diagram of the tested application model}}
 \label{erd}
 \end{figure}
 
@@ -576,15 +578,16 @@ Redundant components, by definition, provide the same services but with differen
 
 Paging is database query realization in which in a single select query only part (page) of records is returned instead of querying all records from database. Table \ref{pagingcomponents} shows comparison of two proposed redundant components: Paging and No Paging.  
 \begin{table}[!htb]
-\def\arraystretch{1.5}
-\caption{\textit{Paging redundant components comparison}}\label{pagingcomponents}
-\begin{tabularx}{\textwidth}{p{3cm}|X|X}
+\begin{center}
+\begin{tabularx}{\textwidth}{p{3.5cm}|X|X}
   \textbf{Category} &\textbf{Paging} & \textbf{No Paging} \\
 \hline
 Query all records & Multiple queries (slower) & One query (faster) \\
 User satisfaction & High & Low\\
 Top performance circumstances & When impossible to query all records by No Paging component & When possible to query all records at once\\
 \end{tabularx}
+\end{center}
+\caption{\textit{Paging redundant components comparison}}\label{pagingcomponents}
 \end{table}
 
 \begin{figure}[!htb]
@@ -623,15 +626,16 @@ The paging idea is more related to data presentation layer and user satisfaction
 
 Next redundant component candidate is cache. There exist many levels of abstraction on which cache can be applied to a web application - request level cache, method level cache, global data cache. For goals of this work method-level cache of service responsible for managing database operations was chosen - in general such operations are time consuming. The cache saves returned value from method and uses input parameters as cache key. Table \ref{cachecomponents} shows comparison of two proposed redundant components: Cache (methods are cached) and No Cache (cache is disabled).
 \begin{table}[!htb]
-\def\arraystretch{1.5}
-\caption{\textit{Cache and No Cache redundant components comparison.}}\label{cachecomponents}
-\begin{tabularx}{\textwidth}{p{6cm}|X|X}
+\begin{center}
+\begin{tabular}{l|c|c}
   \textbf{Category} &\textbf{Cache} & \textbf{No Cache} \\
 \hline
 Preferable parameters characteristic & Repeatable & Varied \\
 Preferable resources & Immutable & Mutable\\
 Overhead & Yes & No\\
-\end{tabularx}
+\end{tabular}
+\end{center}
+\caption{\textit{Cache and No Cache redundant components comparison}}\label{cachecomponents}
 \end{table}
  
 Table \ref{cachecomponents} shows that Cache and No Cache redundant components have different characteristic. In workload in which requests are repeatable (given set of parameters is used more than once) and there are no frequent changes in state of requested resources (no updates and inserts into a database) preferred redundant component is Cache. When there is no repeatable requests and requested resources are frequently changed, usage of cache generates only additional overhead. In such cache No Cache component should be used. On the base of above considerations Cache/No Cache components could be considered as a proper redundant component from performance perspective and will be implemented in the system. 
@@ -640,15 +644,16 @@ Last redundant component taken into consideration are batched inserts. The idea 
 Table \ref{batchedcomponents} shows comparison of two proposed redundant components: Batched (records to insert are batched) and Direct (direct inserts into a database as separate queries).
 
 \begin{table}[!htb]
-\def\arraystretch{1.5}
-\caption{\textit{Batched and Direct redundant components comparison.}}\label{batchedcomponents}
-\begin{tabularx}{\textwidth}{p{4cm}|X|X}
+\begin{center}
+\begin{tabular}{l|c|c}
   \textbf{Category} &\textbf{Batched} & \textbf{No Batched} \\
 \hline
 Query execution time & Faster & Slower \\
 Query effects & Delayed & Instant\\
 Efficiency & High & Low\\
-\end{tabularx}
+\end{tabular}
+\end{center}
+\caption{\textit{Batched and Direct redundant components comparison.}}\label{batchedcomponents}
 \end{table}
 
 \begin{figure}[!htb]
@@ -757,17 +762,19 @@ The \textit{InfluxDB Service} hosts InfluxDB \cite{influxdb} time series databas
 The \textit{Configuration Service} is an external service where performance tuning configuration is stored (active redundant component and current application server thread number). The \textit{Configuration Service} provides REST API which enables different parts of the system to check and change current configuration of the tested application. The possible configuration values are presented in the Table \ref{table:configurationvalues}.
 
 \begin{table}[!htb]
-\caption{\textit{The possible configuration values of the \textit{Configuration Service}}}\label{table:configurationvalues}
-\begin{tabularx}{\textwidth}{p{1.6cm}|p{1.8cm}|X}
-\textbf{Parameter} &\textbf{Available \newline values} & \textbf{Description} \\\hline
-CACHE & NO\_CACHE & Cache is handled by the No Cache component\\\cline{2-3}
+\begin{center}
+\begin{tabularx}{\textwidth}{c|c|X}
+\textbf{Parameter} &\textbf{Available values} & \textbf{Description} \\\hline
+\multirow{2}*{CACHE} & NO\_CACHE & Cache is handled by the No Cache component\\\cline{2-3}
       & CACHED    & Cache is handled by the Cached component   \\ \hline
-BATCH & DIRECT    & Batch is handled by the No Batched component   \\\cline{2-3}
+\multirow{2}*{BATCH} & DIRECT    & Batch is handled by the No Batched component   \\\cline{2-3}
 	  & BATCHED   & Batch is handled by the Batched component   \\ \hline
-THREADS & T10     & Application server will use 10 threads\\ \cline{2-3}
+\multirow{3}*{THREADS} & T10     & Application server will use 10 threads\\ \cline{2-3}
         & T20     & Application server will use 20 threads\\ \cline{2-3}
         & T30     & Application server will use 30 threads\\ \hline
 \end{tabularx}
+\end{center}
+\caption{\textit{The possible configuration values of the \textit{Configuration Service}}}\label{table:configurationvalues}
 \end{table}	
 
 
@@ -826,9 +833,8 @@ Annotations are used to mark POJOs to be interpreted as PET cases and to configu
 \end{table}
 
 \begin{table}[!htb]
-\def\arraystretch{1.5}
-\caption{\textit{Available parameters of @PetCase annotation}}\label{petcase}
-\begin{tabularx}{\textwidth}{p{3.1cm}|p{1.3cm}|p{1.1cm}|X}
+\begin{center}
+\begin{tabularx}{\textwidth}{l|c|c|X}
   \textbf{Parameter name} &\textbf{Type} & \textbf{Default value} & \textbf{Description} \\
 \hline
 			\textit{enabled} & boolean & true & Indicates if PET case should be run.\\
@@ -836,6 +842,8 @@ Annotations are used to mark POJOs to be interpreted as PET cases and to configu
 			\textit{durationInSec} & integer & 3600 & Maximum duration of the test case in seconds.\\
 			\textit{delayInSec} & integer & 0 & Delay after which the tests case will start in seconds.\\
 \end{tabularx}
+\end{center}
+\caption{\textit{Available parameters of @PetCase annotation}}\label{petcase}
 \end{table}			
 
 In order to evaluate current KPIs against specified values a set of assertion was introduced. In case of assertion failure PET Framework convert exception to the performance issue. Signatures of assertions are presented on Listing  \ref{assertions}. As presented, for the performance evaluation tests three assertions where implemented (to ensure that KPI is less, greater of equal to specified value).  Parameters used in assertions are: 
@@ -922,14 +930,15 @@ The \textit{MonitorInsertsLevelPET} test case monitors how many database inserts
 The \textit{MonitorTrafficProfilePET} test case monitors traffic profile which comes to the tested application. There are two possible values of traffic profile - mutable and immutable. A mutable traffic profile means that state of the tested application is changed (by inserts or updates operations). An immutable traffic profile means that requests to the application do not change state of the tested application (read requests). The traffic profile is considered as immutable when number of immutable requests is greater than mutable requests. The performance issue with information about traffic profile is reported after every execution of test case.
 
 \begin{table}[!htb]
-\def\arraystretch{1.5}
-\caption{\textit{Possible values of the Performance Issue reported by the specific test case.}}\label{testcasescomp}
-\begin{tabularx}{\textwidth}{X|X|p{3.8cm}}
+\begin{center}
+\begin{tabularx}{\textwidth}{l|p{4cm}|X}
 \textbf{Test Case} & \textbf{Metric Name of Performance Issue} & \textbf{Possible Reasons of Performance Issue} \\ \hline
 MeanExecutionTimePET & executionTime & EXCEEDED \\\hline
 MonitorInsertsLevelPET & insertsLevel &LOW, HIGH \\\hline
 MonitorTrafficProfilePET & trafficProfile & MUTABLE, IMMUTABLE \\
 \end{tabularx}
+\end{center}
+\caption{\textit{Possible values of the Performance Issue reported by the specific test case.}}\label{testcasescomp}
 \end{table}
 
 The below listing presents definitions of the reasons of performance issues implemented in the performance evaluation test cases:
@@ -990,10 +999,8 @@ In order to perform automated tuning of the tested application based on elements
 The rule enables batching mechanism provided by the Batched redundant component in the tested application when the number of  inserts performed by the tested application is classified by the MonitorIsertsLevelPET test case as "high". Enabling batch mechanism should decrease total time of insert requests. Details of the rule are presented in the Table \ref{ruleenablebatch}.
 
 \begin{table}[!htb]
-\def\arraystretch{1.5}
-\caption{\textit{Details of the Enable Batch Rule}} \label{ruleenablebatch}
-\begin{tabularx}{\textwidth}{p{2.1cm}|X}
-
+\begin{center}
+\begin{tabularx}{\textwidth}{l|X}
 \textbf{Applicability Condition:} & \textbf{isIssueRelatedInsertsLevel} \textit{AND} \newline
 \textbf{isInsertsLevelHigh} \textit{AND} \newline
 \textbf{isBatchDisabled} \\ \hline
@@ -1005,6 +1012,8 @@ The rule enables batching mechanism provided by the Batched redundant component 
 \textbf{Action:} & Change the configuration of parameter "BATCH" to value "BATCHED" \\ \hline
 \textbf{Priority:} & 1\\
 \end{tabularx}
+\end{center}
+\caption{\textit{Details of the Enable Batch Rule}} \label{ruleenablebatch}
 \end{table}
 
 %-------------ENABLE BATCH RULE END-----------------
@@ -1014,10 +1023,8 @@ The rule enables batching mechanism provided by the Batched redundant component 
 The rule disables batching mechanism provided by Batched redundant component. Instead, the Direct redundant component is used.  The rule is applicable when the number of inserts performed by the tested application is classified by the MonitorIsertsLevelPET test case as "low". Disabling batch mechanism should reduce delay introduced by the batch mechanism and provide instant insert into the database. Details of the rule are presented in the Table \ref{ruledisablebatch}.
 
 \begin{table}[!htb]
-\def\arraystretch{1.5}
-\caption{\textit{Details of the Disable Batch Rule}} \label{ruledisablebatch}
-\begin{tabularx}{\textwidth}{p{2.1cm}|X}
-
+\begin{center}
+\begin{tabularx}{\textwidth}{l|X}
 \textbf{Applicability Condition:} & \textbf{issueRelatedToInsertsLevel} \textit{AND} \newline
 \textbf{isInsertsLevelLow} \textit{AND} \newline
 \textbf{isBatchEnabled} \\ \hline
@@ -1029,6 +1036,8 @@ The rule disables batching mechanism provided by Batched redundant component. In
 \textbf{Action:} & Change the configuration of parameter "BATCH" to value "DIRECT"\\ \hline
 \textbf{Priority:} & 1\\
 \end{tabularx}
+\end{center}
+\caption{\textit{Details of the Disable Batch Rule}} \label{ruledisablebatch}
 \end{table}
 %-------------DISABLE BATCH RULE END-----------------
 \vspace{5mm}
@@ -1037,10 +1046,8 @@ The rule disables batching mechanism provided by Batched redundant component. In
 The rule enables cache mechanism provided by the Cache redundant component in the tested application when traffic profile incoming to the tested application is classified by the MonitorTrafficProfilePET test case as "immutable". Enabling cache mechanism should decrease time of requests execution. Details of the rule are presented in the Table \ref{ruleenablecache}.
 
 \begin{table}[!htb]
-\def\arraystretch{1.5}
-\caption{\textit{Details of the Enable Chache Rule}} \label{ruleenablecache}
-\begin{tabularx}{\textwidth}{p{2.1cm}|X}
-
+\begin{center}
+\begin{tabularx}{\textwidth}{l|X}
 \textbf{Applicability Condition:} & \textbf{isIssueRelatedTrafficProfile} \textit{AND} \newline
 \textbf{isTrafficImmutable} \textit{AND} \newline
 \textbf{isCacheDisabled} \\ \hline
@@ -1052,6 +1059,8 @@ The rule enables cache mechanism provided by the Cache redundant component in th
 \textbf{Action:} & Change the configuration of parameter "CACHE" to value "CACHED" \\ \hline
 \textbf{Priority:} & 1\\
 \end{tabularx}
+\end{center}
+\caption{\textit{Details of the Enable Chache Rule}} \label{ruleenablecache}
 \end{table}
 %-------------ENABLE CACHE RULE END-----------------
 \vspace{5mm}
@@ -1060,14 +1069,12 @@ The rule enables cache mechanism provided by the Cache redundant component in th
 The rule disables cache mechanism provided by the Cache redundant component. Instead the  No Cache redundant component is used. The rule is applicable when traffic profile incoming to the tested application is classified by the MonitorTrafficProfilePET test case as "mutable". Disabling cache mechanism should eliminate overhead related to the cache mechanism which in mutable environment is needless. Details of the rule are presented in the Table \ref{ruledisablecache}.
 
 \begin{table}[!htb]
-\def\arraystretch{1.5}
-\caption{\textit{Details of the Disable Cache Rule}} \label{ruledisablecache}
-\begin{tabularx}{\textwidth}{p{2.1cm}|X}
+\begin{center}
+\begin{tabularx}{\textwidth}{l|X}
 
 \textbf{Applicability Condition:} & \textbf{isIssueRelatedTrafficProfile} \textit{AND} \newline
 \textbf{isTrafficMutable} \textit{AND} \newline
 \textbf{isCacheEnabled} \\ \hline
-
 \textbf{Subconditions Definition:} & \textbf{isIssueRelatedTrafficProfile} -  Reported performance issue metric is equal to "TrafficProfile"  \\
 & \textbf{isTrafficMutable} - Reported performance issue status is equal to "Mutable" \\
 & \textbf{isCacheEnabled} - Current application configuration parameter "CACHE" is equal to CACHED" \\ \hline
@@ -1075,6 +1082,8 @@ The rule disables cache mechanism provided by the Cache redundant component. Ins
 \textbf{Action:} & Change the configuration of parameter "CACHE" to value "NO\_CACHE" \\ \hline
 \textbf{Priority:} & 1\\
 \end{tabularx}
+\end{center}
+\caption{\textit{Details of the Disable Cache Rule}} \label{ruledisablecache}
 \end{table}
 %-------------DISABLE CACHE RULE END-----------------
 \vspace{5mm}
@@ -1083,9 +1092,8 @@ The rule disables cache mechanism provided by the Cache redundant component. Ins
 The rule represents the lowest possible threads number available in the APTS implementation. The rule switches configuration responsible for the number of threads used by application server on which the tested application is deployed to 10 threads. The rule is applicable when mean execution time defined in MeanExecutionTimePET test case is exceeded and CPU usage on the application node is high.  Switching to low threads number should help reduce CPU usage and hence reduce total execution time of the requests. Details of the rule are presented in the Table \ref{rules10}.
 
 \begin{table}[!htb]
-\def\arraystretch{1.5}
-\caption{\textit{Details of the Switch to 10 Threads Rule}} \label{rules10}
-\begin{tabularx}{\textwidth}{p{2.1cm}|X}
+\begin{center}
+\begin{tabularx}{\textwidth}{l|X}
 
 \textbf{Applicability Condition:} & \textbf{isExecutionTimeExceeded} \textit{AND} \newline
 \textbf{isThreadsNumberDifferent} \textit{AND} \newline
@@ -1098,6 +1106,8 @@ The rule represents the lowest possible threads number available in the APTS imp
 \textbf{Action:} & Change the configuration of parameter "THREADS" to value "T10" \\ \hline
 \textbf{Priority:} & 1\\
 \end{tabularx}
+\end{center}
+\caption{\textit{Details of the Switch to 10 Threads Rule}} \label{rules10}
 \end{table}
 %-------------SWITCH TO 10 THREADS END-----------------
 \vspace{5mm}
@@ -1106,10 +1116,8 @@ The rule represents the lowest possible threads number available in the APTS imp
 The rule represents the middle possible value of threads number available in the APTS implementation. The rule switches configuration responsible for the number of threads used by application server on which the tested application is deployed to 20 threads. Conditions of applicability of rule are as following: mean execution time defined in MeanExecutionTimePET test case is exceeded and CPU usage is high or low for respectively low or high threads number. Switching to the higher threads number should help reduce execution time of requests which are waiting in the queue to be handled by the application. Switching to the lower threads number should help reduce CPU usage and hence reduce total execution time of the requests. In order to perform threads number switching by one level the rule has set higher priority in comparison to other threads related rules (in example: when current thread number is 10, and rules "Switch to 20 Threads Rule" and "Switch to 30 Threads Rule" are evaluated as applicable - rule "Switch to 20 Threads Rule" will be chosen because of the higher priority). Details of the rule are presented in the Table \ref{rules20}.
 
 \begin{table}[!htb]
-\def\arraystretch{1.5}
-\caption{\textit{Details of the Switch to 20 Threads Rule}} \label{rules20}
-\begin{tabularx}{\textwidth}{p{2.1cm}|X}
-
+\begin{center}
+\begin{tabularx}{\textwidth}{l|X}
 \textbf{Applicability Condition:} & \textbf{isExecutionTimeExceeded} \textit{AND} \newline
 (\textbf{isThreadNumber10} \textit{AND} \textbf{cpuUsageIsLow}) \textit{OR} \newline
 (\textbf{isThreadNumber30} \textit{AND} \textbf{cpuUsageIsHigh}) \\ \hline
@@ -1123,6 +1131,8 @@ The rule represents the middle possible value of threads number available in the
 \textbf{Action:} & Change the configuration of parameter "THREADS" to value "T20" \\ \hline
 \textbf{Priority:} & 2\\
 \end{tabularx}
+\end{center}
+\caption{\textit{Details of the Switch to 20 Threads Rule}} \label{rules20}
 \end{table}
 %-------------SWITCH TO 20 THREADS END-----------------
 
@@ -1132,10 +1142,8 @@ The rule represents the middle possible value of threads number available in the
 The rule represents the highest possible threads number available in the APTS implementation. The rule switches configuration responsible for the number of threads used by application server on which the tested application is deployed to 30 threads. The rule is applicable when mean execution time defined in MeanExecutionTimePET test case is exceeded and CPU usage on the application node is low. Switching to high threads number should help reduce execution time of requests which are waiting in the queue to be handled by the application. Details of the rule are presented in the Table \ref{rules30}.
 
 \begin{table}[!htb]
-\def\arraystretch{1.5}
-\caption{\textit{Details of the Switch to 30 Threads Rule}} \label{rules30}
-\begin{tabularx}{\textwidth}{p{2.1cm}|X}
-
+\begin{center}
+\begin{tabularx}{\textwidth}{l|X}
 \textbf{Applicability Condition:} & \textbf{isExecutionTimeExceeded} \textit{AND} \newline
 \textbf{isThreadsNumberDifferent} \textit{AND} \newline
 \textbf{cpuUsageIsLow} \\ \hline
@@ -1147,6 +1155,8 @@ The rule represents the highest possible threads number available in the APTS im
 \textbf{Action:} & Change the configuration of parameter "THREADS" to value "T30" \\ \hline
 \textbf{Priority:} & 1\\
 \end{tabularx}
+\end{center}
+\caption{\textit{Details of the Switch to 30 Threads Rule}} \label{rules30}
 \end{table}
 %-------------SWITCH TO 30 THREADS END-----------------
 
@@ -1156,20 +1166,16 @@ The rule represents the highest possible threads number available in the APTS im
 The rule is returned by the implemented rule based system when there is no applicable rules for the current system state.  The rule is created as consequence of the Null Object Pattern \cite{nop} usage in the implementation of the system and is not stored in the set of available rules of the rule based system. Execution of the rule does not change anything - implementation of the method \textit{executeAction()} is empty. Details of the rule are presented in the Table \ref{ruledonothing}.
 
 \begin{table}[!htb]
-\def\arraystretch{1.5}
-\caption{\textit{Details of the Do Nothing Rule}} \label{ruledonothing}
-\begin{tabularx}{\textwidth}{p{2.1cm}|X}
-
+\begin{center}
+\begin{tabularx}{\textwidth}{l|X}
 \textbf{Applicability Condition:} & N/A \\ \hline
-
 \textbf{Action:} & N/A \\ \hline
 \textbf{Priority:} & 0\\
 \end{tabularx}
+\end{center}
+\caption{\textit{Details of the Do Nothing Rule}} \label{ruledonothing}
 \end{table}
 %-------------DO NOTHING THREADS END-----------------
-
-\pagebreak
-
 
 The second part of the implemented rule based system is inference engine. The role of the engine is to choose the best rule from the set of provided rules and perform action related to chosen rule. In order to achieve this the algorithm presented in the Figure \ref{dmalgorithm} is used. 
 
@@ -1235,14 +1241,14 @@ During the experiments dedicated to evaluate given mechanism (cache, batch, thre
 The configuration of the all PET cases is presented in the Table \ref{evaluationtestconf}. The duration is adapted to 2 minutes test scenario. The additional time and delay is introduced due to practical reasons - traffic simulation engine needs few seconds to be initiated before it starts to generate requests. The monitoring interval provides adequate time between individual test run.
 
 \begin{table}[!htb]
-\def\arraystretch{1.5}
-\caption{\textit{The MonitorTrafficProfilePET case parameters}} \label{evaluationtestconf}
-\begin{tabularx}{\textwidth}{X|X}
-
+\begin{center}
+\begin{tabular}{l|l}
 \textbf{durationInSec} & 180 \\ \hline
 \textbf{monitorIntervalInSec} & 10 \\ \hline
 \textbf{delayInSec} & 10\\
-\end{tabularx}
+\end{tabular}
+\end{center}
+\caption{\textit{The PET cases configuration during the experiments}} \label{evaluationtestconf}
 \end{table}
 
 
@@ -1251,13 +1257,15 @@ The configuration of the all PET cases is presented in the Table \ref{evaluation
 The initial configuration provided by the \textit{Configuration Service} during the experiments evaluating the APTS is presented in the Table \ref{table:initconfiguration}. As presented, by default cache and batch are disabled, the application server threads number is set to middle value, i.e. 20 threads. 
 
 \begin{table}[!htb]
-\caption{\textit{Initial configuration of the tested application during the experiments}} \label{table:initconfiguration}
-\begin{tabularx}{\textwidth}{X|X}
+\begin{center}
+\begin{tabular}{l|l}
 \textbf{Configuration Parameter} & \textbf{Value} \\ \hline
 CACHE & NO\_CACHE \\ \hline
 BATCH & DIRECT\\ \hline
 THREADS & T20\\
-\end{tabularx}
+\end{tabular}
+\end{center}
+\caption{\textit{The initial configuration of the tested application during the experiments}} \label{table:initconfiguration}
 \end{table}
 
 \subsubsection{The Database}
@@ -1318,6 +1326,7 @@ The experiments presented below are focused on Cache and No Cache redundant comp
 The most important concern during evaluation of the solution is traffic simulation. All decisions made by the Decision Module are based on analysis and monitoring of the incoming traffic to the application. For the case of redundant components related to cache management the traffic simulation presented in the Figure \ref{trafficcache} was implemented.
 
 \begin{figure}[!htb]
+\begin{center}
 \begin{tikzpicture}
 \draw[->] (0,0) -- (10,0);
 \foreach \x in {1,5,9}
@@ -1335,6 +1344,7 @@ The most important concern during evaluation of the solution is traffic simulati
 
 \draw (10.8,0) node {$time [s]$};
 \end{tikzpicture}
+\end{center}
 \caption{\textit{Traffic simulation scenario for the cache management evaluation}} \label{trafficcache}
 \end{figure}
 
@@ -1389,21 +1399,23 @@ The tested application:
 
 \subsubsection{Results} 
 
-The summary of the execution time during experiments are presented in the Table \ref{cacheCompResutls}. The table presents average execution time of the requests for each sample during the experiments. The row \textit{Improvement} shows percentage improvement between control samples and \textit{Adapted} sample. In other words the row presents how the APTS decreased the execution time of requests. The value of the \textit{Improvement} column was computed using the formula: 
+The summary of the execution time during experiments are presented in the Table \ref{cacheCompResutls}. The table presents average execution time of the requests for each sample during the experiments. The row \textit{Improvement} shows percentage improvement between control samples and \textit{Adapted} sample. In other words the row presents how the APTS decreased the execution time of requests. The value of the \textit{Improvement} column was computed using the formula \eqref{eq:cache}. 
 
-\begin{center}
-$Improvement = \frac{ControlSample - AdaptedSample}{ControlSample} \cdot 100\%$
-\end{center}
+\begin{equation} \label{eq:cache}
+Improvement = \frac{ControlSample - AdaptedSample}{ControlSample} \cdot 100\%
+\end{equation}
 
 The data presented in the Table \ref{cacheCompResutls} are visualized in the Figure \ref{cacheEvalResutlsGraph}.  All results from performed experiments are available in the Appendix \ref{appendixcacheeval}. 
 
 \begin{table}[!htb]
-\caption{\textit{Comparison between control and Adapted samples}} \label{cacheCompResutls}
-\begin{tabularx}{\textwidth}{p{4cm}|X|X|X}
+\begin{center}
+\begin{tabular}{l|c|c|c}
  & \textbf{Cache} & \textbf{No Cache} & \textbf{Adapted} \\ \hline
 Average Execution Time &  19.75ms & 19.84ms & 19.08ms\\ \hline
 Improvement &  3.38\% & 3.84\% & N/A\\ 
-\end{tabularx}
+\end{tabular}
+\end{center}
+\caption{\textit{Comparison between control and adapted samples}} \label{cacheCompResutls}
 \end{table}
 
 \subsubsection{Interpretation} 
@@ -1432,6 +1444,7 @@ The experiments presented below are focused on Batched and Direct redundant comp
 For the experiment evaluating the batch management provided by the APTS, the traffic simulation presented in the Figure \ref{trafficbatch} was implemented.
 
 \begin{figure}[!htb]
+\begin{center}
 \begin{tikzpicture}
 \draw[->] (0,0) -- (10,0);
 \foreach \x in {1,5,9}
@@ -1449,6 +1462,7 @@ For the experiment evaluating the batch management provided by the APTS, the tra
 
 \draw (10.8,0) node {$time [s]$};
 \end{tikzpicture}
+\end{center}
 \caption{\textit{Traffic simulation scenario for the batch management evaluation}} \label{trafficbatch}
 \end{figure}
 
@@ -1489,17 +1503,16 @@ In the graphs measured execution time during the experiment is presented. On the
 
 \subsubsection{Results} \label{section:batchresults}
 
-The summary of the execution time during the experiments are presented in the Table \ref{batchCompResutls}. The table presents average execution time in particular phases and total time of the experiment. The last row presents difference between the experiments made on different samples. The value of difference is calculated using the formula: 
+The summary of the execution time during the experiments are presented in the Table \ref{batchCompResutls}. The table presents average execution time in particular phases and total time of the experiment. The last row presents difference between the experiments made on different samples. The value of difference is calculated using the formula \eqref{eq:batch}. 
 
-\begin{center}
-$Difference = \frac{|ControlSample - AptsAdaptation|}{ControlSample}\cdot 100\%$
-\end{center}
+\begin{equation} \label{eq:batch}
+Difference = \frac{|ControlSample - AptsAdaptation|}{ControlSample}\cdot 100\%
+\end{equation}
 
 
 \begin{table}[!htb]
-\caption{\textit{Comparison between control and adapted by APTS sample}} \label{batchCompResutls}
 \begin{center}
-\begin{tabular}{r|ccc}
+\begin{tabular}{l|ccc}
                  &  \multicolumn{3}{c}{\textbf{Execution time [ms]}} \\
                  &  \textbf{Phase I } & \textbf{Phase II} & \textbf{Total} \\ \hline
 Control sample   &  30.0 & 31.5 & 31.4 \\ 
@@ -1507,6 +1520,7 @@ APTS adaptation  &  30.9 & 22.5 & 23.2 \\ \hline
 Difference       &  3\% & 28.6\% & 26.1\% \\ 
 \end{tabular}
 \end{center}
+\caption{\textit{Comparison between control and adapted by APTS sample}} \label{batchCompResutls}
 \end{table}
 
 The data presented in the Table \ref{batchCompResutls} are visualized in the Figure \ref{batchEvalResutlsGraph}.  All results from performed experiments are available in the Appendix \ref{appendixbatchevaluation}. 
@@ -1578,10 +1592,10 @@ For the experiments related to the threads management provided by the APTS the t
 \draw (9,0) node[below=3pt] {$120$};
 
 \draw[fill=bblue] (5,0) rectangle (9,1);
-\draw (7,0) node[above=6pt, align=center, white] {CPU consuming requests};
+\draw (7,0) node[above=-3pt, align=center, white] {CPU consuming \\ requests};
 
 \draw[fill=ggreen] (1,0) rectangle (3,1);
-\draw (2,0) node[above=6pt, align=center] {Wait requests};
+\draw (2,0) node[above=-3pt, align=center] {Wait \\ requests};
 
 \draw (10.8,0) node {$time [s]$};
 \end{tikzpicture}
@@ -1663,25 +1677,26 @@ The Dispatcher:
 
 \subsubsection{Results} 
 
-The summary of performed experiment is presented in the Table \ref{table:threads:summary}. The summary presents average values computed from the 10 repetitions of the experiment. The column "Dur." represents duration of the Phase I (time between execution of the first and the last request in the phase). Columns "CPU" and "Exec. time" represents average CPU usage and average execution time respectively. The row "Change" represents percentage difference between samples and is calculated using the formula:
+The summary of performed experiment is presented in the Table \ref{table:threads:summary}. The summary presents average values computed from the 10 repetitions of the experiment. The column "Dur." represents duration of the Phase I (time between execution of the first and the last request in the phase). Columns "CPU" and "Exec. time" represents average CPU usage and average execution time respectively. The row "Change" represents percentage difference between samples and is calculated using the formula \eqref{eq:threads}.
 
-\begin{center}
-$Change = \frac{ControlSample - AptsAdaptation}{ControlSample}\cdot 100\%$
-\end{center}
+\begin{equation} \label{eq:threads}
+Change = \frac{ControlSample - AptsAdaptation}{ControlSample}\cdot 100\%
+\end{equation}
 
 The data presented in the Table \ref{table:threads:summary} are visualized in the Figures \ref{figure:threads:results:duration} (first phase duration for the samples), \ref{figure:threads:results:executiontime} (average execution time for the samples in different phases) and \ref{figure:threads:results:cpu} (average CPU usage for the samples in different phases). All results from
 performed experiments are available in the Appendix \ref{appendix:table:threadscontrol} and \ref{appendix:table:threadeval}.
 
 \begin{table}[!htb]
-\caption{\textit{Summary of the experiment results comparing control and APTS adapted sample}} \label{table:threads:summary}
-\begin{tabularx}{\textwidth}{X|C{1cm}C{1cm}C{1cm}|C{1cm}C{1cm}|C{1cm}C{1.2cm}|}
-
+\begin{center}
+\begin{tabular}{l|ccC{1.5cm}|cC{1.5cm}|cC{1.5cm}|}
                  &  \multicolumn{3}{c|}{\textbf{Phase I}} & \multicolumn{2}{c|}{\textbf{Phase II}} & \multicolumn{2}{c|}{\textbf{Total}} \\
                  &  \textbf{Dur. [s]} & \textbf{CPU} & \textbf{Exec. time [ms]}  &\textbf{CPU} & \textbf{Exec. time [ms]}  &\textbf{CPU} & \textbf{Exec. time [ms]}  \\ \hline
 Control sample      & 44 & 28.7\% & 5.0 & 100\% & 27.6 & 63.3\% & 10.6 \\
 Adapted sample & 32 & 41,8\% & 5.0 & 99.9\% & 20.1 & 68.7\% & 8.8\\ \hline
 Change 	            & 27.3\% & -45.6\% & 0.0\% &  0.1\% & 27.2\% & -8.5\% & 17.0\%
-\end{tabularx}
+\end{tabular}
+\end{center}
+\caption{\textit{Summary of the experiment for control and adapted sample}} \label{table:threads:summary}
 \end{table}
 
 \begin{figure}[!htb]
@@ -1809,7 +1824,7 @@ For the combined APTS evaluation the traffic simulation presented in the Figure 
 \draw (7,0) node[above=6pt, align=center] {Wait requests};
 
 \draw[fill=rred] (1,0) rectangle (3,1);
-\draw (2,0) node[above=3pt, align=center, white] {Intensive \\ inserts};
+\draw (2,0) node[above=-2pt, align=center, white] {Intensive \\ inserts};
 
 \draw (10.8,0) node {$time [s]$};
 \end{tikzpicture}
@@ -1870,24 +1885,24 @@ action: threads switched to 30
 
 \subsubsection{Results} 
 
-The summary of performed experiment is presented in the Table \ref{table:combined:results:summary}. The summary presents average values computed from the 10 repetitions of the experiment. The row "Change" represents percentage difference between samples and is calculated using the formula:
+The summary of performed experiment is presented in the Table \ref{table:combined:results:summary}. The summary presents average values computed from the 10 repetitions of the experiment. The row "Change" represents percentage difference between samples and is calculated using the formula \eqref{eq:combined}.
 
-\begin{center}
-$Change = \frac{ControlSample - AptsAdaptation}{ControlSample}\cdot 100\%$
-\end{center}
+\begin{equation} \label{eq:combined}
+Change = \frac{ControlSample - AptsAdaptation}{ControlSample}\cdot 100\%
+\end{equation}
 
 The data presented in the Table \ref{table:combined:results:summary} are visualized in the Figures \ref{figure:combined:results:executiontime} and \ref{figure:combined:results:cpuusage}. All results from performed experiments are available in the Appendix \ref{appendix:combinedevaluation}.
 
 \begin{table}[ht]
 \begin{center}
-\caption{System evaluation measurements - combined solution measurements summary} \label{table:combined:results:summary}
-\begin{tabular}{c|C{3cm}C{3cm}}
-    & Average execution time [ms] & Average CPU usage \\ \hline
+\begin{tabular}{l|c|c}
+    & \textbf{Average execution time [ms]} & \textbf{Average CPU usage} \\ \hline
     Control	sample	  &3.27     & 47.26\% \\ 
     Adapted sample	  &2.02	    & 49.22\% \\ \hline
     Change		      &38.23\%	& -4.15\%
 \end{tabular}
 \end{center}
+\caption{System evaluation measurements - combined solution measurements summary} \label{table:combined:results:summary}
 \end{table}
 
 \begin{figure}[!htb]
@@ -1999,14 +2014,15 @@ The Table \ref{table:random:traffic:possiblevalues} is concluding above informat
 \newcommand{\twodots}{\mathinner {\ldotp \ldotp}}
 
 \begin{table}[ht]
+
 \begin{center}
 \begin{tabular}{c|c|c|c|c|c}
-        & Rate1 & Rate2 & StartAt & EndAt & Duration \\\hline
+\textbf{Request type}& \textbf{Rate1} & \textbf{Rate2} & \textbf{StartAt} & \textbf{EndAt} & \textbf{Duration} \\\hline
 find	&$[0 \twodots 6]$    &$[\textit{Rate1} \twodots 6]$    &\multirow{5}{*}{$[0 \twodots 600]$}&\multirow{5}{*}{$[\textit{StartAt} \twodots 600]$}&\multirow{5}{*}{$[0 \twodots 600 -\textit{StartAt}]$}\\ \cline{1-3}
 update	&$[0 \twodots 6]$    &$[\textit{Rate1} \twodots 6]$	  &	                     & 	                    \\ \cline{1-3}
 insert	&$[0 \twodots 6]$    &$[\textit{Rate1} \twodots 6]$	  &	                     &                      \\ \cline{1-3}
 wait	&$[0 \twodots 6]$    &$[\textit{Rate1} \twodots 6]$	  &	                     &                      \\ \cline{1-3}
-cpuTask	&$[0 \twodots 1]$     &$[\textit{Rate1} \twodots 1]$     &	                     & 	                    \\  
+cpuTask	&$[0 \twodots 1]$     &$[\textit{Rate1} \twodots 1]$     &	                     & 	                   \\  
 \end{tabular}
 \end{center}
 \caption{\textit{Possible values of randomly generated traffic parameters}} \label{table:random:traffic:possiblevalues}
@@ -2031,7 +2047,7 @@ This section presents first repetition of the experiment using randomly generate
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{c|C{2cm}|C{2cm}|C{2cm}|C{2cm}|C{2cm}}
-Request type & Rate 1 & Rate 2 & Start at second & End at second & Duration [s]\\\hline
+\textbf{Request type} & \textbf{Rate1} & \textbf{Rate2} & \textbf{StartAt} & \textbf{EndAt} & \textbf{Duration}\\\hline
 find	&1	&4	&582	&585	&3     \\ \hline
 update	&4	&4	&54	    &584	&530   \\ \hline
 insert	&3	&3	&471	&535	&64    \\ \hline
@@ -2083,7 +2099,7 @@ This section presents first repetition of the experiment using randomly generate
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{c|C{2cm}|C{2cm}|C{2cm}|C{2cm}|C{2cm}}
-Request type & Rate 1 & Rate 2 & Start at second & End at second & Duration [s]\\\hline
+\textbf{Request type} & \textbf{Rate1} & \textbf{Rate2} & \textbf{StartAt} & \textbf{EndAt} & \textbf{Duration}\\\hline
 find	&2	&3	&353	&417	&64\\ \hline
 update	&1	&3	&51	    &149	&98\\ \hline
 insert	&1	&5	&91	    &259	&168\\ \hline
@@ -2130,7 +2146,7 @@ This section presents first repetition of the experiment using randomly generate
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{c|C{2cm}|C{2cm}|C{2cm}|C{2cm}|C{2cm}}
-Request type & Rate 1 & Rate 2 & Start at second & End at second & Duration [s]\\\hline
+\textbf{Request type} & \textbf{Rate1} & \textbf{Rate2} & \textbf{StartAt} & \textbf{EndAt} & \textbf{Duration}\\\hline
 find	&5	&6	&181	&597	&416\\ \hline
 update	&5	&5	&26	    &100	&74\\ \hline
 insert	&5	&5	&490	&550	&60\\ \hline
@@ -2178,7 +2194,7 @@ This section presents first repetition of the experiment using randomly generate
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{c|C{2cm}|C{2cm}|C{2cm}|C{2cm}|C{2cm}}
-Request type & Rate 1 & Rate 2 & Start at second & End at second & Duration [s]\\\hline
+\textbf{Request type} & \textbf{Rate1} & \textbf{Rate2} & \textbf{StartAt} & \textbf{EndAt} & \textbf{Duration}\\\hline
 find	&1	&2	&58	    &240	&182\\ \hline
 update	&1	&6	&272	&351	&79\\ \hline
 insert	&1	&4	&472	&472	&0\\ \hline
@@ -2228,7 +2244,7 @@ This section presents first repetition of the experiment using randomly generate
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{c|C{2cm}|C{2cm}|C{2cm}|C{2cm}|C{2cm}}
-Request type & Rate 1 & Rate 2 & Start at second & End at second & Duration [s]\\\hline
+\textbf{Request type} & \textbf{Rate1} & \textbf{Rate2} & \textbf{StartAt} & \textbf{EndAt} & \textbf{Duration}\\\hline
 find	&2	&3	&183	&421	&238\\ \hline
 update	&0	&3	&451	&480	&29\\ \hline
 insert	&2	&5	&62	    &333	&271\\ \hline
@@ -2283,7 +2299,7 @@ This section presents first repetition of the experiment using randomly generate
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{c|C{2cm}|C{2cm}|C{2cm}|C{2cm}|C{2cm}}
-Request type & Rate 1 & Rate 2 & Start at second & End at second & Duration [s]\\\hline
+\textbf{Request type} & \textbf{Rate1} & \textbf{Rate2} & \textbf{StartAt} & \textbf{EndAt} & \textbf{Duration}\\\hline
 find	&0	&0	&37	    &193	&156 \\ \hline
 update	&6	&6	&565	&593	&28\\ \hline
 insert	&6	&6	&419	&427	&8\\ \hline
@@ -2333,7 +2349,7 @@ This section presents first repetition of the experiment using randomly generate
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{c|C{2cm}|C{2cm}|C{2cm}|C{2cm}|C{2cm}}
-Request type & Rate 1 & Rate 2 & Start at second & End at second & Duration [s]\\\hline
+\textbf{Request type} & \textbf{Rate1} & \textbf{Rate2} & \textbf{StartAt} & \textbf{EndAt} & \textbf{Duration}\\\hline
 find	&5	&6	&93	    &437	&344\\\hline
 update	&2	&3	&457	&478	&21\\\hline
 insert	&0	&6	&277	&314	&37\\\hline
@@ -2384,7 +2400,7 @@ This section presents first repetition of the experiment using randomly generate
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{c|C{2cm}|C{2cm}|C{2cm}|C{2cm}|C{2cm}}
-Request type & Rate 1 & Rate 2 & Start at second & End at second & Duration [s]\\\hline
+\textbf{Request type} & \textbf{Rate1} & \textbf{Rate2} & \textbf{StartAt} & \textbf{EndAt} & \textbf{Duration}\\\hline
 find	&5	&6	&207	&467	&260\\\hline
 update	&2	&2	&549	&549	&0\\\hline
 insert	&6	&6	&598	&598	&0\\\hline
@@ -2428,7 +2444,7 @@ This section presents first repetition of the experiment using randomly generate
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{c|C{2cm}|C{2cm}|C{2cm}|C{2cm}|C{2cm}}
-Request type & Rate 1 & Rate 2 & Start at second & End at second & Duration [s]\\\hline
+\textbf{Request type} & \textbf{Rate1} & \textbf{Rate2} & \textbf{StartAt} & \textbf{EndAt} & \textbf{Duration}\\\hline
 find	&3	&4	&420	&465	&45\\\hline
 update	&3	&4	&294	&413	&119\\\hline
 insert	&4	&6	&349	&519	&170\\\hline
@@ -2478,7 +2494,7 @@ This section presents first repetition of the experiment using randomly generate
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{c|C{2cm}|C{2cm}|C{2cm}|C{2cm}|C{2cm}}
-Request type & Rate 1 & Rate 2 & Start at second & End at second & Duration [s]\\\hline
+\textbf{Request type} & \textbf{Rate1} & \textbf{Rate2} & \textbf{StartAt} & \textbf{EndAt} & \textbf{Duration}\\\hline
 find	&5	&6	&156	&405	&249\\\hline
 update	&4	&6	&60	    &597	&537\\\hline
 insert	&5	&5	&83	    &583	&500\\\hline
@@ -2517,13 +2533,13 @@ Additionally, in the Figure \ref{figure:random:screen:adapted:10} configuration 
 
 \subsubsection{Results} 
 
-The result summary of the performed experiments on 10 randomly generated scenarios is presented in the Table \ref{table:random:resultssummary}. The summary presents average request execution time and average CPU usage during whole experiment performed on particular generated scenario. The column "Execution Time Change" represents percentage difference in average request execution time between control and adapted sample and is calculated using the formula:
+The result summary of the performed experiments on 10 randomly generated scenarios is presented in the Table \ref{table:random:resultssummary}. The summary presents average request execution time and average CPU usage during whole experiment performed on particular generated scenario. The column "Execution Time Change" represents percentage difference in average request execution time between control and adapted sample and is calculated using the formula \eqref{eq:random}.
 
-\begin{center}
-$Execution Time Change=\frac{controlExecutionTime-adaptedExecutionTime}{controlExecutionTime} \cdot 100\%$
-\end{center}
+\begin{equation} \label{eq:random}
+Execution Time Change=\frac{controlExecutionTime-adaptedExecutionTime}{controlExecutionTime} \cdot 100\%
+\end{equation}
 
-{\renewcommand{\arraystretch}{1.4}
+{\renewcommand{\arraystretch}{1.2}
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{c c | c | c | c}
@@ -2803,9 +2819,8 @@ Grafana - The open platform for beautiful analytics and monitoring \textit{https
 
 \begin{table}[ht]
 \begin{center}
-\caption{System evaluation measurements - cache related redundant components}
-\begin{tabular}{c| C{1.5cm}  C{1.5cm}  C{1.5cm} |c}
-    & \multicolumn{3}{c|}{Average execution time of requests [ms]} & \\ 
+\begin{tabular}{c| ccc |c}
+    & \multicolumn{3}{C{5cm}|}{Average execution time of requests [ms]} & \\ 
     Repetition \# & Cached & No Cache & Adapted &\\ \cline{1-4}
     1		  &22.00 & 21.50  & 20.20 &\\ 
     2		  &20.27 & 20.51  &	20.63 &\\ 
@@ -2820,6 +2835,7 @@ Grafana - The open platform for beautiful analytics and monitoring \textit{https
         	  &19.75 & 19.84  & 19.08 & \multicolumn{1}{c}{Average} \\ 
 \end{tabular}
 \end{center}
+\caption{System evaluation measurements - cache related redundant components}
 \label{appendixmeasurementscache}
 \end{table}
 
@@ -2829,8 +2845,7 @@ Grafana - The open platform for beautiful analytics and monitoring \textit{https
 
 \begin{table}[ht]
 \begin{center}
-\caption{Method execution time of \textit{ConcurrentMapCache} class from \textit{org.springframework.cache.concurrent} package.} 
-\begin{tabular}{c| C{1.5cm}  C{1.5cm} |c}
+\begin{tabular}{c| C{3cm}  C{3cm} |c}
     & \multicolumn{2}{c|}{Method execution time [ms]} \\ 
     Repetition \# & Put & Clear  &\\ \cline{1-3}
     1		  &0.55 & 0.53  &\\ 
@@ -2846,6 +2861,9 @@ Grafana - The open platform for beautiful analytics and monitoring \textit{https
         	  &0.61 & 0.56  & Average \\ 
 \end{tabular}
 \end{center}
+\begin{center}
+\caption{Execution time of selected methods from \textit{ConcurrentMapCache}} 
+\end{center}
 \label{appendixmeasurementscache}
 \end{table}
 
@@ -2854,8 +2872,7 @@ Grafana - The open platform for beautiful analytics and monitoring \textit{https
 
 \begin{table}[ht]
 \begin{center}
-\caption{Execution time of requests to resource "Find product category by ID" with enabled and disabled cache.} 
-\begin{tabular}{c| C{2cm}  C{2cm} |c}
+\begin{tabular}{c| C{3cm}  C{3cm} |c}
     & \multicolumn{2}{c|}{Request execution time [ms]} \\ 
     Repetition \# & No Cache & Cached  &\\ \cline{1-3}
     1		  &56.27 & 33.25  &\\ 
@@ -2871,6 +2888,7 @@ Grafana - The open platform for beautiful analytics and monitoring \textit{https
         	  &46.88 & 37.38  & Average \\ 
 \end{tabular}
 \end{center}
+\caption{Requests execution time with enabled and disabled cache} 
 \label{appendixmeasurementscache}
 \end{table}
 
@@ -2880,10 +2898,9 @@ Grafana - The open platform for beautiful analytics and monitoring \textit{https
 
 \begin{table}[ht]
 \begin{center}
-\caption{System evaluation measurements - comparison between the control sample and the APTS solution}
 \begin{tabular}{c| C{1.1cm}  C{1.2cm}  C{1.1cm}|C{1.1cm} C{1.2cm} C{1.1cm} |c}
     & \multicolumn{6}{c|}{Execution time [ms]}  \\ 
-    & \multicolumn{3}{c|}{Control sample} & \multicolumn{3}{c|}{APTS}\\ 
+    & \multicolumn{3}{c|}{Control sample} & \multicolumn{3}{c|}{Adapted sample}\\ 
     Repetition \# & Phase I & Phase II & Total & Phase I & Phase II & Total &\\ \cline{1-7}
     1		  &32.6  &34.0    &33.9   &33.2  &23.5   &24.3   &\\ 
     2		  &23.6  &31.7    &31.0   &24.6  &23.4   &23.5   &\\ 
@@ -2898,6 +2915,7 @@ Grafana - The open platform for beautiful analytics and monitoring \textit{https
         	  &30.0  &31.5    &31.4   &30.9  &22.5   &23.2   & \multicolumn{1}{c}{Average} \\ 
 \end{tabular}
 \end{center}
+\caption{Batch management - evaluation measurements of control and adapted sample}
 \label{appendixmeasurementscache}
 \end{table}
 
@@ -2909,7 +2927,7 @@ Grafana - The open platform for beautiful analytics and monitoring \textit{https
 {\renewcommand{\arraystretch}{0.91}
 \begin{table}[ht]
 \begin{center}
-\caption{System evaluation measurements - control sample} \label{appendix:table:threadscontrol}
+ \label{appendix:table:threadscontrol}
 \begin{tabular}{c| C{1cm} C{1.3cm} C{1.5cm}|C{1.3cm} C{1.5cm} | C{1.3cm} C{1.5cm} |C{1cm}}
     & \multicolumn{3}{c|}{Phase I} & \multicolumn{2}{c|}{Phase II} & \multicolumn{2}{c|}{Total}\\ 
     Repetition \# & Duration [s] &  Average CPU Usage & Average Execution Time [s] & Average CPU Usage & Average Execution Time [s] & Average CPU Usage & Average Execution Time [s]\\  \cline{1-8}
@@ -2926,12 +2944,13 @@ Grafana - The open platform for beautiful analytics and monitoring \textit{https
    	  & 44 & 28.7\% & 5.0 & 100.0\% & 27.6 & 63.3\% & 10.6 & \multicolumn{1}{c}{Average} \\ 
 \end{tabular}
 \end{center}
+\caption{Threads management - evaluation measurements of control sample}
 \label{appendixmeasurementscache}
 \end{table}
 
 \begin{table}[ht]
 \begin{center}
-\caption{System evaluation measurements - sample adapted by the APTS} \label{appendix:table:threadeval}
+\label{appendix:table:threadeval}
 \begin{tabular}{c| C{1cm} C{1.3cm} C{1.5cm}|C{1.3cm} C{1.5cm} | C{1.3cm} C{1.5cm} |C{1cm}}
     & \multicolumn{3}{c|}{Phase I} & \multicolumn{2}{c|}{Phase II} & \multicolumn{2}{c|}{Total}\\ 
     Repetition \# & Duration [s] &  Average CPU Usage & Average Execution Time [s] & Average CPU Usage & Average Execution Time [s] & Average CPU Usage & Average Execution Time [s]\\  \cline{1-8}
@@ -2948,6 +2967,7 @@ Grafana - The open platform for beautiful analytics and monitoring \textit{https
    	   & 32 & 41.8\% & 5.0 & 100.0\% & 20.1 & 68.7\% & 8.8 & \multicolumn{1}{c}{Average} \\ 
 \end{tabular}
 \end{center}
+\caption{Threads management - evaluation measurements of adapted sample}
 \label{appendixmeasurementscache}
 \end{table}
 }
@@ -2960,7 +2980,6 @@ Grafana - The open platform for beautiful analytics and monitoring \textit{https
 
 \begin{table}[ht]
 \begin{center}
-\caption{System evaluation measurements - combined solution measurements}
 \begin{tabular}{C{1.6cm}|C{2cm}C{2cm}|C{2cm}C{2cm}| c}
     & \multicolumn{2}{c|}{Control sample} & \multicolumn{2}{c|}{Adapted sample}\\ 
     Repetition \# & Average execution time [ms] & Average CPU usage & Average execution time [ms] & Average CPU usage \\  \cline{1-5}
@@ -2977,6 +2996,7 @@ Grafana - The open platform for beautiful analytics and monitoring \textit{https
         	  &3.27	& 47.26\% & 2.02 & 49.22\% & \multicolumn{1}{c}{Average} \\ 
 \end{tabular}
 \end{center}
+\caption{System evaluation measurements - combined solution measurements}
 \label{appendixmeasurementscombined}
 \end{table}
 
@@ -2987,7 +3007,6 @@ Grafana - The open platform for beautiful analytics and monitoring \textit{https
 {\renewcommand{\arraystretch}{1.4}
 \begin{table}[ht]
 \begin{center}
-\caption{System evaluation measurements - results of experiments performed on randomly generated traffic scenarios}
 \begin{tabular}{c C{1.5cm} | C{1.4cm} C{1.4cm} C{1.4cm} C{1.5cm} C{1.5cm} C{1.4cm} | C{1.4cm} }
     & & \multicolumn{6}{c|}{Average Request Execution Time [ms]} & \multirow{2}{1.4cm}{Average CPU Usage} \\
                  \# & Sample & find & update & insert & wait & cpuTask & total &  \\ \hline 
@@ -3013,6 +3032,7 @@ Grafana - The open platform for beautiful analytics and monitoring \textit{https
                     & Adapted& 0.35 & 0.46   & 0.63   & 4.80 & 11.30   &     1.40          &     95\%   \\         
 \end{tabular}
 \end{center}
+\caption{System evaluation measurements - randomly generated traffic scenarios}
 \label{appendixmeasurementscombined}
 \end{table}
 }
