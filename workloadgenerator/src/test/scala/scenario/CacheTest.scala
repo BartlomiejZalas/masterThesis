@@ -7,7 +7,7 @@ import scala.concurrent.duration._
 class CacheTest extends Simulation {
 
   val httpConf = http
-    .baseURL("http://localhost:8000/testedApplication/")
+    .baseURL("http://192.168.56.30:8080/testedApplication/")
     .acceptHeader("text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
 
   val mutable = scenario("MutableTraffic")

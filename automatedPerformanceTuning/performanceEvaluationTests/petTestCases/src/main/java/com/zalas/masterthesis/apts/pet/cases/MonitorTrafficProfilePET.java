@@ -24,6 +24,7 @@ public class MonitorTrafficProfilePET {
 
     private TrafficProfile getTrafficProfile(int monitorInterval) {
         int countMutable = executionTimeInfluxDbClient.getCountForTrafficProfile(MUTABLE, monitorInterval);
+        System.out.println(countMutable);
         return countMutable == 0 ? IMMUTABLE : MUTABLE;
     }
 }
